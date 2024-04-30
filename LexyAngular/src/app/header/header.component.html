@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light nav-shadow" [ngClass]="{'navbar-home': isActive('/')}">
+  <div class="container-fluid">
+    <a class="navbar-brand lexy_logo fw-bold h3 px-3" [ngClass]="{'white-color': isActive('/')}">LEXY</a>
+    <button class="navbar-toggler custom-toggler" [ngClass]="{'custom-toggler': isActive('/')} " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse navigation-page" id="navbarNav">
+      <ul class="navbar-nav nav">
+           <li class="nav-item">
+          <a class="nav-link " routerLinkActive="active"
+             [routerLinkActiveOptions]="{exact:true}" routerLink="/" [ngClass]="{'white-color': isActive('/'), 'active': isActive('/')}"> Home
+            <hr class="hr-link" *ngIf="isActive('/')" [ngClass]="{ 'white-color': isActive('/') }">
+          </a>
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" routerLink="/login" [ngClass]="{'white-color': isActive('/') }" routerLinkActive="active">Login
+            <hr class="hr-link" *ngIf="isActive('/login')">
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [ngClass]="{'white-color': isActive('/') }"
+             [routerLinkActiveOptions]="{exact:true}">Sign Up
+            <hr class="hr-link" *ngIf="isActive('/signup')">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

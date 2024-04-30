@@ -1,0 +1,50 @@
+.nav-shadow{
+  box-shadow: 1px 1px 1px 1px rgb(0 0 0 / 14%);
+}
+
+.navbar .navbar-toggler:focus{
+ color: var(--primary);
+  font-size: 1em;
+}
+
+.lexy_logo{
+  letter-spacing: 12px;
+  font-family: "Paytone One", sans-serif;
+  font-size :30px;
+}
+
+ .hr-link {
+    margin-top: 0.25rem; /* Imposta la distanza desiderata tra hr e il testo */
+    margin-bottom: 0.25rem;
+    border-color: grey;
+    border-width: 2px;
+  }
+
+  .navbar-nav .nav-item {
+    margin-right: 28px; /* Imposta il margine destro tra gli elementi li */
+  }
+
+  @media (min-width: 992px){
+      .navigation-page {
+    display: flex;
+    justify-content: center;
+    }
+  }
+
+.white-color {
+  color: white !important; /* Cambia il colore in bianco */
+  border-color: white;
+}
+
+.navbar.navbar-expand-lg.navbar-light.bg-light.nav-shadow.navbar-home {
+  background-color: transparent !important; /* Imposta il colore di sfondo trasparente */
+  box-shadow: 0 0 0 0 rgb(0 0 0 / 0%);
+}
+
+.custom-toggler .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.custom-toggler.navbar-toggler {
+  border-color:white;
+}
