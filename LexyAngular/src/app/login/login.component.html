@@ -1,37 +1,40 @@
 <div class="container-fluid">
 
   <div class="row ">
-    <div class="col-lg-7 mt-5 ">
+    <div class="col-lg-6 mt-5 ">
       <div class="mt-4 ">
 
         <div class="text-center">
           <h1 class="mt-4">LOGIN</h1>
         </div>
-        <div class="col-lg-5 mt-4 mx-auto">
+        <div class=" d-flex justify-content-center ">
+        <div class="col-lg-5 mt-4 ">
+
           <form (ngSubmit)="onLogin(f)" #f="ngForm">
-            <div>
-              <label for="username">Username</label>
+            <label for="username">Username</label>
+            <div class="input-group">
               <input type="text" id="username" class="form-control" name="username" placeholder="Username*" ngModel required pattern="^[a-z]*$">
             </div>
-            <div class="mt-2">
-              <label for="password">Password</label>
-              <input type="password" id="password" class="form-control" name="password" placeholder="Password*" ngModel required pattern="^[a-z]*$">
-              <p class="error text-danger mt-2" [hidden]="error">Username o password sono incorretti!</p>
+            <label class="mt-4" for="password">Password</label>
+            <div class="pws">
+              <input [type]="typeText" id="password" class="form-control" name="password" placeholder="Password*" ngModel required pattern="^[a-z]*$">
+              <fa-icon [icon]="eye_view" (click)="togglePasswordVisibility()"></fa-icon>
             </div>
-
+            <p class="error text-danger mt-2" [hidden]="error">Username o password sono incorretti!</p>
             <div class="justify-content-end mt-2">
-              <p class="dimenticata text-underline">Password dimenticata?</p>
+              <p class="dimenticata text-underline mt-2">Password dimenticata?</p>
             </div>
             <button class="mt-4 btn-primary btn w-100 text-center" type="submit">Login</button>
              <div class="text-center mt-2">
             </div>
           </form>
         </div>
+      </div>
 
       </div>
     </div>
-     <div class="col-lg-5 p-0 d-flex justify-content-end ">
-      <img src="assets/login.png" class="img-fluid vh-100 " alt="...">
+     <div class="col-lg-6 p-0 d-flex justify-content-end ">
+      <img src="assets/login.png" class="img-fluid  img " alt="..." >
     </div>
   </div>
 </div>

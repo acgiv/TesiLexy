@@ -10,6 +10,7 @@
 input{
   border-color: black;
 }
+
 /* target devices with small screens usually mobile devices */
 @media screen and (max-width: 1000px) {
   .image {
@@ -24,3 +25,22 @@ input{
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(30, 122, 212, 0.6);
 
 }
+
+.pws {
+  position: relative;
+}
+
+.pws .form-control {
+  padding-right: 30px; /* Aggiungiamo spazio a destra per l'icona */
+  background-color: transparent; /* Rendi l'input trasparente */
+  z-index: 1; /* Assicurati che l'input sia sopra l'icona */
+}
+
+.pws fa-icon {
+  position: absolute;
+  right: 10px; /* Modifica questa parte per regolare la distanza tra l'icona e l'input */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2; /* Assicurati che l'icona sia sopra l'input */
+}
+
