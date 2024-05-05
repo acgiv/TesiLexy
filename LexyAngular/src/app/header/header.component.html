@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light nav-shadow" >
   <div class="container-fluid mx-4">
-      <a class="navbar-brand  h3 px-3 me-5 " >
-        <span class="lexy_logo fw-bold">LEXY</span>
+      <a class="navbar-brand  h3 px-3 " >
+        <a class="lexy_logo nav-link fw-bold" routerLinkActive="active"
+             [routerLinkActiveOptions]="{exact:true}" [routerLink]="isTerapista()? '/' :'/terapista'">LEXY</a>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,12 +17,17 @@
           </a>
         </li>
         <li class="nav-item link-size  p-0">
-          <a class="nav-link p-1 me-2 m-0 " [routerLink]="isActive('/') ?  '/login': '/terapista/login' " routerLinkActive="active">Login
+          <a class="nav-link p-1 me-2 m-0 " [routerLink]=" isActive('/login') ?  '/login' : (isActive('/') ?  '/login': '/terapista/login') " routerLinkActive="active">Login
             <hr class="hr-link mt-2 mx-auto m-0 " *ngIf="isLoginActive">
           </a>
         </li>
-        <li class="nav-item link-size p-0">
+        <li *ngIf="!isTerapista()" class="nav-item link-size p-0">
           <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Sign Up
+            <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isSignUpActive">
+          </a>
+        </li>
+        <li  class="nav-item link-size p-0">
+          <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Chat
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isSignUpActive">
           </a>
         </li>
