@@ -1,5 +1,5 @@
 
-.dimenticata{
+.forget{
   color: var(--secondary)
 }
 
@@ -9,6 +9,10 @@
 
 input{
   border-color: black;
+}
+
+.image{
+  height: 91.6vh !important;
 }
 
 /* target devices with small screens usually mobile devices */

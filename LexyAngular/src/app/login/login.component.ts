@@ -1,12 +1,14 @@
 import {Component, Injectable} from '@angular/core';
 import {NgIf, NgOptimizedImage} from "@angular/common";
-import {FormsModule} from '@angular/forms';
 import {HeaderComponent} from "../header/header.component";
-import {NgForm } from '@angular/forms'
+import {NgForm, FormsModule, FormControl, Validators} from '@angular/forms'
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import { sha256 } from 'js-sha256';
 import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {Login} from "./login";
+import {Router} from "@angular/router";
+import {urlValidator} from "../Validator/validator";
 
 
 
@@ -32,7 +34,7 @@ export class LoginComponent {
   showPassword: boolean;
   typeText: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private router: Router) {
     this.showPassword = true;
     this.typeText =  "password";
     this.error = true;
@@ -47,7 +49,7 @@ export class LoginComponent {
     };
 
 
-    this.http.post('http://127.0.0.1:5000/login', body, headers).subscribe((posts:any) =>{
+    this.http.post<Login>('http://127.0.0.1:5000/login', body, headers).subscribe((posts:any) =>{
        if(posts.result_connection) {
          this.error = posts.result_connection;
        }else{
@@ -75,5 +77,11 @@ export class LoginComponent {
       this.eye_view = faEyeSlash;
     }
   }
+
+  isTerapista(): boolean {
+   const pattern = /\/terapista/; // Definisci il pattern regolare
+    return  new FormControl(this.router.url, [Validators.required, urlValidator(pattern)]).errors != null;
+  }
+
 
 }

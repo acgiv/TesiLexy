@@ -1,5 +1,9 @@
 .nav-shadow{
-  box-shadow: 1px 1px 1px 1px rgb(0 0 0 / 14%);
+  box-shadow: 1px 1px 1px 1px rgb(0 0 0 / 22%);
+}
+
+.link-size{
+  font-size: 16px;
 }
 
 .navbar .navbar-toggler:focus{
@@ -8,28 +12,22 @@
 }
 
 .lexy_logo{
-  letter-spacing: 12px;
+  letter-spacing: 20px;
   font-family: "Paytone One", sans-serif;
-  font-size :30px;
+  font-size :35px;
 }
 
  .hr-link {
-    margin-top: 0.25rem; /* Imposta la distanza desiderata tra hr e il testo */
-    margin-bottom: 0.25rem;
     border-color: grey;
-    border-width: 2px;
+    border-width: 3px ;
+    width: 40px;
   }
+
 
   .navbar-nav .nav-item {
     margin-right: 28px; /* Imposta il margine destro tra gli elementi li */
   }
 
-  @media (min-width: 992px){
-      .navigation-page {
-    display: flex;
-    justify-content: center;
-    }
-  }
 
 .white-color {
   color: white !important; /* Cambia il colore in bianco */
