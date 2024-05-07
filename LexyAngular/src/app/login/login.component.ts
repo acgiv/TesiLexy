@@ -9,7 +9,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {Login} from "./login";
 import {Router} from "@angular/router";
 import {urlValidator} from "../Validator/validator";
-
+import {AccessService} from "../access.service";
 
 
 @Component({
@@ -34,7 +34,7 @@ export class LoginComponent {
   showPassword: boolean;
   typeText: string;
 
-  constructor(private http: HttpClient,private router: Router) {
+  constructor(private http: HttpClient,private router: Router, private accessService: AccessService) {
     this.showPassword = true;
     this.typeText =  "password";
     this.error = true;
@@ -51,7 +51,18 @@ export class LoginComponent {
 
     this.http.post<Login>('http://127.0.0.1:5000/login', body, headers).subscribe((posts:any) =>{
        if(posts.result_connection) {
+         console.log(posts);
          this.error = posts.result_connection;
+         this.accessService.setAccessStatus(posts.result_connection);
+         this.accessService.setUsername(posts.username);
+         this.accessService.setEmail(posts.email);
+         this.accessService.setETA(posts.eta);
+         if(!this.isTerapista()){
+           this.router.navigate(['/terapista']);
+         }else{
+            this.router.navigate(['/']);
+         }
+
        }else{
          this.error = false;
        }

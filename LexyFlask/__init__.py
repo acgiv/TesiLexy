@@ -58,5 +58,4 @@ def create_app():
     with app.app_context():
         #database.drop_all_table(db)
         database.create_table(db)
-
     return app

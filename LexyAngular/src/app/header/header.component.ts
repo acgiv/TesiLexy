@@ -3,6 +3,7 @@ import {NavigationEnd, Router, RouterLink, RouterLinkActive} from "@angular/rout
 import {NgClass, NgIf} from "@angular/common";
 import {FormControl, Validators} from "@angular/forms";
 import {urlValidator} from "../Validator/validator";
+import {AccessService} from "../access.service";
 
 
 @Component({
@@ -22,13 +23,15 @@ export class HeaderComponent implements OnInit {
   isLoginActive: boolean = false;
   isSignUpActive: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, protected accessService: AccessService) {
+
   }
 
     ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.updateActiveLinks();
+        console.log("email è :",this.accessService.access.access);
       }
     });
   }
@@ -42,6 +45,7 @@ export class HeaderComponent implements OnInit {
 
  isTerapista(): boolean {
    const pattern = /\/terapista/; // Definisci il pattern regolare
+   console.log("is terapista :",new FormControl(this.router.url, [Validators.required, urlValidator(pattern)]).errors != null);
     return  new FormControl(this.router.url, [Validators.required, urlValidator(pattern)]).errors != null;
   }
 

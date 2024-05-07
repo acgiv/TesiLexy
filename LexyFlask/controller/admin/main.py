@@ -19,7 +19,7 @@ def home_page(utente_dao: UtenteDao):
 
     user1 = Utente(id_utente= None, username="a.cecinato1",
                  data_nascita=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), sesso="maschio", password="5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
-                 email="a.cecinato1@lexy.com")
+                 email="a.cecinato1@lexy.com", eta=8)
 
     print(user1.sesso)
     utente_dao.insert(user1)
@@ -33,8 +33,14 @@ def login(utente_service: UtenteService):
     username = request.json["username"]
     password = request.json["password"]
     result = utente_service.find_by_username_and_password(username, password)
+    print(result)
     if result is not None:
-        return {"result_connection": True }, 200
+        return {
+            "result_connection": True,
+            "username": result.username,
+            "email": result.email,
+            "eta": result.eta
+            }, 200
     else:
         return {"result_connection": False}, 200
 

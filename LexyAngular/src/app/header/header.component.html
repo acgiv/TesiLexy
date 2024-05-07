@@ -16,23 +16,32 @@
             <hr class="hr-link mt-2  mx-auto m-0" *ngIf="isHomeActive">
           </a>
         </li>
-        <li class="nav-item link-size  p-0">
+        <li *ngIf=" !this.accessService.access.access" class="nav-item link-size  p-0">
           <a class="nav-link p-1 me-2 m-0 " [routerLink]=" isActive('/login') ?  '/login' : (isActive('/') ?  '/login': '/terapista/login') " routerLinkActive="active">Login
             <hr class="hr-link mt-2 mx-auto m-0 " *ngIf="isLoginActive">
           </a>
         </li>
-        <li *ngIf="!isTerapista()" class="nav-item link-size p-0">
+        <li *ngIf="!isTerapista() && !this.accessService.access.access" class="nav-item link-size p-0">
           <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Sign Up
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isSignUpActive">
           </a>
         </li>
-        <li  class="nav-item link-size p-0">
+        <li *ngIf="this.accessService.access.access" class="nav-item link-size p-0">
           <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Chat
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isSignUpActive">
           </a>
         </li>
       </ul>
+        <div *ngIf="this.accessService.access.access" class="dropdown pb-2">
+          <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ this.accessService.access.username }}
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Esci</a></li>
+          </ul>
+        </div>
     </div>
+
   </div>
 </nav>
 
