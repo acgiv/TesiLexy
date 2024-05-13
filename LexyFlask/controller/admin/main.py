@@ -1,15 +1,13 @@
 import datetime
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request
 
 from model.Service.user_service import UtenteService
-from model.dao.chat_dao import ChatDao
-from model.dao.messaggio_dao import MessaggioDao
-from model.dao.logopedista_dao import LogopedistaDao
 from datetime import datetime
 
 from model.dao.utente_dao import UtenteDao
 
 from model.entity.utente import Utente
+
 
 main = Blueprint('main', __name__)
 

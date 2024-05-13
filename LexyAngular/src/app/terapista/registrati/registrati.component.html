@@ -1,0 +1,47 @@
+<div class="container-fluid">
+
+  <div class="row ">
+
+    <div class="col-lg-6 p-0 ">
+      <img src="assets/registrati.png" class="img-fluid  image w-100 h-100" alt="...">
+    </div>
+    <div class="col-lg-6 mt-5 p-0">
+
+      <div class="text-center mt-4">
+        <h1>REGISTRATI</h1>
+      </div>
+      <div class=" d-flex justify-content-center align-content-center">
+                <div class=" col-lg-6 pt-5 ">
+                  <form  f="ngForm">
+                    <label for="email" class="pb-2"><span class="fw-semibold">E-mail </span><span class="text-black-50">*</span></label>
+                    <div class="input-group">
+                      <input type="text" id="email" class="form-control" name="email" placeholder="E-mail*" ngModel
+                             required pattern="^[a-z]*$">
+                    </div>
+                    <label for="username" class="pb-2 pt-4"><span class="fw-semibold">Username </span><span class="text-black-50">*</span></label>
+                    <div class="input-group">
+                      <input type="text" id="username" class="form-control" name="username" placeholder="Username*" ngModel
+                             required pattern="^[a-z]*$">
+                    </div>
+                    <label class="pt-4 pb-2" for="password" ><span class="fw-semibold">Password </span><span class="text-black-50">*</span></label>
+                    <div class="pws">
+                      <input [type]="viewPasswordService.getPasswordType('password')" id="password" class="form-control" name="password" placeholder="Password*"
+                             ngModel required pattern="^[a-z]*$">
+                      <fa-icon [icon]="viewPasswordService.eye_view" (click)="viewPasswordService.togglePasswordVisibility('password')"></fa-icon>
+                    </div>
+                     <label class="pt-4 pb-2" for="confirm_password" ><span class="fw-semibold">Conferma Password </span><span class="text-black-50">*</span></label>
+                     <div class="pws">
+                      <input [type]="viewPasswordService.getPasswordType('confirm_password')" id="confirm_password" class="form-control" name="confirm_password" placeholder="conferma Password*"
+                             ngModel required pattern="^[a-z]*$">
+                      <fa-icon [icon]="viewPasswordService.eye_view" (click)="viewPasswordService.togglePasswordVisibility('confirm_password')"></fa-icon>
+                    </div>
+                    <div class="d-flex pt-5 justify-content-center align-items-center flex-column">
+                         <button class="mt-4 btn-primary btn w-75 py-2 text-center" type="submit">Registrati</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+    </div>
+  </div>
+
+</div>

@@ -22,13 +22,13 @@
           </a>
         </li>
         <li *ngIf="!isTerapista() && !this.accessService.access.access" class="nav-item link-size p-0">
-          <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Sign Up
-            <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isSignUpActive">
+          <a class="nav-link h p-1 me-2 m-0 " [routerLink]="'/terapista/registrati'" routerLinkActive="active">Registrati
+            <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isRegistrationActive">
           </a>
         </li>
         <li *ngIf="this.accessService.access.access" class="nav-item link-size p-0">
           <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Chat
-            <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isSignUpActive">
+            <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isRegistrationActive">
           </a>
         </li>
       </ul>
@@ -37,7 +37,7 @@
             {{ this.accessService.access.username }}
           </button>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Esci</a></li>
+            <li><a class="dropdown-item" (click)="exit()" >Esci</a></li>
           </ul>
         </div>
     </div>

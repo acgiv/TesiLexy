@@ -21,9 +21,9 @@
               </div>
               <label class="mt-4 mb-2" for="password" ><span class="fw-semibold">Password </span><span class="text-black-50">*</span></label>
               <div class="pws">
-                <input [type]="typeText" id="password" class="form-control" name="password" placeholder="Password*"
+                <input [type]="viewPasswordService.getPasswordType('password_login')" id="password" class="form-control" name="password" placeholder="Password*"
                        ngModel required pattern="^[a-z]*$">
-                <fa-icon [icon]="eye_view" (click)="togglePasswordVisibility()"></fa-icon>
+                <fa-icon [icon]="viewPasswordService.eye_view" (click)="viewPasswordService.togglePasswordVisibility('password_login')" ></fa-icon>
               </div>
               <p class="error text-danger mt-2" [hidden]="error">Username o password sono incorretti!</p>
               <div class="justify-content-end mt-2">
