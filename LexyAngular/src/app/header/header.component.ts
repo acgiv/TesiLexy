@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {NavigationEnd, Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {NgClass, NgIf} from "@angular/common";
 import {FormControl, Validators} from "@angular/forms";
@@ -23,6 +23,8 @@ export class HeaderComponent implements OnInit {
   isLoginActive: boolean = false;
   isSignUpActive: boolean = false;
   isRegistrationActive: boolean = false;
+  isNavbarOpen:boolean = false;
+
 
   constructor(private router: Router, protected accessService: AccessService) {
 
@@ -57,4 +59,9 @@ export class HeaderComponent implements OnInit {
     this.accessService.resetAccess()
   }
 
+
+  toggleNavbar() {
+    this.isNavbarOpen = !this.isNavbarOpen;
+    console.log(this.isNavbarOpen);
+  }
 }
