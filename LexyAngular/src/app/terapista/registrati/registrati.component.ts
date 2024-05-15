@@ -1,23 +1,25 @@
 import {Component, Injectable} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NgIf} from "@angular/common";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {AccessService} from "../../access.service";
-import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+import { FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
+import {JsonPipe, NgClass, NgIf} from "@angular/common";
 import {ViewPasswordService} from "../../service/view-password.service";
-import {Login} from "../../login/login";
+import {FormControlDirective} from "./directive/form-control.directive";
+import {PasswordControlDirective} from "./directive/password-control.directive";
+
 
 @Component({
   selector: 'app-registrati',
   standalone: true,
-    imports: [
-        FaIconComponent,
-        FormsModule,
-        NgIf,
-        ReactiveFormsModule
-    ],
+  imports: [
+    FaIconComponent,
+    FormsModule,
+    NgIf,
+    ReactiveFormsModule,
+    FormControlDirective,
+    JsonPipe,
+    NgClass,
+    PasswordControlDirective
+  ],
   templateUrl: './registrati.component.html',
   styleUrl: './registrati.component.css'
 })
@@ -26,9 +28,22 @@ import {Login} from "../../login/login";
   providedIn: 'root'
 })
 export class RegistratiComponent {
-  constructor(private router: Router, protected viewPasswordService: ViewPasswordService ) {
+  email :string ='';
+  username :string ='';
+  password: string ='';
+
+  constructor( protected viewPasswordService: ViewPasswordService ) {
     viewPasswordService.showPasswords["password"]= false;
     viewPasswordService.showPasswords["confirm_password"] = false;
   }
+
+  newRegister(form_register: NgForm) {
+    console.log(form_register.value.email);
+
+
+
+  }
+
+
 
 }

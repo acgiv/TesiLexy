@@ -40,3 +40,10 @@ text-underline{
   z-index: 2; /* Assicurati che l'icona sia sopra l'input */
 }
 
+.progress {
+    height: 10px; /* Altezza desiderata */
+}
+
+.progress-bar {
+    height: 100%; /* Assicura che la barra di avanzamento occupi l'altezza completa della barra di progressione */
+}

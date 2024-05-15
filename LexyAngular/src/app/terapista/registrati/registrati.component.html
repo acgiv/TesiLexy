@@ -11,36 +11,72 @@
         <h1>REGISTRATI</h1>
       </div>
       <div class=" d-flex justify-content-center align-content-center">
-                <div class=" col-lg-6 pt-5 ">
-                  <form  f="ngForm">
-                    <label for="email" class="pb-2"><span class="fw-semibold">E-mail </span><span class="text-black-50">*</span></label>
-                    <div class="input-group">
-                      <input type="text" id="email" class="form-control" name="email" placeholder="E-mail*" ngModel
-                             required pattern="^[a-z]*$">
-                    </div>
-                    <label for="username" class="pb-2 pt-4"><span class="fw-semibold">Username </span><span class="text-black-50">*</span></label>
-                    <div class="input-group">
-                      <input type="text" id="username" class="form-control" name="username" placeholder="Username*" ngModel
-                             required pattern="^[a-z]*$">
-                    </div>
-                    <label class="pt-4 pb-2" for="password" ><span class="fw-semibold">Password </span><span class="text-black-50">*</span></label>
-                    <div class="pws">
-                      <input [type]="viewPasswordService.getPasswordType('password')" id="password" class="form-control" name="password" placeholder="Password*"
-                             ngModel required pattern="^[a-z]*$">
-                      <fa-icon [icon]="viewPasswordService.eye_view" (click)="viewPasswordService.togglePasswordVisibility('password')"></fa-icon>
-                    </div>
-                     <label class="pt-4 pb-2" for="confirm_password" ><span class="fw-semibold">Conferma Password </span><span class="text-black-50">*</span></label>
-                     <div class="pws">
-                      <input [type]="viewPasswordService.getPasswordType('confirm_password')" id="confirm_password" class="form-control" name="confirm_password" placeholder="conferma Password*"
-                             ngModel required pattern="^[a-z]*$">
-                      <fa-icon [icon]="viewPasswordService.eye_view" (click)="viewPasswordService.togglePasswordVisibility('confirm_password')"></fa-icon>
-                    </div>
-                    <div class="d-flex pt-5 justify-content-center align-items-center flex-column">
-                         <button class="mt-4 btn-primary btn w-75 py-2 text-center" type="submit">Registrati</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
+        <div class=" col-lg-6 col-md-5 col-sm-6 pt-5 ">
+          <form #form_register="ngForm">
+            <label for="email" class="pb-1"><span class="fw-semibold">E-mail </span><span class="text-black-50">*</span></label>
+            <div class="input-group">
+              <input type="text" id="email" class="form-control" name="email" placeholder="E-mail*"
+                     appFormControl="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" [(ngModel)]="email"
+                     #emailNgModel="ngModel"
+                     [class.is-invalid]="(emailNgModel.touched || emailNgModel.dirty) &&  emailNgModel.errors?.['invalidPattern']">
+            </div>
+            <p class="text-danger p-0 pt-1  m-0"
+               *ngIf="(emailNgModel.touched || emailNgModel.dirty) && emailNgModel.errors?.['invalidPattern'] ">
+              Il formato dell'email non è corretto!
+            </p>
+
+            <label for="username" class="pb-2 "
+                   [ngClass]="(emailNgModel.errors?.['invalidPattern']) && (emailNgModel.touched || emailNgModel.dirty) ? 'pt-2': 'pt-4'"><span
+              class="fw-semibold">Username </span><span
+              class="text-black-50">*</span></label>
+            <div class="input-group">
+              <input type="text" id="username" class="form-control" name="username" placeholder="Username*"
+                     appFormControl="^[a-z].[a-z]+[1-9]$" [(ngModel)]="username" #usernameNgModel="ngModel"
+                     [class.is-invalid]="(usernameNgModel.touched || usernameNgModel.dirty) &&  usernameNgModel.errors?.['invalidPattern']">
+            </div>
+            <p class="text-danger pt-1 m-0"
+               *ngIf="(usernameNgModel.touched || usernameNgModel.dirty) && usernameNgModel.errors?.['invalidPattern'] ">
+              Il formato dell'username non è corretto!
+            </p>
+            <label class="pb-2" for="password"
+                   [ngClass]="(usernameNgModel.touched || usernameNgModel.dirty) && usernameNgModel.errors?.['invalidPattern']? 'pt-2': 'pt-4'"><span
+              class="fw-semibold">Password </span><span
+              class="text-black-50">*</span></label>
+            <div class="pws">
+              <input [type]="viewPasswordService.getPasswordType('password')"  id="password" class="form-control" name="password" placeholder="Password*"
+                     [(ngModel)]="password" appPasswordControl #passwordNgModel="ngModel"
+                     [class.is-invalid]="(passwordNgModel.touched || passwordNgModel.dirty) && passwordNgModel.errors?.['invalidPassowrd']">
+              <fa-icon [icon]="viewPasswordService.eye_view"
+                       (click)="viewPasswordService.togglePasswordVisibility('password')"></fa-icon>
+            </div>
+            <div *ngIf="(passwordNgModel.touched || passwordNgModel.dirty)" class="progress rounded-0 rounded-bottom" role="progressbar"
+                 aria-label="Warning" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" [style.width.%]="passwordNgModel.errors?.['validate']"
+                   [style.background-color]="passwordNgModel.errors?.['progress_color']"></div>
+            </div>
+            <pre class="text-danger pt-2 m-0"
+                 *ngIf="(passwordNgModel.touched || passwordNgModel.dirty) && passwordNgModel.errors?.['invalidPassowrd'] ">{{ passwordNgModel.errors?.['massage_error'] }}</pre>
+            <label class="pt-4 pb-2" for="confirm_password"><span class="fw-semibold">Conferma Password </span><span
+              class="text-black-50">*</span></label>
+            <div class="pws">
+              <input [type]="viewPasswordService.getPasswordType('confirm_password')" id="confirm_password"
+                     class="form-control" name="confirm_password" placeholder="conferma Password*"
+                     ngModel #confirm_passwordNgModel="ngModel"  [class.is-invalid]="(usernameNgModel.touched || usernameNgModel.dirty) && confirm_passwordNgModel.value !== passwordNgModel.value">
+              <fa-icon [icon]="viewPasswordService.eye_view"
+                       (click)="viewPasswordService.togglePasswordVisibility('confirm_password')"></fa-icon>
+            </div>
+            <p class="text-danger pt-1 m-0"
+               *ngIf="(confirm_passwordNgModel.touched || confirm_passwordNgModel.dirty) &&  confirm_passwordNgModel.value !== passwordNgModel.value ">
+              Le password non coincidono!
+            </p>
+            <div class="d-flex pt-4 justify-content-center align-items-center flex-column">
+              <button class="mt-4 btn-primary btn w-75 py-2 text-center" (click)="newRegister(form_register)"
+                      type="submit">Registrati
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 
