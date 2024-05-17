@@ -11,7 +11,6 @@ export class ViewPasswordService {
 
   constructor() {
     this.typeText =  "password";
-    this.eye_view = faEye;
   }
     getPasswordType(inputName: string) {
     return this.showPasswords[inputName] ? "text" : "password";
@@ -19,7 +18,12 @@ export class ViewPasswordService {
 
     togglePasswordVisibility(inputName: string) {
     this.showPasswords[inputName] = !this.showPasswords[inputName];
-    this.eye_view = this.showPasswords[inputName] ? faEye : faEyeSlash;
   }
+
+  getIcon(inputName: string): any {
+    return this.showPasswords[inputName] ?faEyeSlash: faEye  ;
+  }
+
+
 
 }

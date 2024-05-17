@@ -17,13 +17,13 @@
               <label for="username" class="mb-2"><span class="fw-semibold">Username/E-mail </span><span class="text-black-50">*</span></label>
               <div class="input-group">
                 <input type="text" id="username" class="form-control" name="username" placeholder="Username*" ngModel
-                       required pattern="^[a-z]*$">
+                       required pattern="^[a-z]*$"  autocomplete="off">
               </div>
               <label class="mt-4 mb-2" for="password" ><span class="fw-semibold">Password </span><span class="text-black-50">*</span></label>
               <div class="pws">
                 <input [type]="viewPasswordService.getPasswordType('password_login')" id="password" class="form-control" name="password" placeholder="Password*"
-                       ngModel required pattern="^[a-z]*$">
-                <fa-icon [icon]="viewPasswordService.eye_view" (click)="viewPasswordService.togglePasswordVisibility('password_login')" ></fa-icon>
+                       ngModel required autocomplete="off">
+                <fa-icon [icon]="viewPasswordService.getIcon('password_login')" (click)="viewPasswordService.togglePasswordVisibility('password_login')" ></fa-icon>
               </div>
               <p class="error text-danger mt-2" [hidden]="error">Username o password sono incorretti!</p>
               <div class="justify-content-end mt-2">

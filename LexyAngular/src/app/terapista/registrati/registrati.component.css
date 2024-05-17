@@ -14,8 +14,6 @@ text-underline{
   text-decoration: underline;
 }
 
-
-
 .form-control:focus {
   border-color: var(--primary);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(30, 122, 212, 0.6);
@@ -46,4 +44,17 @@ text-underline{
 
 .progress-bar {
     height: 100%; /* Assicura che la barra di avanzamento occupi l'altezza completa della barra di progressione */
+}
+
+.error-message {
+  white-space: pre-wrap; /* Permette al testo di andare a capo */
+  word-wrap: break-word; /* Rompe le parole per evitare l'overflow */
+  overflow-wrap: break-word; /* Rompe le parole per evitare l'overflow */
+  width: 100%; /* Assicura che l'elemento occupi tutta la larghezza disponibile */
+  display: block; /* Imposta il display su block per evitare comportamenti imprevisti con d-flex */
+  font-size: 1rem; /* Dimensione del testo predefinita */
+}
+
+.form-control.is-invalid.pass{
+    background-image: none;
 }

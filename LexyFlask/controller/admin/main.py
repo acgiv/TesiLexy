@@ -1,29 +1,16 @@
 import datetime
 from flask import Blueprint, request
 
+from model.Service.logopedista_service import LogopedistaService
 from model.Service.user_service import UtenteService
 from datetime import datetime
 
 from model.dao.utente_dao import UtenteDao
+from model.entity.logopedista import Logopedista
 
 from model.entity.utente import Utente
 
-
 main = Blueprint('main', __name__)
-
-
-@main.route('/')
-def home_page(utente_dao: UtenteDao):
-
-    user1 = Utente(id_utente= None, username="a.cecinato1",
-                 data_nascita=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), sesso="maschio", password="5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
-                 email="a.cecinato1@lexy.com", eta=8)
-
-    print(user1.sesso)
-    utente_dao.insert(user1)
-    print(utente_dao.find_all_by_id(1))
-
-    return "ciao"
 
 
 @main.route('/login', methods=["POST"])
@@ -37,11 +24,35 @@ def login(utente_service: UtenteService):
             "result_connection": True,
             "username": result.username,
             "email": result.email,
-            "eta": result.eta
-            }, 200
+        }, 200
     else:
         return {"result_connection": False}, 200
 
 
+@main.route('/register', methods=["POST"])
+def register(logopedista_service: LogopedistaService, utente_service: UtenteService):
+    response = {
+        "status_code": 200,
+        "error":
+            {
+                "number_error": 0,
+                "message": []
+            },
+        "completed": True
+    }
+    email = request.json["email"]
+    username = request.json["username"]
+    password = request.json["password"]
 
+    logopedista = Logopedista(email=email, password=password, username=username)
+    if utente_service.find_by_email(email) is not None:
+        response["error"]["number_error"] += 1
+        response["error"]["message"].append({"email": "Esiste gia un utente con questa email"})
 
+    if utente_service.find_by_username(username) is not None:
+        response["error"]["number_error"] += 1
+        response["error"]["message"].append({"username": "Esiste gia un utente con questo username"})
+
+    if response["error"]["number_error"] == 0:
+        logopedista_service.insert_logopedista(logopedista)
+    return response, 200

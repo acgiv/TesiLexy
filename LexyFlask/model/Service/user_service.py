@@ -51,3 +51,9 @@ class UtenteService(UtenteServiceInterface, ABC):
 
     def find_by_username_and_password(self, username: str, password: str) -> Union[Utente, None]:
         return self.__utente_dao.find_by_username_and_password(username, password)
+
+    def find_by_username(self, username: str) -> Union[Utente, None]:
+        return self.__utente_dao.find_by_username(username)
+
+    def find_by_email(self, email: str) -> Union[Utente, None]:
+        return self.__utente_dao.find_by_email(email)

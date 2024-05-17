@@ -70,9 +70,26 @@ class UtenteRepository(BaseDao, ABC):
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None
 
-    def find_by_username_and_password(self, username: str, password: str) -> Union[Utente, None]:
+    @staticmethod
+    def find_by_username_and_password(username: str, password: str) -> Union[Utente, None]:
         try:
             return Utente.query.filter_by(_username = username, _password= password).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per username e password: {str(e)}")
+            return None
+
+    @staticmethod
+    def find_by_username(username: str) -> Union[Utente, None]:
+        try:
+            return Utente.query.filter_by(_username=username).first()
+        except SQLAlchemyError as e:
+            current_app.web_logger.error(f"Errore durante la ricerca per username: {str(e)}")
+            return None
+
+    @staticmethod
+    def find_by_email(email: str) -> Union[Utente, None]:
+        try:
+            return Utente.query.filter_by(_email=email).first()
+        except SQLAlchemyError as e:
+            current_app.web_logger.error(f"Errore durante la ricerca per username: {str(e)}")
             return None

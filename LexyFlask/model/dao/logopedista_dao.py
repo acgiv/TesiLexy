@@ -24,6 +24,8 @@ class LogopedistaDao(BaseDao, ABC):
     def find_all(self, limit: Union[int, None]) -> List[Logopedista] | None:
         return self.__repository.find_all(limit)
 
+    def delete(self, logopedista: Union[Logopedista, List[Logopedista]]) -> None:
+        self.__repository.delete(logopedista)
+
     def find_all_by_id(self, id_logopedista: int) -> Union[List, None]:
         return self.__repository.find_all_by_id(id_logopedista)
-

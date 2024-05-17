@@ -4,12 +4,12 @@ from extensions import ma
 
 class UtenteSchema(ma.Schema):
     class Meta:
-        fields = ('idutente', 'username', 'password', 'email', 'data_nascita', 'sesso')
+        fields = ('idutente', 'username', 'password', 'email')
 
 
-class LogopedistaSchema(ma.Schema):
-    class Meta:
-        fields = ('idlogopedista',)
+class LogopedistaSchema(UtenteSchema):
+    class Meta(UtenteSchema.Meta):
+        fields = UtenteSchema.Meta.fields + ('idlogopedista',)
 
 
 class LabelSchema(ma.Schema):

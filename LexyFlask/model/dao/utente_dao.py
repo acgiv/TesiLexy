@@ -20,7 +20,7 @@ class UtenteDao(BaseDao, ABC):
     def update(self, utente: Union[Utente, List[Utente]]) -> None:
         self.__repository.update(utente)
 
-    def find_all(self, limit: Union[int, None]) -> Union[List[Utente],  None]:
+    def find_all(self, limit: Union[int, None]) -> Union[List[Utente], None]:
         return self.__repository.find_all(limit)
 
     def find_all_by_id(self, id_utente: int) -> Union[List, None]:
@@ -28,3 +28,9 @@ class UtenteDao(BaseDao, ABC):
 
     def find_by_username_and_password(self, username: str, password: str) -> Union[Utente, None]:
         return self.__repository.find_by_username_and_password(username, password)
+
+    def find_by_username(self, username) -> Union[Utente, None]:
+        return self.__repository.find_by_username(username)
+
+    def find_by_email(self, email) -> Union[Utente, None]:
+        return self.__repository.find_by_email(email)

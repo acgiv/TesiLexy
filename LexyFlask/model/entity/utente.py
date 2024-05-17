@@ -10,30 +10,26 @@ class Utente(db.Model):
     _username = Column('username', String(80), nullable=False, unique=True)
     _password = Column('password', String(200), nullable=False)
     _email = Column('email', String(200), nullable=False, unique=True)
-    _data_nascita = Column('datanascita', DateTime, nullable=False)
-    _sesso = Column("sesso", String(20), nullable=False)
-    _eta = Column("eta", Integer, nullable=False)
+    type = Column(String(50))
 
     _priority_id_utente = 1
     _priority_username = 2
     _priority_password = 3
     _priority_email = 4
-    _priority_data_nascita = 5
-    _priority_sesso = 6
-    _priority_eta = 7
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'utente',
+        'polymorphic_on': type
+    }
 
     _messaggi = db.relationship("Messaggio", back_populates="_utente")
     _chat = db.relationship("Chat", back_populates="_utente")
 
-    def __init__(self, id_utente: Union[int, None],  username: str, password: str, email: str,
-                 data_nascita: datetime, sesso: str, eta: int):
+    def __init__(self, id_utente: Union[int, None], username: str, password: str, email: str):
         self._id_utente = id_utente
         self._username = username
         self._password = password
         self._email = email
-        self._data_nascita = data_nascita
-        self._sesso = sesso
-        self._eta = eta
 
     @property
     def id_persona(self) -> Union[int, None]:
@@ -63,37 +59,11 @@ class Utente(db.Model):
     def email(self, email: str) -> None:
         self._email = email
 
-    @property
-    def data_nascita(self) -> datetime:
-        return self._data_nascita
-
-    @data_nascita.setter
-    def data_nascita(self, data_nascita: datetime) -> None:
-        self._data_nascita = data_nascita
-
-    @property
-    def sesso(self) -> str:
-        return self._sesso
-
-    @sesso.setter
-    def sesso(self, sesso: str) -> None:
-        self._sesso = sesso
-
-    @property
-    def eta(self) -> int:
-        return self._eta
-
-    @eta.setter
-    def eta(self, eta: int) -> None:
-        self._eta = eta
-
     def __str__(self):
-        return f"id utente: {self._id_utente} username: {self._username} email: {self._email}" \
-               f" data_nascita: {self._data_nascita} sesso: {self._sesso} eta: {self._eta}"
+        return f"id utente: {self._id_utente} username: {self._username} email: {self._email}"
 
     def __repr__(self):
-        return f"<Utente id utente: {self._id_utente} username: {self._username} email: {self._email}" \
-               f" data_nascita: {self._data_nascita} sesso: {self._sesso} eta: {self._eta}>"
+        return f"<Utente id utente: {self._id_utente} username: {self._username} email: {self._email}>"
 
     @property
     def id_utente(self):

@@ -1,5 +1,6 @@
 import {Directive, Input} from '@angular/core';
 import {AbstractControl, NG_VALIDATORS, Validator} from "@angular/forms";
+import {RegisterService} from "../service/register.service";
 
 
 @Directive({
@@ -13,7 +14,8 @@ import {AbstractControl, NG_VALIDATORS, Validator} from "@angular/forms";
 })
 export class PasswordControlDirective implements Validator {
   @Input('appFormControl') pattern: string | undefined;
-  constructor() { }
+  @Input("typeInput") typeInput: string | undefined;
+  constructor(private registerService: RegisterService) { }
 
   control_security(password: string, len_password :number): number{
       let cont = 0;
@@ -53,24 +55,17 @@ export class PasswordControlDirective implements Validator {
     }
   }
 
-  color_progress(percent: number){
-    if(percent<=32){
-      return "red"
-    }else if(percent <64){
-      return "orange"
-    }else if(percent<70){
-      return "lightgreen"
-    }else if(percent<90){
-      return "green"
-    }else{
-      return 'darkgreen';
-    }
-  }
-
   validate(control: AbstractControl): {[key: string]: any}  | null {
      let len_password = control.value ? control.value.length : 0;
      let percent =  this.control_security(control.value, len_password);
-      return { 'invalidPassowrd': percent===0 || len_password <=7  , 'validate': percent, "massage_error": this.message_error(len_password), "progress_color": this.color_progress(percent)};
+     let result =  percent===0 || len_password <=7;
+      this.registerService.value_error_password = result;
+      this.registerService.value_percent_password= percent;
+      if(result ){
+         return { 'invalidPassowrd': result,  "massage_error": this.message_error(len_password)};
+      }
+      return null;
+
   }
 
 }

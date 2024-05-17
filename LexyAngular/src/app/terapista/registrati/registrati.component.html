@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-  <div class="row ">
+  <div class=" row ">
 
     <div class="col-lg-6 p-0 ">
       <img src="assets/registrati.png" class="img-fluid  image w-100 h-100" alt="...">
@@ -17,12 +17,13 @@
             <div class="input-group">
               <input type="text" id="email" class="form-control" name="email" placeholder="E-mail*"
                      appFormControl="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" [(ngModel)]="email"
-                     #emailNgModel="ngModel"
-                     [class.is-invalid]="(emailNgModel.touched || emailNgModel.dirty) &&  emailNgModel.errors?.['invalidPattern']">
+                     typeInput="email" required
+                     #emailNgModel="ngModel" autocomplete="off"
+                     [class.is-invalid]="(emailNgModel.touched || emailNgModel.dirty) && (emailNgModel.errors?.['invalidPattern']) || ( emailNgModel.errors?.['required'] &&  this.formSubmitted )">
             </div>
-            <p class="text-danger p-0 pt-1  m-0"
-               *ngIf="(emailNgModel.touched || emailNgModel.dirty) && emailNgModel.errors?.['invalidPattern'] ">
-              Il formato dell'email non è corretto!
+            <p class="text-danger p-0 pt-1  m-0 error-message"
+               *ngIf="((emailNgModel.touched || emailNgModel.dirty) && emailNgModel.errors?.['invalidPattern'])|| ( emailNgModel.errors?.['required'] &&  this.formSubmitted )  ">
+              {{ this.registerService.value_message_error_email }}
             </p>
 
             <label for="username" class="pb-2 "
@@ -30,43 +31,52 @@
               class="fw-semibold">Username </span><span
               class="text-black-50">*</span></label>
             <div class="input-group">
-              <input type="text" id="username" class="form-control" name="username" placeholder="Username*"
-                     appFormControl="^[a-z].[a-z]+[1-9]$" [(ngModel)]="username" #usernameNgModel="ngModel"
-                     [class.is-invalid]="(usernameNgModel.touched || usernameNgModel.dirty) &&  usernameNgModel.errors?.['invalidPattern']">
+              <input type="text" id="username" class="form-control" name="username" typeInput="username"
+                     placeholder="Username*" required
+                     appFormControl="^[a-z]\.[a-z]+[1-9]$" [(ngModel)]="username" #usernameNgModel="ngModel"
+                     [class.is-invalid]="(usernameNgModel.touched || usernameNgModel.dirty) &&  usernameNgModel.errors?.['invalidPattern'] || ( usernameNgModel.errors?.['required'] &&  this.formSubmitted )"
+                     autocomplete="off">
             </div>
-            <p class="text-danger pt-1 m-0"
-               *ngIf="(usernameNgModel.touched || usernameNgModel.dirty) && usernameNgModel.errors?.['invalidPattern'] ">
-              Il formato dell'username non è corretto!
+            <p class="text-danger pt-1 m-0 error-message"
+               *ngIf="(usernameNgModel.touched || usernameNgModel.dirty) && usernameNgModel.errors?.['invalidPattern'] || ( usernameNgModel.errors?.['required'] &&  this.formSubmitted ) ">
+              {{ this.registerService.value_message_error_username }}
             </p>
             <label class="pb-2" for="password"
                    [ngClass]="(usernameNgModel.touched || usernameNgModel.dirty) && usernameNgModel.errors?.['invalidPattern']? 'pt-2': 'pt-4'"><span
               class="fw-semibold">Password </span><span
               class="text-black-50">*</span></label>
             <div class="pws">
-              <input [type]="viewPasswordService.getPasswordType('password')"  id="password" class="form-control" name="password" placeholder="Password*"
+              <input [type]="viewPasswordService.getPasswordType('password-register')" id="password"
+                     class="form-control pass rounded-0 rounded-top"
+                     name="password" placeholder="Password*" typeInput="password" required
                      [(ngModel)]="password" appPasswordControl #passwordNgModel="ngModel"
-                     [class.is-invalid]="(passwordNgModel.touched || passwordNgModel.dirty) && passwordNgModel.errors?.['invalidPassowrd']">
-              <fa-icon [icon]="viewPasswordService.eye_view"
-                       (click)="viewPasswordService.togglePasswordVisibility('password')"></fa-icon>
+                     [class.is-invalid]="(passwordNgModel.touched || passwordNgModel.dirty) && passwordNgModel.errors?.['invalidPassowrd'] || ( passwordNgModel.errors?.['required'] &&  this.formSubmitted )"
+                     autocomplete="off">
+              <fa-icon [icon]="viewPasswordService.getIcon('password-register')"
+                       (click)="viewPasswordService.togglePasswordVisibility('password-register')"></fa-icon>
             </div>
-            <div *ngIf="(passwordNgModel.touched || passwordNgModel.dirty)" class="progress rounded-0 rounded-bottom" role="progressbar"
-                 aria-label="Warning" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-              <div class="progress-bar" [style.width.%]="passwordNgModel.errors?.['validate']"
-                   [style.background-color]="passwordNgModel.errors?.['progress_color']"></div>
+            <div
+              *ngIf="(passwordNgModel.touched || passwordNgModel.dirty) || ( passwordNgModel.errors?.['required'] &&  this.formSubmitted )"
+              class="progress rounded-0 rounded-bottom"
+              role="progressbar"
+              aria-label="Warning" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" [style.width.%]="registerService.value_percent_password"
+                   [style.background-color]="registerService.color_progress()"></div>
             </div>
-            <pre class="text-danger pt-2 m-0"
-                 *ngIf="(passwordNgModel.touched || passwordNgModel.dirty) && passwordNgModel.errors?.['invalidPassowrd'] ">{{ passwordNgModel.errors?.['massage_error'] }}</pre>
+            <pre class="text-danger pt-2 m-0 error-message"
+                 *ngIf="(passwordNgModel.touched || passwordNgModel.dirty) && passwordNgModel.errors?.['invalidPassowrd'] || ( passwordNgModel.errors?.['required'] &&  this.formSubmitted ) ">{{ passwordNgModel.errors?.['massage_error'] }}</pre>
             <label class="pt-4 pb-2" for="confirm_password"><span class="fw-semibold">Conferma Password </span><span
               class="text-black-50">*</span></label>
             <div class="pws">
               <input [type]="viewPasswordService.getPasswordType('confirm_password')" id="confirm_password"
-                     class="form-control" name="confirm_password" placeholder="conferma Password*"
-                     ngModel #confirm_passwordNgModel="ngModel"  [class.is-invalid]="(usernameNgModel.touched || usernameNgModel.dirty) && confirm_passwordNgModel.value !== passwordNgModel.value">
-              <fa-icon [icon]="viewPasswordService.eye_view"
+                     class="form-control pass" name="confirm_password" placeholder="conferma Password*" autocomplete="off"
+                     ngModel #confirm_passwordNgModel="ngModel" required
+                     [class.is-invalid]="((confirm_passwordNgModel.touched || confirm_passwordNgModel.dirty) && confirm_passwordNgModel.value !== passwordNgModel.value) || (this.formSubmitted && confirm_passwordNgModel.errors?.['required']    )">
+              <fa-icon [icon]="viewPasswordService.getIcon('confirm_password')"
                        (click)="viewPasswordService.togglePasswordVisibility('confirm_password')"></fa-icon>
             </div>
-            <p class="text-danger pt-1 m-0"
-               *ngIf="(confirm_passwordNgModel.touched || confirm_passwordNgModel.dirty) &&  confirm_passwordNgModel.value !== passwordNgModel.value ">
+            <p class="text-danger pt-1 m-0 error-message"
+               *ngIf="confirm_passwordNgModel.value !== passwordNgModel.value ">
               Le password non coincidono!
             </p>
             <div class="d-flex pt-4 justify-content-center align-items-center flex-column">

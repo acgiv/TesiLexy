@@ -8,6 +8,7 @@ from flask import Flask
 from configuration.config import DATABASE
 from extensions import db, ma
 from model import database
+from model.Service.logopedista_service import LogopedistaService
 from model.Service.user_service import UtenteService
 from model.dao.chat_dao import ChatDao
 from model.dao.label_dao import LabelDao
@@ -32,6 +33,7 @@ def configure(binder):
     binder.bind(UtenteService)
     binder.bind(LabelDao)
     binder.bind(UtenteService)
+    binder.bind(LogopedistaService)
 
 
 def create_app():

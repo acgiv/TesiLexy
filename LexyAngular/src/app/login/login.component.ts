@@ -6,10 +6,10 @@ import { sha256 } from 'js-sha256';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {Router} from "@angular/router";
 import {urlValidator} from "../Validator/validator";
-import {AccessService} from "../access.service";
 import {ViewPasswordService} from "../service/view-password.service";
 import {LoginService} from "./login.service";
 import {catchError, of, tap} from "rxjs";
+import {faEye} from "@fortawesome/free-solid-svg-icons";
 
 
 @Component({
@@ -31,9 +31,9 @@ import {catchError, of, tap} from "rxjs";
 export class LoginComponent {
   error: boolean;
 
-  constructor(private router: Router, private accessService: AccessService, protected viewPasswordService: ViewPasswordService, private loginService: LoginService) {
+  constructor(private router: Router, protected viewPasswordService: ViewPasswordService, private loginService: LoginService) {
     this.error = true;
-     viewPasswordService.showPasswords["passowrd_login"] = false;
+    viewPasswordService.showPasswords["password_login"] = false;
   }
 
    onLogin(form: NgForm) {
