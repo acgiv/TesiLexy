@@ -31,6 +31,9 @@ def login(utente_service: UtenteService):
 
 @main.route('/register', methods=["POST"])
 def register(logopedista_service: LogopedistaService, utente_service: UtenteService):
+    email = request.json["email"]
+    username = request.json["username"]
+    password = request.json["password"]
     response = {
         "status_code": 200,
         "error":
@@ -40,18 +43,16 @@ def register(logopedista_service: LogopedistaService, utente_service: UtenteServ
             },
         "completed": True
     }
-    email = request.json["email"]
-    username = request.json["username"]
-    password = request.json["password"]
 
     logopedista = Logopedista(email=email, password=password, username=username)
     if utente_service.find_by_email(email) is not None:
         response["error"]["number_error"] += 1
         response["error"]["message"].append({"email": "Esiste gia un utente con questa email"})
-
+        response["completed"] = False
     if utente_service.find_by_username(username) is not None:
         response["error"]["number_error"] += 1
         response["error"]["message"].append({"username": "Esiste gia un utente con questo username"})
+        response["completed"] = False
 
     if response["error"]["number_error"] == 0:
         logopedista_service.insert_logopedista(logopedista)
