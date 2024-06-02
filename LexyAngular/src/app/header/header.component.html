@@ -22,13 +22,13 @@
           </a>
         </li>
         <li *ngIf="!isTerapista() && !this.accessService.access.access" class="nav-item link-size p-0">
-          <a class="nav-link h p-1 me-2 m-0 " [routerLink]="'/terapista/registrati'" routerLinkActive="active">Registrati
+          <a class="nav-link h p-1 me-2 m-0 " [routerLink]="'/terapista/registrati'"  routerLinkActive="active">Registrati
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isRegistrationActive">
           </a>
         </li>
         <li *ngIf="this.accessService.access.access" class="nav-item link-size p-0">
-          <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Chat
-            <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isRegistrationActive">
+          <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active"  [routerLink]=" isActive('/chat') ?  '/chat' : (isActive('/') ?  '/chat': '/terapista/chat') " [routerLinkActiveOptions]="{exact:true}">Chat
+            <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isChatActive">
           </a>
         </li>
       </ul>

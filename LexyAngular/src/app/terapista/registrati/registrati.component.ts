@@ -38,6 +38,7 @@ export class RegistratiComponent {
   formSubmitted: boolean;
   error_clone_username: boolean;
 
+
   constructor(protected viewPasswordService: ViewPasswordService, protected registerService: RegisterService) {
     viewPasswordService.showPasswords["password-register"] = false;
     viewPasswordService.showPasswords["confirm_password"] = false;
@@ -87,5 +88,7 @@ export class RegistratiComponent {
     }
 
   }
+
+
 
 }

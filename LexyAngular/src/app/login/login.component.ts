@@ -9,7 +9,6 @@ import {urlValidator} from "../Validator/validator";
 import {ViewPasswordService} from "../service/view-password.service";
 import {LoginService} from "./login.service";
 import {catchError, of, tap} from "rxjs";
-import {faEye} from "@fortawesome/free-solid-svg-icons";
 
 
 @Component({

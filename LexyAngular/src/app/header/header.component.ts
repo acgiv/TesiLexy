@@ -22,6 +22,7 @@ export class HeaderComponent implements OnInit {
   isHomeActive: boolean = false;
   isLoginActive: boolean = false;
   isSignUpActive: boolean = false;
+  isChatActive: boolean = false;
   isRegistrationActive: boolean = false;
   isNavbarOpen:boolean = false;
 
@@ -42,6 +43,7 @@ export class HeaderComponent implements OnInit {
     this.isHomeActive = this.isActive('/') || this.isActive('/terapista');
     this.isLoginActive = this.isActive('/login') || this.isActive('/terapista/login');
     this.isSignUpActive = this.isActive('/signup') || this.isActive('/terapista/signup');
+    this.isChatActive = this.isActive('/chat') || this.isActive('/terapista/chat');
     this.isRegistrationActive = this.isActive('/terapista/registrati');
   }
 
