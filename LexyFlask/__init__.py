@@ -8,17 +8,23 @@ from flask import Flask
 from configuration.config import DATABASE
 from extensions import db, ma
 from model import database
+from model.Service.bambino_service import BambinoService
 from model.Service.logopedista_service import LogopedistaService
+from model.Service.patologia_bambino_service import PatologiaBambinoService
+from model.Service.patologia_service import PatologiaService
 from model.Service.user_service import UtenteService
+from model.dao.Patologia_bambino_dao import PatologiaBambinoDao
+from model.dao.bambino_dao import BambinoDao
 from model.dao.chat_dao import ChatDao
 from model.dao.label_dao import LabelDao
 from model.dao.logopedista_dao import LogopedistaDao
-from controller.admin.main import main
+from controller.main.main import main
 from controller.api.api import api
 
 import logging
 
 from model.dao.messaggio_dao import MessaggioDao
+from model.dao.patologia_dao import PatologiaDao
 from model.dao.utente_dao import UtenteDao
 from model.dao.versione_messaggio_dao import VersioneMessaggioDao
 
@@ -34,6 +40,12 @@ def configure(binder):
     binder.bind(LabelDao)
     binder.bind(UtenteService)
     binder.bind(LogopedistaService)
+    binder.bind(BambinoService)
+    binder.bind(PatologiaService)
+    binder.bind(PatologiaDao)
+    binder.bind(BambinoDao)
+    binder.bind(PatologiaBambinoService)
+    binder.bind(PatologiaBambinoDao)
 
 
 def create_app():

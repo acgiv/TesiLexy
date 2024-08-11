@@ -26,16 +26,16 @@ text-underline{
 
 .pws .form-control {
   padding-right: 30px; /* Aggiungiamo spazio a destra per l'icona */
-  background-color: transparent; /* Rendi l'input trasparente */
-  z-index: 1; /* Assicurati che l'input sia sopra l'icona */
+  background-color: transparent; /* Rendi l'input_text trasparente */
+  z-index: 1; /* Assicurati che l'input_text sia sopra l'icona */
 }
 
 .pws fa-icon {
   position: absolute;
-  right: 10px; /* Modifica questa parte per regolare la distanza tra l'icona e l'input */
+  right: 10px; /* Modifica questa parte per regolare la distanza tra l'icona e l'input_text */
   top: 50%;
   transform: translateY(-50%);
-  z-index: 2; /* Assicurati che l'icona sia sopra l'input */
+  z-index: 2; /* Assicurati che l'icona sia sopra l'input_text */
 }
 
 .progress {

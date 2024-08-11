@@ -25,6 +25,7 @@ export class HeaderComponent implements OnInit {
   isChatActive: boolean = false;
   isRegistrationActive: boolean = false;
   isNavbarOpen:boolean = false;
+  isDashboardActive: boolean = false;
 
 
   constructor(private router: Router, protected accessService: AccessService) {
@@ -44,7 +45,9 @@ export class HeaderComponent implements OnInit {
     this.isLoginActive = this.isActive('/login') || this.isActive('/terapista/login');
     this.isSignUpActive = this.isActive('/signup') || this.isActive('/terapista/signup');
     this.isChatActive = this.isActive('/chat') || this.isActive('/terapista/chat');
+    this.isDashboardActive =this.isActive('/terapista/dashboard') || this.isActive('/terapista/dashboard/inserisciPaziente');
     this.isRegistrationActive = this.isActive('/terapista/registrati');
+
   }
 
 

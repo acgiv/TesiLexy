@@ -16,13 +16,6 @@ export class LoginService {
     return this.http.post<Login>('http://127.0.0.1:5000/login', body, { headers });
   }
 
-  insertAccess(response: Login){
-    this.accessService.setAccessStatus(response.result_connection);
-    this.accessService.setUsername(response.username);
-    this.accessService.setEmail(response.email);
-    this.accessService.setETA(response.eta);
-  }
-
 
 
 }

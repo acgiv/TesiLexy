@@ -21,7 +21,7 @@ class UtenteServiceInterface(ABC):
         pass
 
     @abstractmethod
-    def get_find_all_utente(self, limit: Union[int, None]) -> Union[List,  None]:
+    def get_find_all_utente(self, limit: Union[int, None]) -> Union[List, None]:
         pass
 
     @abstractmethod
@@ -34,16 +34,16 @@ class UtenteService(UtenteServiceInterface, ABC):
     def __init__(self):
         self.__utente_dao = UtenteDao()
 
-    def insert_utente(self, utente:  Union[Utente, List[Utente]]):
+    def insert_utente(self, utente: Union[Utente, List[Utente]]):
         self.__utente_dao.insert(utente)
 
-    def delete_utente(self, utente:  Union[Utente, List[Utente]]):
+    def delete_utente(self, utente: Union[Utente, List[Utente]]):
         self.__utente_dao.delete(utente)
 
-    def update_utente(self, utente:  Union[Utente, List[Utente]]):
+    def update_utente(self, utente: Union[Utente, List[Utente]]):
         self.__utente_dao.update(utente)
 
-    def get_find_all_utente(self,  limit: Union[int, None]) -> Union[List, None]:
+    def get_find_all_utente(self, limit: Union[int, None]) -> Union[List, None]:
         return self.__utente_dao.find_all(limit)
 
     def get_find_all_by_id_utente(self, id_utente: int) -> Union[List, None]:

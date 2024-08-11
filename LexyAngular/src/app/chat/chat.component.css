@@ -1,0 +1,119 @@
+body {
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-y: hidden; /* Prevent horizontal scroll */
+}
+
+.sidebar {
+  position: fixed;
+  width: 280px;
+  height: 90vh;
+  left: 0;
+  background-color: #f8f9fa;
+  transition: left 0.3s ease-in-out;
+  z-index: 1000;
+}
+.container {
+  padding: 20px;
+}
+.nav-link {
+  cursor: pointer;
+}
+.nav-link:hover, .nav-link:focus {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+
+.dropdown-menu {
+  will-change: transform;
+  top: 100% !important;
+  margin-top: 0.125rem!important;
+}
+.dropdown-menu li:last-child button {
+  color: var(--red);
+}
+.dropdown-menu li:last-child button:hover {
+  color: var(--red);
+}
+.dropdown-toggle{
+  color: #a3a3a3;
+}
+hr.my-1 {
+  border-top: 1px solid #bebebe;
+  margin: 0.5rem 0;
+}
+.sidebar-toggle {
+  position: absolute;
+  top: 50%;
+  left: 280px;
+  width: 20px;
+  height: 70px;
+  border: 1px solid #ddd;
+  border-right: none;
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  background: var(--primary);
+  transition: left 0.3s ease-in-out;
+}
+.sidebar-toggle.hide-tab {
+  left: 0; /* Sposta la linguetta quando la sidebar è chiusa */
+  transition: left 0.3s ease-in-out;
+}
+.d-flex.sidebar.hide-bar {
+  left: -280px; /* Nasconde la sidebar spostandola nella schermata */
+  transition: left 0.3s ease-in-out;
+}
+.sidebar-toggle:hover {
+  background-color: var(--primary);
+}
+.container-chat.open {
+  margin-left: 280px;
+}
+.container-chat.closed {
+  margin-left: 0;
+}
+.chat-messages{
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+}
+.container-chat{
+  height: 89vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 767px) {
+  .sidebar-toggle.hide-tab {
+    left: 0; /* Sposta la linguetta quando la sidebar è chiusa */
+    transition: left 0.3s ease-in-out;
+  }
+  .d-flex.sidebar.hide-bar {
+    left: -280px; /* Nasconde la sidebar spostandola nella schermata */
+    transition: left 0.3s ease-in-out;
+  }
+  .container-chat.closed {
+    margin-left: 0;
+  }
+  .container-chat.open {
+    margin-left: 0;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

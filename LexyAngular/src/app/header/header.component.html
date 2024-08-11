@@ -16,32 +16,36 @@
             <hr class="hr-link mt-2  mx-auto m-0" *ngIf="isHomeActive">
           </a>
         </li>
-        <li *ngIf=" !this.accessService.access.access" class="nav-item link-size  p-0">
+         <li *ngIf="this.accessService.getAccess()" class="nav-item link-size p-0">
+          <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active"  [routerLink]="'/terapista/dashboard'"  routerLinkActive="active">Dashboard
+            <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isDashboardActive">
+          </a>
+        </li>
+        <li *ngIf=" !this.accessService.getAccess()" class="nav-item link-size  p-0">
           <a class="nav-link p-1 me-2 m-0 " [routerLink]=" isActive('/login') ?  '/login' : (isActive('/') ?  '/login': '/terapista/login') " routerLinkActive="active">Login
             <hr class="hr-link mt-2 mx-auto m-0 " *ngIf="isLoginActive">
           </a>
         </li>
-        <li *ngIf="!isTerapista() && !this.accessService.access.access" class="nav-item link-size p-0">
+        <li *ngIf="!isTerapista() && !this.accessService.getAccess()" class="nav-item link-size p-0">
           <a class="nav-link h p-1 me-2 m-0 " [routerLink]="'/terapista/registrati'"  routerLinkActive="active">Registrati
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isRegistrationActive">
           </a>
         </li>
-        <li *ngIf="this.accessService.access.access" class="nav-item link-size p-0">
+        <li *ngIf="this.accessService.getAccess()" class="nav-item link-size p-0">
           <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active"  [routerLink]=" isActive('/chat') ?  '/chat' : (isActive('/') ?  '/chat': '/terapista/chat') " [routerLinkActiveOptions]="{exact:true}">Chat
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isChatActive">
           </a>
         </li>
       </ul>
-        <div *ngIf="this.accessService.access.access" class="dropdown pb-2">
+        <div *ngIf="this.accessService.getAccess()" class="dropdown pb-2">
           <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ this.accessService.access.username }}
+            {{ this.accessService.getUsername() }}
           </button>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" (click)="exit()" >Esci</a></li>
           </ul>
         </div>
     </div>
-
   </div>
 </nav>
 

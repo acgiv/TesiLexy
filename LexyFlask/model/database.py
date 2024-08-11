@@ -12,6 +12,21 @@ class LogopedistaSchema(UtenteSchema):
         fields = UtenteSchema.Meta.fields + ('idlogopedista',)
 
 
+class BambinoSchema(UtenteSchema):
+    class Meta(UtenteSchema.Meta):
+        fields = UtenteSchema.Meta.fields + ('idbambino', 'nome', 'cognome', 'dataNascita', 'descrizione', 'patologia' )
+
+
+class PatologiaSchema(UtenteSchema):
+    class Meta:
+        fields = UtenteSchema.Meta.fields + ('idpatologia', 'nome')
+
+
+class PatologiaBambinoSchema(UtenteSchema):
+    class Meta:
+        fields = ('idbambino','idpatologia')
+
+
 class LabelSchema(ma.Schema):
     class Meta:
         fields = ('idlabel', 'label', 'valore')
@@ -40,6 +55,14 @@ utenti_schema = UtenteSchema(many=True)
 logopedista_schema = LogopedistaSchema()
 logopedisti_schema = LogopedistaSchema(many=True)
 
+bambino_schema = BambinoSchema()
+bambino_schemas = BambinoSchema(many=True)
+
+patologia_schema = PatologiaSchema()
+patologia_schemas = PatologiaSchema(many=True)
+
+patologia_bambino_schema = PatologiaBambinoSchema()
+patologia_bambino_schemas = PatologiaBambinoSchema(many=True)
 
 label_Schema = LabelSchema()
 label_Schemas = LabelSchema(many=True)

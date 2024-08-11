@@ -1,6 +1,5 @@
 from typing import Union
-from datetime import datetime
-from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy import Column, String, Integer
 from extensions import db
 
 
@@ -68,3 +67,11 @@ class Utente(db.Model):
     @property
     def id_utente(self):
         return self._id_utente
+
+    @property
+    def to_dict(self):
+        return {
+            'id_utente': self._id_utente,
+            'username': self._username,
+            'email': self._email
+        }

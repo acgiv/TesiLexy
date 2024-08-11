@@ -1,4 +1,7 @@
-import {FormControl, ValidatorFn} from "@angular/forms";
+import {AbstractControl, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
+import { Subscription } from 'rxjs';
+
+
 
 export function urlValidator(pattern: RegExp): ValidatorFn {
   // @ts-ignore
@@ -11,3 +14,28 @@ export function urlValidator(pattern: RegExp): ValidatorFn {
     }
   };
 }
+
+interface PatternWithError {
+  pattern: RegExp;
+  errorKey: string;
+}
+
+export function multiPatternValidator(patterns: PatternWithError[]): ValidatorFn {
+
+  return (control: AbstractControl): { [key: string]: boolean } | null => {
+    if (!control.value) {
+      return null;
+    }
+    for (let patternWithError of patterns) {
+      if (!patternWithError.pattern.test(control.value)) {
+        return { [patternWithError.errorKey]: true };
+      }
+    }
+    return null;
+  };
+}
+
+
+
+
+

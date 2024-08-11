@@ -1,0 +1,30 @@
+<div class="chat-message d-flex mb-4" [ngClass]="{'justify-content-end': !isFromPepper}">
+  <div class="avatar me-3" *ngIf="isFromPepper">
+    <img src="assets/pepper_avatar.png" alt="Pepper Avatar" class="rounded-circle">
+  </div>
+  <div class="w-100 w-md-50">
+    <div class="message-content p-3 rounded" [ngClass]="{'bg-light': isFromPepper, 'message-user': !isFromPepper}">
+      {{ messageText }}
+    </div>
+    <div class="message-footer mt-1 d-flex justify-content-between align-items-center small text-muted">
+      <div class="icons d-flex align-items-baseline">
+        <div class="d-flex align-items-center">
+          <fa-icon class="me-1" [icon]="faChevronLeft"/>
+          <span>1/2</span>
+          <fa-icon class="ms-1 me-4" [icon]="faChevronRight"/>
+        </div>
+        <div>
+          <img (click)="riproduzionePepper()" src="assets/robot_icon.png" alt="Riproduzione Pepper" class="me-2">
+          <img (click)="RigeneraMessaggio()" src="assets/reload-icon.png" alt="Rigenera messaggio" class="me-2">
+          <img src="assets/favorite_icon.png" alt="Messaggio Piaciuto" class="me-2">
+        </div>
+      </div>
+      <div class="timestamp text-end">
+        {{ timestamp }}
+      </div>
+    </div>
+  </div>
+  <div class="avatar ms-3" *ngIf="!isFromPepper">
+    <img src="assets/user_avatar.png" alt="User Avatar" class="rounded-circle">
+  </div>
+</div>

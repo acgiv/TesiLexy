@@ -1,15 +1,24 @@
-import {Component, Injectable} from '@angular/core';
-import {NgIf, NgOptimizedImage} from "@angular/common";
+import {Component, Injectable, OnInit} from '@angular/core';
+import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import {HeaderComponent} from "../header/header.component";
-import {NgForm, FormsModule, FormControl, Validators} from '@angular/forms'
+import {
+  FormsModule,
+  FormControl,
+  Validators,
+  FormGroup,
+  FormBuilder,
+  ReactiveFormsModule,
+} from '@angular/forms'
 import { sha256 } from 'js-sha256';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {Router} from "@angular/router";
-import {urlValidator} from "../Validator/validator";
-import {ViewPasswordService} from "../service/view-password.service";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
+import {multiPatternValidator, urlValidator} from "../Validator/validator";
 import {LoginService} from "./login.service";
 import {catchError, of, tap} from "rxjs";
-
+import {AccessService} from "../access.service";
+import {InputTextComponent} from "../form/input_text/input_text.component";
+import {ControlFormDirective} from "../form/control-form.directive";
+import {faEye} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-login',
@@ -21,47 +30,117 @@ import {catchError, of, tap} from "rxjs";
     FormsModule,
     HeaderComponent,
     NgIf,
-    FaIconComponent
+    FaIconComponent,
+    RouterLinkActive,
+    RouterLink,
+    ReactiveFormsModule,
+    InputTextComponent,
+    NgForOf
   ],
 })
 @Injectable({
   providedIn: 'root'
 })
-export class LoginComponent {
-  error: boolean;
+export class LoginComponent implements OnInit{
+   error: boolean;
+   protected formGroup: FormGroup;
+   protected submit: boolean= false;
 
-  constructor(private router: Router, protected viewPasswordService: ViewPasswordService, private loginService: LoginService) {
+  constructor(private router: Router, private fb: FormBuilder,  protected formD: ControlFormDirective,  private loginService: LoginService,  private accessService:  AccessService) {
     this.error = true;
-    viewPasswordService.showPasswords["password_login"] = false;
+    this.formD.form.splice(0, this.formD.form.length);
+    this.formGroup = this.fb.group({});
   }
 
-   onLogin(form: NgForm) {
+ ngOnInit(): void {
+    this.formD.form.push(
+        {
+          label: {
+            name: 'Username',
+            isRequired: true,
+            emojiInfo: {
+              message: "Inserisci il tuo username",
+              is_position: "end",
+              class: "text-black-50"
+            },
+          },
+          input:{
+            class: "form-control pass rounded rounded-1  border  border-dark ",
+            typeText: "text",
+            name: 'Username',
+            id: "username",
+            placeholder: 'Username',
+            validator: [
+              Validators.required,
+              multiPatternValidator([
+              ])
+            ],
+            errorMessages: {
+              required: 'Campo è obbligatorio',
+            }
+         },
+          insertEmoji: false
+        },{
+           label:{
+            name:'Password',
+            isRequired:true,
+            emojiInfo: {
+              message: "Inserisci la tua password",
+              is_position: "end",
+              class: "text-black-50"
+            },
+          },
+          input: {
+            class: "form-control border border-1 border-dark rounded",
+            typeText: 'password',
+            name: 'Password',
+            id: "password",
+            placeholder: 'Password*',
+            validator: [
+              Validators.required,
+              multiPatternValidator([])
+            ],
+            errorMessages: {
+              required: 'Questo campo è obbligatorio',
+            },
+          },
+          insertEmoji: true,
+          emoji: faEye,
+          positionEmoji: "right",
+          isPassword: true
+        }
+    );
+    this.formGroup= this.formD.setAllValidator(this.fb);
+  }
 
-      this.error = false;
-      const username = form.value.username.toLowerCase();
-      const password = sha256.update(form.value.password).hex();
 
+  onLogin() {
+    this.submit = true;
+    if(this.formGroup.valid){
+      const username = this.formGroup.value["Username"].toLowerCase();
+      const password = sha256.update(this.formGroup.value["Password"]).hex();
       this.loginService.loginPost({ username, password })
         .pipe(
           tap(response => {
             if(response.result_connection) {
               this.error = response.result_connection;
-              this.loginService.insertAccess(response);
+               this.accessService.insertAccess(response, username, true);
               if (!this.isTerapista()) {
-                this.router.navigate(['/terapista']);
+                this.router.navigate(['/terapista']).then(() => {});
               } else {
-                this.router.navigate(['/']);
+                this.router.navigate(['/']).then(() => {});
               }
             }else{
-               this.error = false;
+                this.error = false;
             }
           }),
-          catchError(error => {
-            console.error('Errore durante la registrazione:', error);
+          catchError(_ => {
             return of(null);
           })
         )
         .subscribe();
+    }
+
   }
 
   isTerapista(): boolean {

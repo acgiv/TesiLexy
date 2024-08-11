@@ -1,50 +1,45 @@
 import { Injectable } from '@angular/core';
+import {Login} from "./login/login";
+import { CookieService } from 'ngx-cookie-service';
 
-interface Access {
-  access: boolean;
-  username: string;
-  email: string;
-  eta: number;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccessService {
-  access: Access = {
-    access: false,
-    username: "",
-    email: "",
-    eta: 0
-  }
-  constructor() { }
-
-   // Funzione per impostare lo stato di accesso
-  setAccessStatus(status: boolean) {
-    this.access.access = status;
-  }
-
-  // Funzione per impostare il nome utente
-  setUsername(username: string) {
-    this.access.username = username;
-  }
-
-  // Funzione per impostare l'email
-  setEmail(email: string) {
-    this.access.email = email;
-  }
-
-  // Funzione per impostare l'ETA
-  setETA(eta: number) {
-    this.access.eta = eta;
-  }
+   constructor(private cookieService: CookieService) { }
 
   resetAccess() {
-    this.access = {
-      access: false,
-      username: "",
-      email: "",
-      eta: 0
-    };
+    this.cookieService.set('accessStatus', false.toString(), { path: '/', expires: 7 });
+    this.cookieService.set('username',"", { path: '/', expires: 7 });
+    this.cookieService.set('email',"", { path: '/', expires: 7 });
+    this.cookieService.set('ruolo', "", { path: '/', expires: 7 });
+     this.cookieService.set('eta', "", { path: '/', expires: 7 });
+  }
+
+   insertAccess(response: Login, username: string, status: boolean){
+    this.cookieService.set('accessStatus', status.toString(), { path: '/', expires: 7 });
+    this.cookieService.set('username', username, { path: '/', expires: 7 });
+    this.cookieService.set('email', response.email, { path: '/', expires: 7 });
+    this.cookieService.set('ruolo', response.ruolo, { path: '/', expires: 7 });
+    if(response.eta){
+      this.cookieService.set('eta', String(response.eta), { path: '/', expires: 7 });
+    }
+
+  }
+
+  getAccess():boolean{
+    return this.cookieService.check('accessStatus') ? this.cookieService.get('accessStatus') === 'true' : false;
+  }
+  getUsername():string {
+      return this.cookieService.check('username') ? this.cookieService.get('username') : "";
+    }
+
+  getRuolo():string {
+    return this.cookieService.check('ruolo') ? this.cookieService.get('ruolo')  : "";
+  }
+
+   getEta():number | null {
+    return this.cookieService.check('eta') ?Number(this.cookieService.get('eta'))  : null;
   }
 }

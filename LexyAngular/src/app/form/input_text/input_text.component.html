@@ -1,0 +1,35 @@
+<div [formGroup]="formGroup" >
+
+      <label [for]="elem.input.id" class="form-label mt-3 d-flex">
+        <span class="fw-semibold">{{elem.label.name}}</span>
+        <span *ngIf="elem.label.isRequired" class="ps-1 text-danger ">*</span>
+        <span *ngIf="elem.label.emojiInfo" [ngClass]="{'ms-auto': elem.label.emojiInfo.is_position==='end'}"     >
+            <fa-icon
+                 [ngClass]="getIconClasses(elem)"
+                 placement="top" ngbTooltip="{{elem.label.emojiInfo.message}}"
+                 tooltipClass="tooltip-class "
+                 [icon]="elem.label.emojiInfo.emoji ?? faInfoCircle" ></fa-icon>
+        </span>
+      </label>
+    <div class="input-group" [ngClass]="getClassPositionEmoji(elem)">
+        <input [type]="elem.input.typeText"
+               [class]="elem.input.class"
+               [style]="elem.input.style || (elem.insertEmoji && elem.positionEmoji === 'right')? 'background-image: none;': ''"
+               [placeholder]="elem.input.placeholder"
+               formControlName="{{ elem.input.name }}"
+               [id]="elem.input.id"
+               [maxlength]="Number(elem.input.maxLength)"
+               [class.is-invalid]="(formGroup.get(elem.input.name)?.touched || formGroup.get(elem.input.name)?.dirty || submit) && formGroup.get(elem.input.name)?.invalid ">
+              <fa-icon *ngIf="elem.insertEmoji"
+                        (click)="elem.isPassword ? inPassService.setTogglePassword(elem.input.name, elem) : null"
+                       onKeyDown=""
+                       [ngClass]="{'fa-icon-error': (formGroup.get(elem.input.name)?.touched || formGroup.get(elem.input.name)?.dirty || submit) && formGroup.get(elem.input.name)?.invalid }" [icon]="elem.emoji ?? faExclamationCircle">
+              </fa-icon>
+    </div>
+    <app-bar-security-password *ngIf="elem.input.passwordBar" [inputComponent]="elem" [formGroup]="formGroup" [submit]="submit" ></app-bar-security-password>
+    <div  *ngIf="(formGroup.get(elem.input.name)?.touched || formGroup.get(elem.input.name)?.dirty || submit) &&  formGroup.get(elem.input.name)?.errors as errors" >
+    <div *ngFor="let keyError of Object.keys(errors)">
+        <p class="text-danger pt-2 m-0 error-message">{{elem.input.errorMessages[String(keyError)]}}</p>
+    </div>
+   </div>
+</div>

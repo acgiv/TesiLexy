@@ -1,15 +1,15 @@
 from typing import Union
 from sqlalchemy import Column, Integer, ForeignKey
-
-from extensions import db
 from model.entity.utente import Utente
 
 
 class Logopedista(Utente):
     __tablename__ = 'logopedista'
     _id_logopedista = Column('idlogopedista', Integer, ForeignKey('utente.idutente',  ondelete='CASCADE'), primary_key=True)
+
     __mapper_args__ = {
         'polymorphic_identity': 'logopedista',
+        'inherit_condition': _id_logopedista == Utente._id_utente
     }
     _priority_id_logopedista = 1
 

@@ -1,0 +1,49 @@
+<div class="sidebar-toggle" (click)="toggleSidebar()" [ngClass]="{'hide-tab': !isOpen}">
+  <fa-icon [icon]="isOpen ? faChevronLeft : faChevronRight" [ngStyle]="{'color': 'white'}"></fa-icon>
+</div>
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" [ngClass]="{'hide-bar': !isOpen}">
+  <button class="btn btn-primary mb-4" type="button" (click)="newChat()">Nuova Chat</button>
+  <div>
+    <small class="text-muted">Oggi</small>
+    <ul class="nav flex-column mb-auto">
+      <li class="nav-item">
+        <div class="d-flex justify-content-between align-items-center nav-link active py-2 px-0" aria-current="page">
+          <span (click)="viewText()">Le Piramidi</span>
+          <div class="dropdown">
+            <a class="d-flex align-items-center dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
+              <li><button class="dropdown-item" (click)="renameChat()">Rinomina</button></li>
+              <li><button class="dropdown-item" (click)="deleteChat()">Elimina </button></li>
+            </ul>
+          </div>
+        </div>
+        <hr class="my-1">
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="container-chat" [ngClass]="{'open': isOpen, 'closed': !isOpen}">
+  <div class="container-fluid container-chat p-4">
+
+    <div class="chat-messages container mt-3">
+      <app-chat-message
+        [isFromPepper]="true"
+        timestamp="14:30 | Mar 04"
+        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
+
+      <app-chat-message
+        [isFromPepper]="false"
+        timestamp="14:45 | Mar 04"
+        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
+    </div>
+
+    <div class="chat-input bg-light mt-2">
+      <div class="input-group">
+        <textarea style="resize:none" class="form-control" placeholder="Scrivi un messaggio..."></textarea>
+        <button class="btn btn-primary" type="button">Invia</button>
+      </div>
+    </div>
+
+  </div>
+</div>
