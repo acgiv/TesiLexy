@@ -1,16 +1,18 @@
 from typing import Union
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, String, ForeignKey, CHAR, DATE
 from sqlalchemy.orm import relationship
 from model.entity.patologiaBambino import PatologiaBambino
 from model.entity.utente import Utente
+import uuid
 
 
 class Bambino(Utente):
     __tablename__ = 'bambino'
-    _id_bambino = Column('idbambino', Integer, ForeignKey('utente.idutente', ondelete='CASCADE'),  primary_key=True)
+    _id_bambino = Column('idbambino', CHAR(36), ForeignKey('utente.idutente', ondelete='CASCADE'),
+                         primary_key=True)
     _nome = Column('nome', String(50))
     _cognome = Column('cognome', String(50))
-    _data_nascita = Column('dataNascita', String(11))
+    _data_nascita = Column('dataNascita', DATE)
     _descrizione = Column('descrizione', String(300))
     patologie = relationship("Patologia", secondary=PatologiaBambino.__tablename__)
 
@@ -21,7 +23,7 @@ class Bambino(Utente):
 
     def __init__(self, username: str, password: str, nome: str, cognome: str, data_nascita: str,
                  descrizione: str, email: str,
-                 id_bambino: Union[int, None] = None, id_utente: Union[int, None] = None):
+                 id_bambino: Union[uuid, None] = None, id_utente: Union[uuid, None] = None):
         super().__init__(id_utente, username, password, email)
         self._id_bambino = id_bambino
         self._nome = nome
@@ -30,11 +32,11 @@ class Bambino(Utente):
         self._descrizione = descrizione
 
     @property
-    def id_bambino(self) -> Union[int, None]:
+    def id_bambino(self) -> Union[uuid, None]:
         return self._id_bambino
 
     @id_bambino.setter
-    def id_bambino(self, id_bambino: int) -> None:
+    def id_bambino(self, id_bambino: uuid) -> None:
         self._id_bambino = id_bambino
 
     @property

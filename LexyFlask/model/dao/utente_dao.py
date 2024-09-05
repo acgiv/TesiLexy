@@ -1,3 +1,4 @@
+import uuid
 from abc import ABC
 from typing import Union, List
 from injector import inject
@@ -23,7 +24,7 @@ class UtenteDao(BaseDao, ABC):
     def find_all(self, limit: Union[int, None]) -> Union[List[Utente], None]:
         return self.__repository.find_all(limit)
 
-    def find_all_by_id(self, id_utente: int) -> Union[List, None]:
+    def find_all_by_id(self, id_utente: uuid) -> Union[List, None]:
         return self.__repository.find_all_by_id(id_utente)
 
     def find_by_username_and_password(self, username: str, password: str) -> Union[Utente, None]:

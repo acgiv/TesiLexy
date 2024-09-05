@@ -16,6 +16,12 @@ from model.entity.logopedista import Logopedista
 main = Blueprint('main', __name__)
 
 
+@main.route('/user', methods=['GET'])
+def user(utente_service: UtenteService):
+    print(utente_service.get_find_all_utente(2))
+    return {"result_connection": False}
+
+
 @main.route('/login', methods=["POST"])
 def login(utente_service: UtenteService):
     username = request.json["username"]
@@ -102,7 +108,7 @@ def check_email(utente: UtenteService):
         respost["found"] = "YES"
         return jsonify(args=respost, status=200, mimetype='application/json')
     else:
-        return jsonify(args= {"found": "NO", 'id_utente': 0, 'username': '', 'email': '' }, status=200,
+        return jsonify(args={"found": "NO", 'id_utente': 0, 'username': '', 'email': ''}, status=200,
                        mimetype='application/json')
 
 

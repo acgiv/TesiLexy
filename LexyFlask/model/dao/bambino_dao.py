@@ -1,3 +1,5 @@
+import uuid
+
 from model.dao.base_dao import BaseDao
 from typing import List, Union
 from abc import ABC
@@ -26,9 +28,8 @@ class BambinoDao(BaseDao, ABC):
     def delete(self, bambino: Union[Bambino, List[Bambino]]) -> None:
         self.__repository.delete(bambino)
 
-    def find_all_by_id(self, id_bambino: int) -> Union[List, None]:
+    def find_all_by_id(self, id_bambino: uuid) -> Union[List, None]:
         return self.__repository.find_all_by_id(id_bambino)
 
     def find_by_username_and_password(self, username, password):
         return self.__repository.find_by_username_and_password(username, password)
-

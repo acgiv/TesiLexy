@@ -1,11 +1,12 @@
 from typing import Union
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, ForeignKey, CHAR
 from model.entity.utente import Utente
 
 
 class Logopedista(Utente):
     __tablename__ = 'logopedista'
-    _id_logopedista = Column('idlogopedista', Integer, ForeignKey('utente.idutente',  ondelete='CASCADE'), primary_key=True)
+    _id_logopedista = Column('idlogopedista', CHAR(36), ForeignKey('utente.idutente',  ondelete='CASCADE'),
+                             primary_key=True)
 
     __mapper_args__ = {
         'polymorphic_identity': 'logopedista',

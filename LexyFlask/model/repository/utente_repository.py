@@ -1,3 +1,4 @@
+import uuid
 from abc import ABC
 from typing import Union, List
 from sqlalchemy.exc import SQLAlchemyError
@@ -56,14 +57,14 @@ class UtenteRepository(BaseDao, ABC):
             self.database.rollback()
             current_app.web_logger.error(f"Errore durante l'aggiornamento degli utenti: {str(e)}")
 
-    def find_all(self, limit: Union[int, None]) -> Union[List[Utente],  None]:
+    def find_all(self, limit: Union[int, None]) -> Union[List[Utente], None]:
         try:
-            return Utente.query.order_by(Utente.id_utente).limit(limit).all()
+            return Utente.query.limit(limit).all()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca di tutti gli utenti: {str(e)}")
             return list()
 
-    def find_all_by_id(self, id_utente: int) -> Union[List, None]:
+    def find_all_by_id(self, id_utente: uuid) -> Union[List, None]:
         try:
             return Utente.query.filter_by(_id_utente=id_utente).first()
         except SQLAlchemyError as e:
@@ -73,7 +74,7 @@ class UtenteRepository(BaseDao, ABC):
     @staticmethod
     def find_by_username_and_password(username: str, password: str) -> Union[Utente, None]:
         try:
-            return Utente.query.filter_by(_username = username, _password= password).first()
+            return Utente.query.filter_by(_username=username, _password=password).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per username e password: {str(e)}")
             return None

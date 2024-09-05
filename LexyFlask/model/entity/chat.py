@@ -1,12 +1,12 @@
 from typing import Union
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, CHAR
 from extensions import db
 
 
 class Chat(db.Model):  # Inherit from Base
     __tablename__ = "chat"
     _id_chat = Column('idchat', Integer, primary_key=True, autoincrement=True)
-    _id_utente = Column('idutente', Integer, ForeignKey('utente.idutente', ondelete='CASCADE'), nullable=False)
+    _id_utente = Column('idutente', CHAR(36), ForeignKey('utente.idutente', ondelete='CASCADE'), nullable=False)
     _titolo = Column("titolo", String(200), nullable=False)
 
     # Definisci la relazione con la tabella degli utenti

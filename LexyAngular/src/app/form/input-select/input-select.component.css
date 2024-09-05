@@ -1,0 +1,19 @@
+
+.dropdown-item:hover  {
+  background-color: rgb(13,110,253); /* Light yellow background */
+  font-weight: bold; /* Bold text */
+  color: white;
+}
+
+.dropdown-item:focus {
+  background-color: rgb(13, 110, 253); /* Colore di sfondo quando è in focus */
+  font-weight: bold; /* Testo in grassetto */
+  color: white; /* Colore del testo */
+  outline: none; /* Rimuove il bordo di focus predefinito */
+}
+
+.dropdown-item.focused {
+  background-color: rgb(13, 110, 253); /* Colore di sfondo quando è in focus */
+  font-weight: bold; /* Testo in grassetto */
+  color: white; /* Colore del testo */
+}

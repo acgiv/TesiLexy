@@ -1,11 +1,12 @@
+import uuid
 from typing import Union
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, CHAR
 from extensions import db
 
 
 class Utente(db.Model):
     __tablename__ = 'utente'
-    _id_utente = Column('idutente', Integer, primary_key=True, autoincrement=True)
+    _id_utente = Column('idutente', CHAR(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     _username = Column('username', String(80), nullable=False, unique=True)
     _password = Column('password', String(200), nullable=False)
     _email = Column('email', String(200), nullable=False, unique=True)
@@ -24,15 +25,11 @@ class Utente(db.Model):
     _messaggi = db.relationship("Messaggio", back_populates="_utente")
     _chat = db.relationship("Chat", back_populates="_utente")
 
-    def __init__(self, id_utente: Union[int, None], username: str, password: str, email: str):
+    def __init__(self, id_utente: Union[uuid, None], username: str, password: str, email: str):
         self._id_utente = id_utente
         self._username = username
         self._password = password
         self._email = email
-
-    @property
-    def id_persona(self) -> Union[int, None]:
-        return self._id_utente
 
     @property
     def username(self) -> str:
@@ -65,7 +62,7 @@ class Utente(db.Model):
         return f"<Utente id utente: {self._id_utente} username: {self._username} email: {self._email}>"
 
     @property
-    def id_utente(self):
+    def id_utente(self) -> Union[uuid, None]:
         return self._id_utente
 
     @property

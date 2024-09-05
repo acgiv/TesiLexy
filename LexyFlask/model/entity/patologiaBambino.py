@@ -1,11 +1,11 @@
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, CHAR
 from extensions import db
 
 
 class PatologiaBambino(db.Model):
     __tablename__ = 'patologiaBambino'
 
-    _idbambino = Column('idbambino', Integer, ForeignKey('bambino.idbambino', ondelete='CASCADE'), primary_key=True)
+    _idbambino = Column('idbambino', CHAR(36), ForeignKey('bambino.idbambino', ondelete='CASCADE'), primary_key=True)
     _idpatologia = Column('idpatologia', Integer, ForeignKey('patologia.idpatologia', ondelete='CASCADE'),
                           primary_key=True)
 

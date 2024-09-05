@@ -1,4 +1,6 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
+import uuid
+
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, CHAR
 
 from extensions import db
 from datetime import datetime
@@ -8,7 +10,7 @@ class Messaggio(db.Model):
     __tablename__ = "messaggio"
     _id_messaggio = Column('idmessaggio', Integer, primary_key=True, autoincrement=True)
     _id_chat = Column('idchat', Integer, ForeignKey('chat.idchat', ondelete='CASCADE'), nullable=False)
-    _id_utente = Column('idutente', Integer, ForeignKey('utente.idutente', ondelete='CASCADE'), nullable=False)
+    _id_utente = Column('idutente', CHAR(36), ForeignKey('utente.idutente', ondelete='CASCADE'), nullable=False)
     _testo = Column('testo', String(255), nullable=False)
     _data_creazione = Column('datacreazione', DateTime, nullable=False)
     _data_modifica = Column('datamodifica', DateTime)
@@ -56,7 +58,7 @@ class Messaggio(db.Model):
         return self._id_utente
 
     @id_utente.setter
-    def id_utente(self, id_utente: int) -> None:
+    def id_utente(self, id_utente: uuid) -> None:
         self._id_utente = id_utente
 
     @property

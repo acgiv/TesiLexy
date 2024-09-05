@@ -8,11 +8,11 @@ import {
 } from "@angular/forms";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {JsonPipe, NgClass, NgForOf, NgIf} from "@angular/common";
-import {TerapistaService} from "../terapista.service";
 import {ControlFormDirective} from "../../form/control-form.directive";
 
 import {InputTextComponent} from "../../form/input_text/input_text.component";
 import {multiPatternValidator} from "../../Validator/validator";
+import {InputSelectComponent} from "../../form/input-select/input-select.component";
 
 @Component({
   selector: 'app-inscrizione-bambino',
@@ -26,20 +26,19 @@ import {multiPatternValidator} from "../../Validator/validator";
 
     ReactiveFormsModule,
     JsonPipe,
-    InputTextComponent
+    InputTextComponent,
+    InputSelectComponent
   ],
   templateUrl: './inscrizione-bambino.component.html',
   styleUrl: './inscrizione-bambino.component.css'
 })
 export class InscrizioneBambinoComponent  implements OnInit {
 
-  patologia: string[] = ["Patologie"];
-  protected clickablePatologia : boolean = false;
   formGroup: FormGroup;
   protected submit: boolean= false;
 
 
-  constructor(protected terapistaService: TerapistaService, private fb: FormBuilder, protected formD: ControlFormDirective) {
+  constructor( private fb: FormBuilder, protected formD: ControlFormDirective) {
     this.formGroup = this.fb.group({});
     this.formD.form.push(
       {
@@ -161,7 +160,6 @@ export class InscrizioneBambinoComponent  implements OnInit {
       }
     );
   }
-
   ngOnInit(): void {
     const formControls = this.formD.form.reduce((acc:{ [key: string]: any[] }, curr) => {
         acc[curr.input.name] = ['', curr.input.validator];
@@ -169,34 +167,13 @@ export class InscrizioneBambinoComponent  implements OnInit {
     }, {});
     this.formGroup= this.fb.group(formControls);
   }
+
   createBambino(form : FormGroupDirective ) {
    this.submit = true;
-   form.form.get('Nome')?.setErrors({'nomeEsistente':true});
+   if(this.formGroup.valid){
+    console.log('sono qui');
+   }
   }
 
-  selectPatologia() {
-    this.clickablePatologia = !this.clickablePatologia;
-  }
 
-  selectItemPatologia(patologia: string) {
-    this.selectItemMenu(patologia, this.patologia);
-     this.clickablePatologia = false;
-  }
-
-    selectItemMenu(item: any, lista: any): void {
-    const itemIndex = lista.indexOf(item);
-    if (itemIndex !== -1) {
-      lista.splice(itemIndex, 1);
-    } else {
-      const dashIndex = lista.indexOf("Patologie");
-      if (dashIndex !== -1) {
-        lista.splice(dashIndex, 1);
-      }
-      lista.push(item);
-    }
-
-    if (lista.length === 0) {
-      lista.push("Patologie");
-    }
-  }
 }

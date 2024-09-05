@@ -1,3 +1,4 @@
+import uuid
 from abc import ABC, abstractmethod
 from typing import List, Union
 
@@ -20,5 +21,5 @@ class BaseDao(ABC):
         pass
 
     @abstractmethod
-    def find_all_by_id(self, id_entity: int) -> Union[List, None]:
+    def find_all_by_id(self, id_entity: uuid) -> Union[List, None]:
         pass

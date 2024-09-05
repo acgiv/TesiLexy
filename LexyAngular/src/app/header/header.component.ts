@@ -26,6 +26,7 @@ export class HeaderComponent implements OnInit {
   isRegistrationActive: boolean = false;
   isNavbarOpen:boolean = false;
   isDashboardActive: boolean = false;
+  clickable: boolean = false;
 
 
   constructor(private router: Router, protected accessService: AccessService) {
@@ -62,6 +63,10 @@ export class HeaderComponent implements OnInit {
 
   exit() {
     this.accessService.resetAccess()
+  }
+
+  closeOption() {
+    this.clickable= !this.clickable
   }
 
 
