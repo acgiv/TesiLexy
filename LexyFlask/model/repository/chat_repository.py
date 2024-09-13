@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from extensions import db
 from model.dao.base_dao import BaseDao
 from model.entity.chat import Chat
-from model.entity.logopedista import Logopedista
+from model.entity.terapista import Terapista
 from flask import current_app
 
 
@@ -92,7 +92,7 @@ class ChatRepository(BaseDao):
                    NomeClasse.find_all_User_Chat(user_filter)
                """
         try:
-            return db.session.query(Chat, Logopedista).join(Logopedista).filter(user_filter).all()
+            return db.session.query(Chat, Terapista).join(Terapista).filter(user_filter).all()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca di tutte le chat: {str(e)}")
             return []

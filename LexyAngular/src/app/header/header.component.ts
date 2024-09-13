@@ -2,7 +2,7 @@ import {Component, OnInit, signal} from '@angular/core';
 import {NavigationEnd, Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {NgClass, NgIf} from "@angular/common";
 import {FormControl, Validators} from "@angular/forms";
-import {urlValidator} from "../Validator/validator";
+import {urlValidator} from "../form/Validator/validator";
 import {AccessService} from "../access.service";
 
 

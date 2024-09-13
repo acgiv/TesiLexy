@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {JsonPipe, NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
-import {FormInput} from "../form";
+import { FormInput} from "../form";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import {InputPasswordService} from "../input service/inputpassword.service";
@@ -32,7 +32,10 @@ export class InputTextComponent {
     @Input() elem!: FormInput;
     @Input() formGroup!: FormGroup;
     @Input() submit!:boolean;
-
+    protected readonly faExclamationCircle = faExclamationCircle;
+    protected readonly faInfoCircle = faInfoCircle;
+    protected readonly Number = Number;
+    protected readonly keyframes = keyframes;
     protected readonly String = String;
     protected readonly Object = Object;
 
@@ -58,11 +61,4 @@ export class InputTextComponent {
       };
   }
 
-
-  protected readonly faExclamationCircle = faExclamationCircle;
-  protected readonly faInfoCircle = faInfoCircle;
-
-
-  protected readonly Number = Number;
-  protected readonly keyframes = keyframes;
 }

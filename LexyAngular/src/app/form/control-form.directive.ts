@@ -1,5 +1,5 @@
 import {Directive, OnDestroy} from '@angular/core';
-import {FormInput} from "./form";
+import { FormInput} from "./form";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import { Subscription } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 })
 export class ControlFormDirective implements OnDestroy{
 
-   form: FormInput[] =[];
+   form:  FormInput[]  =[];
    subscription: Subscription = new Subscription();
    private group: any;
     constructor() {

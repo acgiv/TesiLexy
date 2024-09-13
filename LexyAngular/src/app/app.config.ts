@@ -5,7 +5,8 @@ import { routes } from './app.routes';
 import { provideHttpClient } from "@angular/common/http";
 import {RecuperoService} from "./recupero/recupero.service";
 import {ControlFormDirective} from "./form/control-form.directive";
+import {InscrizioneBambinoService} from "./terapista/inscrizione-bambino/inscrizione-bambino.service";
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideHttpClient(), RecuperoService,  ControlFormDirective]
+  providers: [provideRouter(routes), provideHttpClient(), RecuperoService,  ControlFormDirective, InscrizioneBambinoService]
 };

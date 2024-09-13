@@ -18,7 +18,7 @@ import {AccessService} from "../../access.service";
 import {Router} from "@angular/router";
 import {InputTextComponent} from "../../form/input_text/input_text.component";
 import {ControlFormDirective} from "../../form/control-form.directive";
-import {multiPatternValidator} from "../../Validator/validator";
+import {multiPatternValidator} from "../../form/Validator/validator";
 import {faEye} from "@fortawesome/free-solid-svg-icons";
 
 

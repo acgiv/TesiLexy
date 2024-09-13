@@ -20,7 +20,7 @@ import {Router} from "@angular/router";
 import {firstValueFrom} from "rxjs";
 
 
-import {multiPatternValidator, urlValidator} from "../Validator/validator";
+import {multiPatternValidator, urlValidator} from "../form/Validator/validator";
 import {InputTextComponent} from "../form/input_text/input_text.component";
 import {ControlFormDirective} from "../form/control-form.directive";
 import {faEye} from "@fortawesome/free-solid-svg-icons";

@@ -69,3 +69,10 @@ class PatologiaReposistory(BaseDao, ABC):
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None
+
+    def find_in_list(self, list_patologia: list[str]) -> list[Patologia] | None:
+        try:
+            return Patologia.query.filter(Patologia._nome_patologia.in_(list_patologia)).all()
+        except SQLAlchemyError as e:
+            current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
+            return None

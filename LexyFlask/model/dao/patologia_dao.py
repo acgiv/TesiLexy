@@ -1,4 +1,4 @@
-from typing import List, Type, Union
+from typing import List, Union
 
 from injector import inject
 
@@ -26,3 +26,6 @@ class PatologiaDao(BaseDao):
 
     def find_all(self, limit: int | None = None) -> list[Patologia] | None:
         return self.__repository.find_all(limit)
+
+    def find_in_list(self, list_patologia: list[str]) -> list[Patologia] | None:
+        return self.__repository.find_in_list(list_patologia=list_patologia)

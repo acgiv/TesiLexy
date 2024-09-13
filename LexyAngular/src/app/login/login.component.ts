@@ -12,7 +12,7 @@ import {
 import { sha256 } from 'js-sha256';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
-import {multiPatternValidator, urlValidator} from "../Validator/validator";
+import {multiPatternValidator, urlValidator} from "../form/Validator/validator";
 import {LoginService} from "./login.service";
 import {catchError, of, tap} from "rxjs";
 import {AccessService} from "../access.service";

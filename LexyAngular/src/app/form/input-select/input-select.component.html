@@ -1,29 +1,42 @@
-<div [formGroup]="formGroup" class="w-100 mt-1 ">
-  <label  for="patologia" class="form-label mt-3 text-start">
-    <span class="fw-semibold">Patologie</span>
-    <span class="ps-1 text-danger ">*</span>
+<div [formGroup]="formGroup" >
+  <label [for]="elem.input.id" class="form-label mt-3 d-flex">
+      <span class="fw-semibold">{{elem.label.name}}</span>
+      <span *ngIf="elem.label.isRequired" class="ps-1 text-danger ">*</span>
+      <span *ngIf="elem.label.emojiInfo" [ngClass]="{'ms-auto': elem.label.emojiInfo.is_position==='end'}">
+          <fa-icon
+               [ngClass]="getIconClasses(elem)"
+               placement="top" ngbTooltip="{{elem.label.emojiInfo.message}}"
+               tooltipClass="tooltip-class "
+               [icon]="elem.label.emojiInfo.emoji ?? faInfoCircle" ></fa-icon>
+    </span>
   </label>
 
-  <div class="dropdown border border-1 border-dark rounded">
-    <button  id="patologia" (click)="selectPatologia()" class="btn bg-white  border border-1 w-100 text-start "
-            type="button" data-bs-toggle="dropdown" aria-expanded="false">
-     <span class="dropdown-toggle position-absolute me-3 end-0 "></span>
-      <span class="d-flex flex-wrap" *ngIf="(formGroup.get('patologie')?.value).join(', ') != 'Patologie' ">
-        <span  *ngFor="let p of (formGroup.get('patologie')?.value)"  class="me-1 pt-1 bg-body-tertiary">
+  <div   [ngClass]="'dropdown border border-1  rounded '+ (getErrors(elem.input.name) ? 'border-danger':'border-dark')">
+    <button   [id]="elem.input.id" (click)="selectPatologia()" [class]="elem.input.class "
+              [type]="elem.input.typeText" data-bs-toggle="dropdown" aria-expanded="false"
+     >
+
+     <span [ngClass]="'dropdown-toggle position-absolute me-3 end-0 ' + (getErrors(elem.input.name) ? 'text-danger': '') "></span>
+      <span class="d-flex flex-wrap" *ngIf="formGroup.get('Patologie')?.value[0] != elem.input.placeholder|| (formGroup.get('Patologie')?.value).length !=1 ">
+        <span *ngFor="let p of (formGroup.get('Patologie')?.value)" class="me-1 pt-1 bg-body-tertiary">
           <span class="border border-1 pe-1 ps-1 border-dark rounded  ">
             <fa-icon class="pe-1 ps-1" [icon]="faClose" (click)="removeSelect(p)" onKeyDown=""></fa-icon>{{p}}</span>
         </span>
       </span>
-      <span *ngIf="formGroup.get('patologie')?.value[0] == 'Patologie'">{{formGroup.get('patologie')?.value[0]}}</span>
-
+      <span *ngIf="formGroup.get('Patologie')?.value[0] == elem.input.placeholder && (formGroup.get('Patologie')?.value).length ===1">{{formGroup.get('Patologie')?.value[0]}}</span>
     </button>
-    <ul class="dropdown-menu w-100 " [ngClass]="{'show': this.clickablePatologia}">
+    <ul class="dropdown-menu w-100 rounded-start-0" [ngClass]="{'show': this.clickablePatologia}">
       <li class="input-group pb-2">
-        <input type="text" class="form-control rounded-0 " formControlName="search"  placeholder="Cerca..." >
+        <input type="text" class="form-control rounded-0 " [formControlName]="'search'+elem.input.name" (keydown)="onKeydown($event)"  placeholder="Cerca..." >
       </li>
-      <li  *ngFor="let pa of this.terapistaService.patologie">
-        <a class="dropdown-item " [id]="pa" (click)="selectItemPatologia(pa)" >{{pa}}</a>
+      <li  *ngFor="let pa of this.list_elem">
+        <a class="dropdown-item" [id]="pa" (click)="selectItemPatologia(pa)" >{{pa}}</a>
       </li>
     </ul>
   </div>
+  <div  *ngIf="getErrors(elem.input.name) as errors" >
+    <div *ngFor="let keyError of Object.keys(errors)">
+        <p class="text-danger pt-2 m-0 error-message">{{elem.input.errorMessages[String(keyError)]}}</p>
+    </div>
+   </div>
 </div>

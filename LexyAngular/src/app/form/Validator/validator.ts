@@ -1,5 +1,5 @@
-import {AbstractControl, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
-import { Subscription } from 'rxjs';
+import {AbstractControl, FormControl,  ValidatorFn} from "@angular/forms";
+
 
 
 
@@ -35,7 +35,16 @@ export function multiPatternValidator(patterns: PatternWithError[]): ValidatorFn
   };
 }
 
-
-
+export function multiPatternValidatorSelect(placeholder:string, errorKey: string): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: boolean } | null => {
+    if (!control.value) {
+          return null;
+    }
+   if (Array.isArray(control.value) && control.value.length === 1 && control.value[0] === placeholder) {
+      return { [errorKey]: true };
+   }
+    return null;
+  };
+}
 
 

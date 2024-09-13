@@ -1,7 +1,7 @@
 from flask import Blueprint
 
 
-api = Blueprint('controller', __name__)
+api = Blueprint('api', __name__)
 
 
 @api.route('/')

@@ -2,6 +2,7 @@ import {ValidatorFn} from "@angular/forms";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 export interface FormInput {
+  tipeInput?: string;
   label: Label;
   input: Input;
   insertEmoji: boolean;
@@ -44,4 +45,5 @@ export interface Dependency {
   typeControl: "condition" | "equals",
   keyError: string
 }
+
 

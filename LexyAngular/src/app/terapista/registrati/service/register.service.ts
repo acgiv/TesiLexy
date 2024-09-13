@@ -15,6 +15,6 @@ export class RegisterService {
 
   registerPost(body: any): Observable<any> {
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<Register>('http://127.0.0.1:5000/register', body, {headers});
+    return this.http.post<Register>('http://127.0.0.1:5000/terapista/register', body, {headers});
   }
 }

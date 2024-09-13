@@ -1,9 +1,8 @@
 <div [formGroup]="formGroup" >
-
       <label [for]="elem.input.id" class="form-label mt-3 d-flex">
         <span class="fw-semibold">{{elem.label.name}}</span>
         <span *ngIf="elem.label.isRequired" class="ps-1 text-danger ">*</span>
-        <span *ngIf="elem.label.emojiInfo" [ngClass]="{'ms-auto': elem.label.emojiInfo.is_position==='end'}"     >
+        <span *ngIf="elem.label.emojiInfo" [ngClass]="{'ms-auto': elem.label.emojiInfo.is_position==='end'}">
             <fa-icon
                  [ngClass]="getIconClasses(elem)"
                  placement="top" ngbTooltip="{{elem.label.emojiInfo.message}}"
