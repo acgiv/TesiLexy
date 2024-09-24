@@ -1,6 +1,6 @@
 export interface Register {
   status_code: number;
-  error?: {
+  error: {
     number_error: number | undefined;
     message?: {
       [key: string]: string;

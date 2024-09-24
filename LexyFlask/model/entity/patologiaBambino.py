@@ -12,7 +12,7 @@ class PatologiaBambino(db.Model):
     _priority_idbambino = 1
     _priority_idpatologia = 2
 
-    def __init__(self, idbambino: int, idpatologia: int):
+    def __init__(self, idbambino: str, idpatologia: int):
         self._idbambino = idbambino
         self._idpatologia = idpatologia
 
@@ -23,11 +23,11 @@ class PatologiaBambino(db.Model):
         return f"<PatologiaBambino(idbambino={self.idbambino}, idpatologia={self.idpatologia})>"
 
     @property
-    def idbambino(self) -> int:
+    def idbambino(self) -> str:
         return self._idbambino
 
     @idbambino.setter
-    def idbambino(self, value: int) -> None:
+    def idbambino(self, value: str) -> None:
         self._idbambino = value
 
     @property
@@ -38,7 +38,6 @@ class PatologiaBambino(db.Model):
     def idpatologia(self, value: int) -> None:
         self._idpatologia = value
 
-    @property
     def to_dict(self) -> dict:
         return {
             'idbambino': self.idbambino,

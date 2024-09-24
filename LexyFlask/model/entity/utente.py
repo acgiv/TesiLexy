@@ -10,26 +10,24 @@ class Utente(db.Model):
     _username = Column('username', String(80), nullable=False, unique=True)
     _password = Column('password', String(200), nullable=False)
     _email = Column('email', String(200), nullable=False, unique=True)
-    type = Column(String(50))
+    _tipologia = Column('tipologia', String(50), nullable=False, default="terapista")
 
     _priority_id_utente = 1
     _priority_username = 2
     _priority_password = 3
     _priority_email = 4
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'utente',
-        'polymorphic_on': type
-    }
+    _priority_tiologia = 5
 
     _messaggi = db.relationship("Messaggio", back_populates="_utente")
     _chat = db.relationship("Chat", back_populates="_utente")
 
-    def __init__(self, id_utente: Union[uuid, None], username: str, password: str, email: str):
+    def __init__(self, id_utente: Union[uuid, None], username: str, password: str, email: str, tipologia: str = None):
         self._id_utente = id_utente
         self._username = username
         self._password = password
         self._email = email
+        if tipologia:
+            self._tipologia = tipologia
 
     @property
     def username(self) -> str:
@@ -65,10 +63,10 @@ class Utente(db.Model):
     def id_utente(self) -> Union[uuid, None]:
         return self._id_utente
 
-    @property
     def to_dict(self):
         return {
-            'id_utente': self._id_utente,
-            'username': self._username,
-            'email': self._email
+            "id_utente": self._id_utente,
+            "username": self._username,
+            "email": self._email,
+            "tipologia": self._tipologia
         }

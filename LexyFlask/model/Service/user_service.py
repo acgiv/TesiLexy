@@ -46,7 +46,7 @@ class UtenteService(UtenteServiceInterface, ABC):
     def get_find_all_utente(self, limit: Union[int, None]) -> Union[List, None]:
         return self.__utente_dao.find_all(limit)
 
-    def get_find_all_by_id_utente(self, id_utente: int) -> Union[List, None]:
+    def get_find_all_by_id_utente(self, id_utente: int) -> Union[Utente, None]:
         return self.__utente_dao.find_all_by_id(id_utente)
 
     def find_by_username_and_password(self, username: str, password: str) -> Union[Utente, None]:
@@ -57,3 +57,8 @@ class UtenteService(UtenteServiceInterface, ABC):
 
     def find_by_email(self, email: str) -> Union[Utente, None]:
         return self.__utente_dao.find_by_email(email)
+
+    def find_all_email_therapist(self, type_user: str) -> Union[List[str], None]:
+        return self.__utente_dao.find_all_email_therapist(type_user=type_user)
+
+

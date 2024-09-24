@@ -21,5 +21,6 @@ class BaseDao(ABC):
         pass
 
     @abstractmethod
-    def find_all_by_id(self, id_entity: uuid) -> Union[List, None]:
+    def find_all_by_id(self, id_entity: uuid, type_search: Union[str, None] = None) -> Union[List, None]:
         pass
+

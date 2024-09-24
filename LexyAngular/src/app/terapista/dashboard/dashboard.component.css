@@ -1,0 +1,32 @@
+.bg-section{
+  background-color: rgba(208, 233, 250, 0.3);
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.main-title {
+  margin-top: 1rem;
+  color: #000000;
+}
+
+.card {
+  padding-left: 10px;
+  padding-right: 10px;
+  min-height: 8rem;
+  width: auto;
+  margin: 0.5rem 1rem 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.1);
+  border: none;
+}
+.card:first-child {
+    margin-left: 2px;
+}
+.card-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.card-title {
+  font-size: 1.5rem;
+}

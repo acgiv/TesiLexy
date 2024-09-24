@@ -1,6 +1,6 @@
 from abc import ABC
 from typing import Union, List
-
+import uuid
 from sqlalchemy.exc import SQLAlchemyError
 from flask import current_app
 from model.dao.base_dao import BaseDao
@@ -11,6 +11,7 @@ from model.entity.patologia import Patologia
 class PatologiaReposistory(BaseDao, ABC):
     def __init__(self) -> None:
         self.database = db.session
+        self.patologia = Patologia
 
     def insert(self, patologia: Union[Patologia, List[Patologia]]) -> None:
         try:
@@ -58,21 +59,29 @@ class PatologiaReposistory(BaseDao, ABC):
 
     def find_all(self, limit: Union[int, None]) -> List[Patologia] | None:
         try:
-            return Patologia.query.limit(limit).all()
+            return self.patologia.query.limit(limit).all()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca di tutti i logopedisti: {str(e)}")
             return list()
 
-    def find_all_by_id(self, id_patologia: int) -> Union[List, None]:
+    def find_all_by_id(self, id_patologia: int, type_search: Union[str, None] = None) -> Union[List, None]:
         try:
-            return Patologia.query.filter_by(_id_patologia=id_patologia).first()
+            return self.patologia.query.filter_by(_id_patologia=id_patologia).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None
 
     def find_in_list(self, list_patologia: list[str]) -> list[Patologia] | None:
         try:
-            return Patologia.query.filter(Patologia._nome_patologia.in_(list_patologia)).all()
+            return Patologia.query.filter(self.patologia._nome_patologia.in_(list_patologia)).all()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None
+
+    def find_id_by_name(self, nome_patologia: str) -> Union[List, None]:
+        try:
+            return db.session.query(self.patologia._id_patologia).filter_by(_nome_patologia=nome_patologia).scalar()
+        except SQLAlchemyError as e:
+            current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
+            return None
+

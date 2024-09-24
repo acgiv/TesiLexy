@@ -25,8 +25,8 @@ class LabelDao(BaseDao, ABC):
     def find_all(self, limit: int | None) -> List[Label] | None:
         return self.__repository.find_all(limit)
 
-    def find_all_by_id(self, id_label: int) -> Union[int, None]:
-        return self.__repository.find_all_by_id(id_label)
+    def find_all_by_id(self, id_label: int, type_search: Union[str, None] = None) -> Union[List, None]:
+        return self.__repository.find_all_by_id(id_label, type_search=type_search)
 
 
 

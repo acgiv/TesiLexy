@@ -1,51 +1,41 @@
 from logging.config import dictConfig
 
+
 from flask_cors import CORS
 from flask_injector import FlaskInjector
 
 from configuration.logger import LOGGING_CONFIG
 from flask import Flask
 from configuration.config import DATABASE
-from extensions import db, ma
+from extensions import db, ma, socketio
 from model import database
 from model.Service.bambino_service import BambinoService
-from model.Service.terapista_service import TerapistaService
 from model.Service.patologia_bambino_service import PatologiaBambinoService
 from model.Service.patologia_service import PatologiaService
+from model.Service.terapista_associato_service import TerapistaAssociatoService
 from model.Service.user_service import UtenteService
-from model.dao.Patologia_bambino_dao import PatologiaBambinoDao
-from model.dao.bambino_dao import BambinoDao
 from model.dao.chat_dao import ChatDao
 from model.dao.label_dao import LabelDao
-from model.dao.terapista_dao import TerapistaDao
 from controller.main.main import main
 from controller.api.api import api
 from controller.terapista.terapista import terapista
 import logging
-
 from model.dao.messaggio_dao import MessaggioDao
-from model.dao.patologia_dao import PatologiaDao
-from model.dao.utente_dao import UtenteDao
 from model.dao.versione_messaggio_dao import VersioneMessaggioDao
 
 
 # Configurazione della dependency injection
+
 def configure(binder):
     binder.bind(ChatDao)
-    binder.bind(TerapistaDao)
-    binder.bind(UtenteDao)
     binder.bind(MessaggioDao)
     binder.bind(VersioneMessaggioDao)
-    binder.bind(UtenteService)
     binder.bind(LabelDao)
     binder.bind(UtenteService)
-    binder.bind(TerapistaService)
     binder.bind(BambinoService)
     binder.bind(PatologiaService)
-    binder.bind(PatologiaDao)
-    binder.bind(BambinoDao)
     binder.bind(PatologiaBambinoService)
-    binder.bind(PatologiaBambinoDao)
+    binder.bind(TerapistaAssociatoService)
 
 
 def create_app():
@@ -54,10 +44,9 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['LOGGING_CONFIG'] = LOGGING_CONFIG
-
     db.init_app(app)
     ma.init_app(app)
-
+    socketio.init_app(app, cors_allowed_origins="*")
     logging.config.dictConfig(app.config['LOGGING_CONFIG'])
 
     # Crea un logger personalizzato per l'applicazione

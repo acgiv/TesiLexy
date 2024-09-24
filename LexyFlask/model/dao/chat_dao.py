@@ -1,4 +1,4 @@
-from typing import List, Type, Any, Union
+from typing import List, Type, Union
 from injector import inject
 from model.repository.chat_repository import ChatRepository
 from model.dao.base_dao import BaseDao
@@ -22,8 +22,6 @@ class ChatDao(BaseDao):
     def find_all(self, limit: int | None = None) -> list[Type[Chat]]:
         return self.__repository.find_all(limit)
 
-    def find_all_by_id(self, id_chat: int) -> Union[List, None]:
-        return self.__repository.find_all_by_id(id_chat)
+    def find_all_by_id(self, id_chat: int, type_search: Union[str, None] = None) -> Union[List, None]:
+        return self.__repository.find_all_by_id(id_chat, type_search=type_search)
 
-    def find_all_User_Chat(self, user_filter: Any) -> list[Type[Chat]]:
-        return self.__repository.find_all_User_Chat(user_filter)

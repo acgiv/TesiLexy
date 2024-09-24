@@ -13,7 +13,7 @@ import {JsonPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {RegisterService} from "./service/register.service";
 import {sha256} from "js-sha256";
 import {catchError, of, tap} from "rxjs";
-import {RegisterBody} from "./register";
+import {Register, RegisterBody} from "./register";
 import {AccessService} from "../../access.service";
 import {Router} from "@angular/router";
 import {InputTextComponent} from "../../form/input_text/input_text.component";
@@ -204,8 +204,9 @@ export class RegistratiComponent implements OnInit{
           if (response.completed) {
              this.accessService.insertAccess(response,this.formGroup.value["Username"], true);
              this.router.navigate(['/terapista']).then(() => {});
+             this.formD.ngOnDestroy()
           } else {
-            for (let i = 0; i < response.error.number_error; i++) {
+            for (let i = 0; i < response.error.number_error  ;i++) {
               let keys = Object.keys(response.error.message[i])[0];
               this.set_error_clone_register(keys);
             }

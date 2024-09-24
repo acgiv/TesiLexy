@@ -1,15 +1,11 @@
 from flask import current_app
 from extensions import ma
+from model.entity.terapista_associato import TerapistaAssociato
 
 
 class UtenteSchema(ma.Schema):
     class Meta:
         fields = ('idutente', 'username', 'password', 'email')
-
-
-class LogopedistaSchema(UtenteSchema):
-    class Meta(UtenteSchema.Meta):
-        fields = UtenteSchema.Meta.fields + ('idlogopedista',)
 
 
 class BambinoSchema(UtenteSchema):
@@ -25,6 +21,11 @@ class PatologiaSchema(UtenteSchema):
 class PatologiaBambinoSchema(UtenteSchema):
     class Meta:
         fields = ('idbambino','idpatologia')
+
+
+class TerapistaAssociatoSchema(ma.Schema):
+    class Meta:
+        fields = ('idbambino', 'idterapista')
 
 
 class LabelSchema(ma.Schema):
@@ -52,9 +53,6 @@ class VersioneMessaggioSchema(ma.Schema):
 utente_schema = UtenteSchema()
 utenti_schema = UtenteSchema(many=True)
 
-logopedista_schema = LogopedistaSchema()
-logopedisti_schema = LogopedistaSchema(many=True)
-
 bambino_schema = BambinoSchema()
 bambino_schemas = BambinoSchema(many=True)
 
@@ -63,6 +61,9 @@ patologia_schemas = PatologiaSchema(many=True)
 
 patologia_bambino_schema = PatologiaBambinoSchema()
 patologia_bambino_schemas = PatologiaBambinoSchema(many=True)
+
+terapista_associato_schema = TerapistaAssociatoSchema()
+terapista_associato_schemas = TerapistaAssociatoSchema(many=True)
 
 label_Schema = LabelSchema()
 label_Schemas = LabelSchema(many=True)

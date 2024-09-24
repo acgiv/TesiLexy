@@ -122,9 +122,10 @@ export class LoginComponent implements OnInit{
       this.loginService.loginPost({ username, password })
         .pipe(
           tap(response => {
-            if(response.result_connection) {
-              this.error = response.result_connection;
+            if(response.response.result_connection) {
+              this.error = response.response.result_connection;
                this.accessService.insertAccess(response, username, true);
+               this.formD.ngOnDestroy()
               if (!this.isTerapista()) {
                 this.router.navigate(['/terapista']).then(() => {});
               } else {

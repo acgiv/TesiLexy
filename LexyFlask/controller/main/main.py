@@ -33,22 +33,26 @@ def user(utente_service: UtenteService):
 
 @main.route('/login', methods=["POST"])
 def login(utente_service: UtenteService):
+    response_copy = response.copy()
     try:
         username = request.json["username"]
         password = request.json["password"]
         result = utente_service.find_by_username_and_password(username, password)
         print(result)
         if result is not None:
-            return {
-                "result_connection": True,
-                "username": result.username,
-                "email": result.email,
-            }, 200
+            response_copy["response"] = {
+                                         "id_utente": result.id_utente,
+                                         "username": result.username,
+                                         "email": result.email,
+                                         "result_connection": True,
+                                         }
+            return response_copy
         else:
-            return {"result_connection": False}, 200
+            response_copy["response"] = {"result_connection": False}
+            return response_copy
     except KeyError as key:
-        print(key)
-        return {"errorKey": f"not found this key: {key}"}
+        set_error_message_response(response_copy, {"errorKey": f"not found this key: {key}"})
+        return
 
 
 @main.route('/sendemail', methods=["POST"])
@@ -130,15 +134,17 @@ def check_username_exists(user_service: UtenteService, parameter: str, select_ty
     return None, False
 
 
-def check_credential(user_service:UtenteService, parameter: dict, response_request: dict):
+def check_credential(user_service: UtenteService, parameter: dict, response_request: dict):
     _, is_email = check_username_exists(user_service, parameter["email"], "email")
     if is_email:
-        response_request["error"]["number_error"] += 1
-        response_request["error"]["message"].append({"email": "Esiste gia un utente con questa email"})
-        response_request["completed"] = False
+        set_error_message_response(response_request, {"email": "Esiste gia un utente con questa email"})
     _, is_username = check_username_exists(user_service, parameter["username"], "username")
     if is_username:
-        response_request["error"]["number_error"] += 1
-        response_request["error"]["message"].append({"username": "Esiste gia un utente con questo username"})
-        response_request["completed"] = False
+        set_error_message_response(response_request, {"username": "Esiste gia un utente con questo username"})
     return response_request
+
+
+def set_error_message_response(response_request: dict, message_respose: dict):
+    response_request["error"]["number_error"] += 1
+    response_request["error"]["message"].append(message_respose)
+    response_request["completed"] = False

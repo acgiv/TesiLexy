@@ -40,6 +40,7 @@ export function multiPatternValidatorSelect(placeholder:string, errorKey: string
     if (!control.value) {
           return null;
     }
+
    if (Array.isArray(control.value) && control.value.length === 1 && control.value[0] === placeholder) {
       return { [errorKey]: true };
    }
@@ -48,3 +49,14 @@ export function multiPatternValidatorSelect(placeholder:string, errorKey: string
 }
 
 
+export function dataValidator( errorKey: string,  anni: number, current_date:Date): ValidatorFn {
+  // @ts-ignore
+  return (control: FormControl) => {
+    const splitted = Number(control.value.split("-", 1)[0]);
+    if(splitted>= current_date.getFullYear()-anni){
+       return { [errorKey]: true };
+    } else {
+      return null;
+    }
+  };
+}

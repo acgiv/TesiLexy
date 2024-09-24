@@ -12,6 +12,7 @@ class UtenteRepository(BaseDao, ABC):
 
     def __init__(self) -> None:
         self.database = db.session
+        self.user = Utente
 
     def insert(self, utente: Union[Utente, List[Utente]]) -> None:
         try:
@@ -64,33 +65,37 @@ class UtenteRepository(BaseDao, ABC):
             current_app.web_logger.error(f"Errore durante la ricerca di tutti gli utenti: {str(e)}")
             return list()
 
-    def find_all_by_id(self, id_utente: uuid) -> Union[List, None]:
+    def find_all_by_id(self, id_utente: int, type_search: Union[Utente, None] = None) -> Union[List, None]:
         try:
             return Utente.query.filter_by(_id_utente=id_utente).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None
 
-    @staticmethod
-    def find_by_username_and_password(username: str, password: str) -> Union[Utente, None]:
+    def find_by_username_and_password(self, username: str, password: str) -> Union[Utente, None]:
         try:
-            return Utente.query.filter_by(_username=username, _password=password).first()
+            return self.user.query.filter_by(_username=username, _password=password).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per username e password: {str(e)}")
             return None
 
-    @staticmethod
-    def find_by_username(username: str) -> Union[Utente, None]:
+    def find_by_username(self, username: str) -> Union[Utente, None]:
         try:
-            return Utente.query.filter_by(_username=username).first()
+            return self.user.query.filter_by(_username=username).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per username: {str(e)}")
             return None
 
-    @staticmethod
-    def find_by_email(email: str) -> Union[Utente, None]:
+    def find_by_email(self, email: str) -> Union[Utente, None]:
         try:
-            return Utente.query.filter_by(_email=email).first()
+            return self.user.query.filter_by(_email=email).first()
+        except SQLAlchemyError as e:
+            current_app.web_logger.error(f"Errore durante la ricerca per username: {str(e)}")
+            return None
+
+    def find_all_email_therapist(self, type_user: str) -> Union[List[str], None]:
+        try:
+            return  self.user.query.with_entities(self.user._email).filter_by(_tipologia=type_user).all()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per username: {str(e)}")
             return None

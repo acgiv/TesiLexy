@@ -21,8 +21,8 @@ class PatologiaBambinoDao(BaseDao):
     def update(self, patologia_bambino: Union[PatologiaBambino, List[PatologiaBambino]]) -> None:
         self.__repository.update(patologia_bambino)
 
-    def find_all_by_id(self, idpatologia: int) -> Union[List[PatologiaBambino], None]:
-        return self.__repository.find_all_by_id(idpatologia)
+    def find_all_by_id(self, id_patologia: int, type_search: Union[str, None] = None) -> Union[List, None]:
+        return self.__repository.find_all_by_id(id_patologia, type_search=type_search)
 
     def find_all(self, limit: int | None = None) -> List[PatologiaBambino]:
         return self.__repository.find_all(limit)

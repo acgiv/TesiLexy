@@ -1,23 +1,60 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import {Router} from "@angular/router";
+import {CaroselloComponent} from "../../carosello/carosello.component";
+import {SocketService} from "./socket.service";
+import {NgForOf} from "@angular/common";
+import {Bambino, RiquestService} from "./riquest.service";
+import {AccessService} from "../../access.service";
+
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-    imports: [
-        FaIconComponent
-    ],
+  imports: [
+    FaIconComponent,
+    CaroselloComponent,
+    NgForOf
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent {
+export class DashboardComponent implements  OnInit{
+  list_user: Bambino[] = [];
+  prova: { title: string, linkText: string }[]  = [];
 
-  protected readonly faPlus = faPlus;
-  constructor( private router: Router) {
+
+  constructor(
+               private socketService: SocketService,
+               private  riquestDashBoard: RiquestService,
+               private accessService:  AccessService) {
   }
-  createBambino() {
-     this.router.navigate(['/terapista/dashboard/inserisciPaziente']).then(() => {});
-  }
+
+  ngOnInit(): void {
+      this.riquestDashBoard.RiquestChild({"id_terapista": this.accessService.getId()}).subscribe(data => {
+       let bambino: Bambino;
+        for(const element of data.response.list_child){
+          bambino = {
+            nome: element.nome,
+            cognome: element.cognome,
+            email: element.email,
+            id_bambino: element.id_bambino,
+            username: element.username,
+            controllo_terapista: element.controllo_terapista,
+            data_nascita: element.data_nascita,
+            descrizione: element.descrizione,
+            id_terapista: element.id_terapista,
+            id_utente:element.id_utente,
+            patologie:element.patologie,
+            tipologia:element.tipologia,
+            terapista_associati:element.terapista_associati
+          }
+          this.list_user.push(bambino)
+        }
+      })
+
+      this.socketService.getMessage().subscribe((message: any) => {
+        this.prova.push(message); // Aggiungi il campo corretto in base alla risposta del server
+      });
+    }
+
 }

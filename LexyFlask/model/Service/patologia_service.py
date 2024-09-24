@@ -51,3 +51,6 @@ class PatologiaService(PatologiaServiceInterface, ABC):
 
     def get_find_in_list(self, list_patologia: list[str]) -> Union[List[Patologia], None]:
         return self.__patologia_dao.find_in_list(list_patologia)
+
+    def get_find_id_by_name(self, nome_patologia: str) -> Union[int, None]:
+        return self.__patologia_dao.find_id_by_name(nome_patologia=nome_patologia)

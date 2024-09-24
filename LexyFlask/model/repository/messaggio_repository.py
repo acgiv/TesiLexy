@@ -68,7 +68,7 @@ class MessaggioRepository(BaseDao, ABC):
             current_app.web_logger.error(f"Errore durante la ricerca di tutte le messaggio: {str(e)}")
             return list()
 
-    def find_all_by_id(self, id_messaggio: int) -> Union[List, None]:
+    def find_all_by_id(self, id_messaggio: int, type_search: Union[str, None] = None) -> Union[List, None]:
         try:
             return Messaggio.query.filter_by(_id_messaggio=id_messaggio).first()
         except SQLAlchemyError as e:

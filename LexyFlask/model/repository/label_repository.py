@@ -42,9 +42,9 @@ class LabelRepository(BaseDao, ABC):
     def find_all(self, limit: int | None) -> List[Label] | None:
         return Label.query.order_by(Label.id_label).limit(limit).all()
 
-    def find_all_by_id(self, id_entity: int) -> Union[List, None]:
+    def find_all_by_id(self, id_label: int, type_search: Union[str, None] = None) -> Union[List, None]:
         try:
-            return Label.query.filter_by(_id_label=id_entity).first()
+            return Label.query.filter_by(_id_label=id_label).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None

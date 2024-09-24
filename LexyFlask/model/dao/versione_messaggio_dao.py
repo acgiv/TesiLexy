@@ -21,10 +21,8 @@ class VersioneMessaggioDao(BaseDao):
     def update(self, versione_messaggio: Union[VersioneMessaggio, List[VersioneMessaggio]]) -> None:
         self.__repository.update(versione_messaggio)
 
-    def find_all_by_id(self, id_versione_messaggio: int) -> Union[List, None]:
-        return self.__repository.find_all_by_id(id_versione_messaggio)
+    def find_all_by_id(self, id_versione_messaggio: int, type_search: Union[str, None] = None) -> Union[List, None]:
+        return self.__repository.find_all_by_id(id_versione_messaggio, type_search=type_search)
 
     def find_all(self, limit: int | None = None) -> list[Type[VersioneMessaggio]]:
         return self.__repository.find_all(limit)
-
-

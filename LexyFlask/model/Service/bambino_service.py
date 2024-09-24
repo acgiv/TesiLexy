@@ -46,7 +46,7 @@ class BambinoService(BambinoServiceInterface, ABC):
     def get_find_all_bambino(self,  limit: Union[int, None]) -> Union[List, None]:
         return self.__bambino_dao.find_all(limit)
 
-    def get_find_all_by_id_bambino(self, id_bambino: int) -> Union[List, None]:
+    def get_find_all_by_id_bambino(self, id_bambino: int) -> Union[List[Bambino], None]:
         return self.__bambino_dao.find_all_by_id(id_bambino)
 
     def find_by_username_and_password(self, username: str, password: str) -> Union[Bambino, None]:

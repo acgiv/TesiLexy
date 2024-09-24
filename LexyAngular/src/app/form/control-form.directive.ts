@@ -9,31 +9,48 @@ import { Subscription } from 'rxjs';
 })
 export class ControlFormDirective implements OnDestroy{
 
-   form:  FormInput[]  =[];
+   public form:  FormInput[] ;
    subscription: Subscription = new Subscription();
    private group: any;
     constructor() {
+      this.form =[];
     }
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
+        this.form =[];
     }
 
    setAllValidator(formBuilder:  FormBuilder):any  {
       const formControls = this.form.reduce((acc:{ [key: string]: any[] }, curr) => {
-        acc[curr.input.name] = ['', curr.input.validator];
+         if(curr.tipeInput && curr.tipeInput=== "Select"){
+                acc[curr.input.name] = [curr.input.value, curr.input.validator];
+                acc['search'+curr.input.name]=[''];
+            } else if(curr.input.value){
+              acc[curr.input.name] = [curr.input.value, curr.input.validator];
+            }else{
+              acc[curr.input.name] = ['', curr.input.validator];
+         }
         return acc;
         }, {});
        this.group = formBuilder.group(formControls);
-        this.setEqualsEndDisable();
-        return this.group ;
+
+       this.setEqualsEndDisable();
+       return this.group ;
      }
 
    setRangeValidator(formBuilder:  FormBuilder, startRange: number, endRange:number){
        const formControls = this.form.reduce((acc:{ [key: string]: any[] }, curr, index) => {
          if ( index >= startRange && index < endRange) {
-            acc[curr.input.name] = ['', curr.input.validator];
-          }
+            if(curr.tipeInput && curr.tipeInput=== "Select"){
+                acc[curr.input.name] = [curr.input.value, curr.input.validator];
+                acc['search'+curr.input.name]=[''];
+            } else if(curr.input.value){
+              acc[curr.input.name] = [curr.input.value, curr.input.validator];
+            }else{
+              acc[curr.input.name] = ['', curr.input.validator];
+            }
+        }
         return acc;
         }, {});
         this.group = formBuilder.group(formControls);
@@ -41,7 +58,7 @@ export class ControlFormDirective implements OnDestroy{
         return  this.group;
    }
 
-   private setEqualsEndDisable(){
+    setEqualsEndDisable(){
           this.form.forEach(curr => {
             if(curr.input.dependency?.typeControl === "equals"){
                this.setValidatorEquals( this.group, curr);

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
 
 import {JsonPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -24,7 +24,7 @@ import {faInfoCircle} from "@fortawesome/free-solid-svg-icons/faInfoCircle";
   styleUrl: './input-select.component.css',
   encapsulation: ViewEncapsulation.None
 })
-export class InputSelectComponent implements OnInit {
+export class InputSelectComponent implements OnInit, OnChanges {
    @Input() elem!: FormInput;
    @Input() list_elem! :string[];
    @Input() formGroup!: FormGroup;
@@ -46,11 +46,13 @@ export class InputSelectComponent implements OnInit {
   ngOnInit() {
     this.search_name = 'search'+this.elem.input.name;
     this.component_name = this.elem.input.name;
+
     const control = this.formGroup.get(this.search_name);
     if (control) {
       this.subscription.add(
-        control.valueChanges.subscribe((input: string) => {
-          const filtered = this.list_elem.filter((pa: string) => pa.toLowerCase().includes(input.toLowerCase()));
+        control.valueChanges.subscribe((input: string ) => {
+          const filtered = this.list_elem.filter((pa: string | null) => pa != null)
+          .filter((pa: string) => pa.toLowerCase().includes(input.toLowerCase()));
           if (filtered.length >= 1 && input.length != 0) {
             if (this.elementFocused != filtered[0] && input.length != 0) {
               this.removeFocusedSearch(this.elementFocused);
@@ -62,9 +64,12 @@ export class InputSelectComponent implements OnInit {
             }
           }
         })
-
      );
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+      this.formGroup.get(this.component_name)?.updateValueAndValidity();
   }
 
   removeFocusedSearch(elementFocus :string){
@@ -76,8 +81,9 @@ export class InputSelectComponent implements OnInit {
    selectPatologia() {
     this.clickablePatologia = !this.clickablePatologia;
     this.removeFocusedSearch(this.elementFocused);
-    this.formGroup.get(this.search_name)?.reset();
+    this.formGroup.get(this.search_name)?.setValue("");
     this.formGroup.get(this.component_name)?.markAsTouched();
+    this.formGroup.get(this.component_name)?.updateValueAndValidity()
 
   }
 
@@ -85,7 +91,7 @@ export class InputSelectComponent implements OnInit {
     this.formGroup.get(this.component_name)?.markAsDirty();
     this.selectItemMenu(patologia,this.formGroup.get(this.component_name)?.value);
     this.clickablePatologia = false;
-    this.formGroup.get(this.search_name)?.reset();
+    this.formGroup.get(this.search_name)?.setValue("");
   }
 
   selectItemMenu(item: any, lista: any): void {
@@ -108,6 +114,7 @@ export class InputSelectComponent implements OnInit {
 
   removeSelect(patologia: any) {
     this.selectItemMenu(patologia,this.formGroup.get(this.component_name)?.value);
+    this.clickablePatologia = !this.clickablePatologia;
   }
 
   onKeydown(event: KeyboardEvent) {
@@ -134,4 +141,8 @@ export class InputSelectComponent implements OnInit {
     }
     return null;
   }
+
+   protected get_element_name_form() {
+     return this.elem.input.placeholder ? this.elem.input.placeholder : ''
+   }
 }

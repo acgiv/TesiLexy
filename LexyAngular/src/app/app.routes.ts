@@ -5,7 +5,7 @@ import {RegistratiComponent} from "./terapista/registrati/registrati.component";
 import {ChatComponent} from "./chat/chat.component";
 import {RecuperoPasswordComponent} from "./recupero/recupero-password.component";
 import {DashboardComponent} from "./terapista/dashboard/dashboard.component";
-import {InscrizioneBambinoComponent} from "./terapista/inscrizione-bambino/inscrizione-bambino.component";
+import {BambinoComponent} from "./terapista/bambino/bambino.component";
 
 export const routes: Routes = [
   {path:'', component: HomeComponent},
@@ -18,5 +18,6 @@ export const routes: Routes = [
   {path:'terapista/recuperoPassword', component:  RecuperoPasswordComponent},
   {path:'recuperoPassword', component: RecuperoPasswordComponent},
   {path:'terapista/dashboard', component: DashboardComponent},
-  {path:'terapista/dashboard/inserisciPaziente', component: InscrizioneBambinoComponent},
+  { path: 'terapista/dashboard/inserisciPaziente', component: BambinoComponent },
+  { path: 'terapista/dashboard/visualizzaPaziente', component: BambinoComponent }
 ];

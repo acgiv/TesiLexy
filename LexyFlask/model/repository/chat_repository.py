@@ -3,7 +3,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from extensions import db
 from model.dao.base_dao import BaseDao
 from model.entity.chat import Chat
-from model.entity.terapista import Terapista
 from flask import current_app
 
 
@@ -66,33 +65,10 @@ class ChatRepository(BaseDao):
             current_app.web_logger.error(f"Errore durante la ricerca di tutte le chat: {str(e)}")
             return []
 
-    def find_all_by_id(self, id_chat: int) -> Union[List, None]:
+    def find_all_by_id(self, id_chat: int, type_search: Union[str, None] = None) -> Union[List, None]:
         try:
             return Chat.query.filter_by(_id_chat=id_chat).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None
 
-    @staticmethod
-    def find_all_User_Chat(user_filter: Any) -> list[Type[Chat]]:
-        """
-               Trova tutti i messaggi di chat in base a un filtro utente.
-               Args:
-                   user_filter: Condizione SQLAlchemy per filtrare i messaggi della chat in base all'utente.
-                                È possibile combinare condizioni con and_() e or_().
-               Returns:
-                   Una lista di oggetti Chat che soddisfano il filtro utente.
-
-               Example:
-                   Per trovare tutti i messaggi della chat dell'utente con nome utente "Alicea" o "Giovanna"
-                   e che sono stati creati dopo una certa data:
-                   username_filter = or_(User.username == "Alicea", User.username == "Giovanna")
-                   date_filter = User.data_creazione > datetime.datetime(2023, 1, 1)
-                   user_filter = and_(username_filter, date_filter)
-                   NomeClasse.find_all_User_Chat(user_filter)
-               """
-        try:
-            return db.session.query(Chat, Terapista).join(Terapista).filter(user_filter).all()
-        except SQLAlchemyError as e:
-            current_app.web_logger.error(f"Errore durante la ricerca di tutte le chat: {str(e)}")
-            return []

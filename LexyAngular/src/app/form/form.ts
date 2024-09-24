@@ -5,6 +5,7 @@ export interface FormInput {
   tipeInput?: string;
   label: Label;
   input: Input;
+
   insertEmoji: boolean;
   positionEmoji?: string;
   emoji?: IconProp;
@@ -31,6 +32,7 @@ export interface Input {
   typeText: string; // text, data, password
   style?: string;
   class: string;
+  value?:string | string[];
   placeholder?: string; // testo di spiegazione nel caso in cui l'input e vuoto
   validator: ValidatorFn[]; // contiene tutte le regex da validare e il required nel caso lo si inserisce
   errorMessages: { [key: string]: string };  // conterra i messaggi che si vuole far visualizzare

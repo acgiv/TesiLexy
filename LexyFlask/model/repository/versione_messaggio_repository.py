@@ -70,7 +70,7 @@ class VersioneMessaggioRepository(BaseDao, ABC):
             current_app.web_logger.error(f"Errore durante la ricerca di tutte le versione_messaggio: {str(e)}")
             return list()
 
-    def find_all_by_id(self, id_versione_messaggio: int) -> Union[List, None]:
+    def find_all_by_id(self, id_versione_messaggio: int, type_search: Union[str, None] = None) -> Union[List, None]:
         try:
             return VersioneMessaggio.query.filter_by(_id_versione_messaggio=id_versione_messaggio).first()
         except SQLAlchemyError as e:

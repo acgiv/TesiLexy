@@ -63,9 +63,9 @@ class PatologiaBambinoReposistory(BaseDao, ABC):
             current_app.web_logger.error(f"Errore durante la ricerca di tutti i logopedisti: {str(e)}")
             return list()
 
-    def find_all_by_id(self, idpatologia: int) -> Union[List, None]:
+    def find_all_by_id(self, id_patologia: int, type_search: Union[str, None] = None) -> Union[List, None]:
         try:
-            return PatologiaBambino.query.filter_by(_id_patologia_bambino=idpatologia).first()
+            return PatologiaBambino.query.filter_by(_id_patologia_bambino=id_patologia).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None

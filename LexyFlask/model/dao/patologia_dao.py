@@ -21,11 +21,14 @@ class PatologiaDao(BaseDao):
     def update(self, patologia: Union[Patologia, List[Patologia]]) -> None:
         self.__repository.update(patologia)
 
-    def find_all_by_id(self, id_patologia: int) -> Union[List[Patologia], None]:
-        return self.__repository.find_all_by_id(id_patologia)
+    def find_all_by_id(self, id_patologia: int, type_search: Union[str, None] = None) -> Union[List, None]:
+        return self.__repository.find_all_by_id(id_patologia, type_search=type_search)
 
     def find_all(self, limit: int | None = None) -> list[Patologia] | None:
         return self.__repository.find_all(limit)
 
     def find_in_list(self, list_patologia: list[str]) -> list[Patologia] | None:
         return self.__repository.find_in_list(list_patologia=list_patologia)
+
+    def find_id_by_name(self, nome_patologia: str) -> Union[int, None]:
+        return self.__repository.find_id_by_name(nome_patologia=nome_patologia)

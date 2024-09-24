@@ -30,6 +30,12 @@ class Patologia(db.Model):
     def nome_patologia(self, value: str) -> None:
         self._nome_patologia = value
 
+    def to_dict(self):
+        return {
+            "id_patologia": self._id_patologia,
+            "nome_patologia": self._nome_patologia
+        }
+
     def __repr__(self):
         return f"<Patologia(idpatologia={self._id_patologia}, nome_patologia='{self._nome_patologia}')>"
 
