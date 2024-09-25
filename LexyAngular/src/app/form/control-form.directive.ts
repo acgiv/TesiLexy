@@ -1,6 +1,6 @@
 import {Directive, OnDestroy} from '@angular/core';
 import { FormInput} from "./form";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn} from "@angular/forms";
 import { Subscription } from 'rxjs';
 
 @Directive({
@@ -11,7 +11,7 @@ export class ControlFormDirective implements OnDestroy{
 
    public form:  FormInput[] ;
    subscription: Subscription = new Subscription();
-   private group: any;
+   public  group: any;
     constructor() {
       this.form =[];
     }
@@ -23,33 +23,29 @@ export class ControlFormDirective implements OnDestroy{
 
    setAllValidator(formBuilder:  FormBuilder):any  {
       const formControls = this.form.reduce((acc:{ [key: string]: any[] }, curr) => {
-         if(curr.tipeInput && curr.tipeInput=== "Select"){
-                acc[curr.input.name] = [curr.input.value, curr.input.validator];
-                acc['search'+curr.input.name]=[''];
-            } else if(curr.input.value){
-              acc[curr.input.name] = [curr.input.value, curr.input.validator];
-            }else{
-              acc[curr.input.name] = ['', curr.input.validator];
-         }
-        return acc;
+
+        return this.set_validator(curr, acc);
         }, {});
        this.group = formBuilder.group(formControls);
-
        this.setEqualsEndDisable();
        return this.group ;
      }
+   private set_validator(curr: FormInput , acc:{ [key: string]: any[]}):any{
+       if(curr.tipeInput && curr.tipeInput === "Select"){
+              acc[curr.input.name] = [curr.input.value, curr.input.validator];
+              acc['search'+curr.input.name]=[''];
+          } else if(curr.input.value){
+            acc[curr.input.name] = [curr.input.value, curr.input.validator];
+          }else{
+            acc[curr.input.name] = ['', curr.input.validator];
+       }
+       return acc
+  }
 
    setRangeValidator(formBuilder:  FormBuilder, startRange: number, endRange:number){
        const formControls = this.form.reduce((acc:{ [key: string]: any[] }, curr, index) => {
          if ( index >= startRange && index < endRange) {
-            if(curr.tipeInput && curr.tipeInput=== "Select"){
-                acc[curr.input.name] = [curr.input.value, curr.input.validator];
-                acc['search'+curr.input.name]=[''];
-            } else if(curr.input.value){
-              acc[curr.input.name] = [curr.input.value, curr.input.validator];
-            }else{
-              acc[curr.input.name] = ['', curr.input.validator];
-            }
+             acc =  this.set_validator(curr, acc);
         }
         return acc;
         }, {});
@@ -101,5 +97,8 @@ export class ControlFormDirective implements OnDestroy{
       formGroup.clearValidators();
       return formGroup;
    }
+
+
+
 
 }

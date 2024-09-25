@@ -17,7 +17,7 @@ export class BambinoService {
 
 
   registerChild(body: any): Observable<any> {
-   const headers = new HttpHeaders({'Content-Type': 'application/json', 'User-Agent': 'Custom'});
+   const headers = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<RegisterChild>(this.url +'registerchild', body, {headers});
   }
 

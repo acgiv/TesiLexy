@@ -12,11 +12,11 @@
   </label>
 
   <input *ngIf="elem.input.disabled" class="form-control pass rounded rounded-1  border  border-dark "  [value]="(formGroup.get(this.get_element_name_form())?.value).join(', ')" disabled>
-  <div *ngIf="!elem.input.disabled"  [ngClass]="'dropdown border border-1 rounded  '+ (getErrors(elem.input.name) && !this.clickablePatologia? 'border-danger':'border-dark') ">
+  <div *ngIf="!elem.input.disabled"  [ngClass]="'dropdown border border-1 rounded  '+ (getErrors(elem.input.name) ? 'border-danger':'border-dark') ">
     <button   [id]="elem.input.id" (click)="selectPatologia()" [class]="elem.input.class "
               [type]="elem.input.typeText" data-bs-toggle="dropdown" aria-expanded="false"
      >
-     <span [ngClass]="'dropdown-toggle position-absolute me-3 end-0 ' + (getErrors(elem.input.name)  ? 'text-danger': '')  "></span>
+     <span [ngClass]="'dropdown-toggle position-absolute me-3 end-0 ' + (getErrors(elem.input.name)   ? 'text-danger': '')  "></span>
       <span class="d-flex flex-wrap" *ngIf="formGroup.get(this.get_element_name_form())?.value[0] != elem.input.placeholder|| (formGroup.get(this.get_element_name_form())?.value).length !=1 ">
         <span *ngFor="let p of (formGroup.get(this.get_element_name_form())?.value)" class="me-1 pt-1 bg-body-tertiary">
           <span  class="border border-1 pe-1 ps-1 border-dark rounded  ">

@@ -13,7 +13,7 @@ import {JsonPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {RegisterService} from "./service/register.service";
 import {sha256} from "js-sha256";
 import {catchError, of, tap} from "rxjs";
-import {Register, RegisterBody} from "./register";
+import { RegisterBody} from "./register";
 import {AccessService} from "../../access.service";
 import {Router} from "@angular/router";
 import {InputTextComponent} from "../../form/input_text/input_text.component";

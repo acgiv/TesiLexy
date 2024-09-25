@@ -1,4 +1,4 @@
-import {AbstractControl, FormControl,  ValidatorFn} from "@angular/forms";
+import {AbstractControl, FormControl, ValidatorFn} from "@angular/forms";
 
 
 
@@ -60,3 +60,6 @@ export function dataValidator( errorKey: string,  anni: number, current_date:Dat
     }
   };
 }
+
+
+

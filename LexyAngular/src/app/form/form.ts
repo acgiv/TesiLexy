@@ -40,6 +40,7 @@ export interface Input {
   maxLength?:number;
   dependency?: Dependency;
   disabled?:boolean;
+  error_custom?:boolean;
 }
 
 export interface Dependency {

@@ -113,7 +113,7 @@ export class RecuperoPasswordComponent implements OnInit{
             disabled:true,
             validator: [
               Validators.required,
-              multiPatternValidator([]
+              multiPatternValidator([],
               )
             ],
             errorMessages: {

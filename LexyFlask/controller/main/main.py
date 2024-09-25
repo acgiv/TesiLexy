@@ -8,6 +8,8 @@ from flask import Blueprint, request, jsonify
 from model.Service.user_service import UtenteService
 import configparser
 
+from model.entity.utente import Utente
+
 config = configparser.ConfigParser()
 config.read(".\\gobal_variable.ini")
 
@@ -75,9 +77,10 @@ def check_email(utente: UtenteService):
     try:
         email = request.json["email"]
         result, is_email = check_username_exists(utente, email, "email")
+
         if is_email:
-            result["found"] = "YES"
-            return jsonify(args=result, status=200, mimetype=config["REQUEST"]["content_type"])
+            result2 = {**result, "found": "YES"}
+            return jsonify(args=result2, status=200, mimetype=config["REQUEST"]["content_type"])
         else:
             return jsonify(args={"found": "NO", 'id_utente': 0, 'username': '', 'email': ''}, status=200,
                            mimetype='application/json')
@@ -99,7 +102,6 @@ def change_password(utente: UtenteService):
         else:
             return jsonify(args={"change": False}, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:
-        print(key)
         return {"errorKey": f"not found this key: {key}"}
 
 
@@ -130,7 +132,7 @@ def check_username_exists(user_service: UtenteService, parameter: str, select_ty
     elif select_type.__eq__('username'):
         result["result"] = user_service.find_by_username(parameter)
     if result["result"]:
-        return result["result"].to_dict, True
+        return result["result"].to_dict(), True
     return None, False
 
 

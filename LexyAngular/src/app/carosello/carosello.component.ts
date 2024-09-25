@@ -47,7 +47,7 @@ export class CaroselloComponent implements AfterViewInit {
       breakpoints: {
         1920: { slidesPerView: 4 },
         992: { slidesPerView: 3 },
-        520: { slidesPerView: 2 },
+        694: { slidesPerView: 2 },
         320: { slidesPerView: 1 }
       }
     };

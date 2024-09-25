@@ -5,7 +5,8 @@ import {RegistratiComponent} from "./terapista/registrati/registrati.component";
 import {ChatComponent} from "./chat/chat.component";
 import {RecuperoPasswordComponent} from "./recupero/recupero-password.component";
 import {DashboardComponent} from "./terapista/dashboard/dashboard.component";
-import {BambinoComponent} from "./terapista/bambino/bambino.component";
+import {BambinoComponent} from "./terapista/bambino/bambino/bambino.component";
+
 
 export const routes: Routes = [
   {path:'', component: HomeComponent},

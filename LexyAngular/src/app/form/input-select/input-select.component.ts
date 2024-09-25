@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 
 import {JsonPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -24,7 +24,7 @@ import {faInfoCircle} from "@fortawesome/free-solid-svg-icons/faInfoCircle";
   styleUrl: './input-select.component.css',
   encapsulation: ViewEncapsulation.None
 })
-export class InputSelectComponent implements OnInit, OnChanges {
+export class InputSelectComponent implements OnInit{
    @Input() elem!: FormInput;
    @Input() list_elem! :string[];
    @Input() formGroup!: FormGroup;
@@ -68,9 +68,7 @@ export class InputSelectComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-      this.formGroup.get(this.component_name)?.updateValueAndValidity();
-  }
+
 
   removeFocusedSearch(elementFocus :string){
      const element = document.getElementById(elementFocus);
