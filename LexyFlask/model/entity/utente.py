@@ -18,6 +18,10 @@ class Utente(db.Model):
     _priority_email = 4
     _priority_tiologia = 5
 
+    __mapper_args__ = {
+        'polymorphic_on': _tipologia,
+    }
+
     _messaggi = db.relationship("Messaggio", back_populates="_utente")
     _chat = db.relationship("Chat", back_populates="_utente")
 
@@ -70,3 +74,8 @@ class Utente(db.Model):
             "email": self._email,
             "tipologia": self._tipologia
         }
+
+class Terapista(Utente):
+    __mapper_args__ = {
+        'polymorphic_identity': 'terapista',
+    }

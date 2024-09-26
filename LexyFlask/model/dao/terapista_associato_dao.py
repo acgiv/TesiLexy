@@ -29,3 +29,9 @@ class BambinoAssociatoDao(BaseDao):
 
     def find_by_email_terapista(self, id_search: uuid, ) -> Union[List[str], None]:
         return self.__repository.find_by_email_terapista(id_search)
+
+    def find_all_terapisti_associati(self, id_search: uuid, id_terapista: uuid) -> Union[List[TerapistaAssociato], None]:
+        return self.__repository.find_all_terapisti_associati(id_search, id_terapista)
+
+    def find_all_terapista_by_email(self, email_search: str) -> Union[TerapistaAssociato, None]:
+        return self.__repository.find_all_terapista_by_email(email_search)

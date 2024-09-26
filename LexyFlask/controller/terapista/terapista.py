@@ -7,7 +7,7 @@ from model.Service.terapista_associato_service import TerapistaAssociatoService
 from model.Service.user_service import UtenteService
 from model.entity.bambino import Bambino
 from model.entity.patologia import Patologia
-from controller.main.main import check_credential
+from controller.main.main import check_credential, check_username_exists, set_error_message_response
 import configparser
 import uuid
 import hashlib
@@ -90,7 +90,8 @@ def create_child(child: BambinoService, pathology: PatologiaService, user_servic
             if parameters["terapisti_associati"]:
                 insert_associaton_therapist_child(id_child=bambino.id_bambino,
                                                   list_email=parameters["terapisti_associati"],
-                                                  user_service=user_service, terapista_child=terapista_child_service
+                                                  user_service=user_service, terapista_child=terapista_child_service,
+                                                  operation="insert"
                                                   )
             terapista_child_service.insert(TerapistaAssociato(bambino.id_bambino, bambino.id_terapista))
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
@@ -111,14 +112,17 @@ def insert_pathology(pathology: list[Patologia] | None, pathology_service: Patol
 
 
 def insert_associaton_therapist_child(id_child: uuid, list_email: List[str], user_service: UtenteService,
-                                      terapista_child: TerapistaAssociatoService):
+                                      terapista_child: TerapistaAssociatoService, operation: str):
     associaton_child: list[TerapistaAssociato] = []
     if id_child:
         for el in list_email:
             id_user = user_service.find_by_email(el).id_utente
             if id_user:
                 associaton_child.append(TerapistaAssociato(id_child, id_user))
-        terapista_child.insert(associaton_child)
+        if operation.__eq__("insert"):
+            terapista_child.insert(associaton_child)
+        else:
+            terapista_child.update(associaton_child)
 
 
 @terapista.route('/pathology_list', methods=["GET"])
@@ -185,3 +189,49 @@ def find_child_therapist(
 @socketio.on('message')
 def handle_message(message):
     print(message)
+
+
+@terapista.route('/updatechild', methods=["POST"])
+def update_child(child: BambinoService, user_service: UtenteService,
+                 pa_bambino_service: PatologiaBambinoService,
+                 terapista_child_service: TerapistaAssociatoService,
+                 pathology: PatologiaService):
+    try:
+        parameters = dict()
+        response_copy = response.copy()
+        response_copy["error"]["number_error"] = 0
+        response_copy["error"]["message"].clear()
+        parameters["email"] = request.json["email"]
+        parameters["id_bambino"] = request.json["id_bambino"]
+        parameters["nome"] = request.json["nome"]
+        parameters["cognome"] = request.json["cognome"]
+        parameters["username"] = request.json["username"]
+        parameters["data"] = request.json["data"]
+        parameters["descrizione"] = request.json["descrizione"]
+        parameters["patologie"] = request.json["patologie"]
+        parameters["id_terapista"] = request.json["id_terapista"]
+        parameters["validazione_terapista"] = request.json["controllo_terapista"]
+        parameters["terapisti_associati"] = request.json["terapisti_associati"]
+        parameters["update_value"] = request.json["update_value"]
+        user = user_service.get_find_all_by_id_utente(parameters["id_bambino"])
+        if user:
+            if "Email" in parameters["update_value"]:
+                _, is_email = check_username_exists(user_service, parameters["email"], "email")
+                if is_email:
+                    set_error_message_response(response_copy, {"email": "Esiste gia un utente con questa email"})
+            if response_copy["error"]["number_error"].__eq__(0):
+                bambino = Bambino(id_bambino=parameters["id_bambino"], id_utente=parameters["id_bambino"],
+                                  email=parameters["email"], username=parameters["username"],
+                                  controllo_terapista=parameters["validazione_terapista"],
+                                  id_terapista=parameters["id_terapista"], cognome=parameters["cognome"],
+                                  descrizione=parameters["descrizione"], data_nascita=parameters["data"],
+                                  nome=parameters["nome"], password=user.password)
+                child.update_bambino(bambino=bambino)
+            if "Patologie" in parameters["update_value"]:
+                insert_pathology(is_not_exist_pathology(parameters["patologie"], pathology), pathology)
+                pa_bambino_service.update_patologie(parameters["id_bambino"], parameters["patologie"])
+            if "Terapisti" in parameters["update_value"]:
+                terapista_child_service.update_terapisti_associati(parameters["id_bambino"], parameters["id_terapista"], parameters["terapisti_associati"])
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+    except KeyError as key:
+        return {"errorKey": f"not found this key: {key}"}

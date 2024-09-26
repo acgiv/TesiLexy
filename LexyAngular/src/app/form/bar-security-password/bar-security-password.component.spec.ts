@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BaarSecurityPasswordComponent } from './bar-security-password.component';
+import {  BarSecurityPasswordComponent } from './bar-security-password.component';
 
-describe('BaarSecurityPasswordComponent', () => {
-  let component: BaarSecurityPasswordComponent;
-  let fixture: ComponentFixture<BaarSecurityPasswordComponent>;
+describe(' BarSecurityPasswordComponent', () => {
+  let component:  BarSecurityPasswordComponent;
+  let fixture: ComponentFixture< BarSecurityPasswordComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BaarSecurityPasswordComponent]
+      imports: [ BarSecurityPasswordComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(BaarSecurityPasswordComponent);
+    fixture = TestBed.createComponent( BarSecurityPasswordComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

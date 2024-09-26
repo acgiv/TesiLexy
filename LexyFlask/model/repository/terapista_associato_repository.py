@@ -3,6 +3,8 @@ from typing import Union, List
 import uuid
 from sqlalchemy.exc import SQLAlchemyError
 from flask import current_app
+from sqlalchemy.orm import aliased
+
 from model.dao.base_dao import BaseDao
 from extensions import db
 from model.entity.terapista_associato import TerapistaAssociato
@@ -78,8 +80,34 @@ class TerapistaAssociatoRepository(BaseDao, ABC):
     def find_by_email_terapista(self, id_search: uuid, ) -> Union[List[str], None]:
         try:
             return self.database.query(Utente._email).join(self.bambino_terapista,
-                                                          self.bambino_terapista._idterapista == Utente._id_utente).filter(
+                                                           self.bambino_terapista._idterapista == Utente._id_utente).filter(
                 self.bambino_terapista._idbambino == id_search).all()
+        except SQLAlchemyError as e:
+            current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
+        return None
+
+    def find_all_terapisti_associati(self, id_search: uuid, id_terapista: uuid) -> Union[
+        List[TerapistaAssociato], None]:
+        try:
+            terapista_alias = aliased(Utente)
+            return (self.bambino_terapista.query
+                    .join(terapista_alias, self.bambino_terapista._idterapista == terapista_alias._id_utente)
+                    .with_entities(self.bambino_terapista, terapista_alias._email)
+                    .filter(self.bambino_terapista._idbambino == id_search,
+                            self.bambino_terapista._idterapista != id_terapista)
+                    .all())
+        except SQLAlchemyError as e:
+            current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
+        return None
+
+    def find_all_terapista_by_email(self, email_search: str) -> Union[TerapistaAssociato, None]:
+        try:
+            terapista_alias = aliased(Utente)
+            return (self.bambino_terapista.query
+                    .join(terapista_alias, self.bambino_terapista._idterapista == terapista_alias._id_utente)
+                    .with_entities(self.bambino_terapista)
+                    .filter(terapista_alias._email.ilike(f'{email_search}'))
+                    .first())
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
         return None

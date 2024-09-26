@@ -5,7 +5,7 @@ from injector import inject
 from model.repository.patologia_bambino_repository import PatologiaBambinoReposistory
 from model.dao.base_dao import BaseDao
 from model.entity.patologiaBambino import PatologiaBambino
-
+import uuid
 
 class PatologiaBambinoDao(BaseDao):
     @inject
@@ -23,6 +23,9 @@ class PatologiaBambinoDao(BaseDao):
 
     def find_all_by_id(self, id_patologia: int, type_search: Union[str, None] = None) -> Union[List, None]:
         return self.__repository.find_all_by_id(id_patologia, type_search=type_search)
+
+    def get_find_by_id_bambino(self, id_bambino: uuid, limit: Union[int, None]) -> Union[List[PatologiaBambino], None]:
+        return self.__repository.get_find_by_id_bambino(id_bambino, limit)
 
     def find_all(self, limit: int | None = None) -> List[PatologiaBambino]:
         return self.__repository.find_all(limit)

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { of } from 'rxjs';
 import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {
@@ -11,7 +11,7 @@ describe('HeaderComponent', () => {
       imports: [HeaderComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

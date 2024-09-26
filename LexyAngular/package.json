@@ -34,6 +34,7 @@
     "socket.io-client": "^4.7.5",
     "swiper": "^11.1.14",
     "tslib": "^2.3.0",
+    "underscore": "^1.13.7",
     "util": "^0.12.5",
     "zone.js": "~0.14.10"
   },

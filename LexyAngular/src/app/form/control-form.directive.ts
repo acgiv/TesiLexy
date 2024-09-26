@@ -1,6 +1,6 @@
 import {Directive, OnDestroy} from '@angular/core';
 import { FormInput} from "./form";
-import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn} from "@angular/forms";
+import { FormBuilder, FormGroup} from "@angular/forms";
 import { Subscription } from 'rxjs';
 
 @Directive({

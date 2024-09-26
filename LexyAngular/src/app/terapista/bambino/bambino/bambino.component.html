@@ -51,8 +51,8 @@
        <div class="d-flex  mb-5 justify-content-center ">
           <div class="flex-column-reverse mt-4">
              <button class="btn btn-primary ps-4 pe-4  " type="submit" (click)="createBambino()">
-              <span class="h6">{{this.is_url_ceck() == "Visualizza"?"Modifica": "Crea"}} Paziente</span></button>
-            <button *ngIf="is_modifica" class="btn btn-secondary ps-4 pe-4 ms-4 btn_annulla " type="submit" (click)="AnnullaModifiche()">
+              <span class="h6">{{this.is_url_ceck() == "Visualizza"?"Modifica": (!this.is_modifica?  "Crea": "Conferma Modifica ")}} Paziente</span></button>
+            <button *ngIf="is_modifica" class="btn btn-secondary ps-4 pe-4 ms-4 btn_annulla " type="submit" (click)="annulla_modifiche()">
             <span class="h6">Annulla</span></button>
           </div>
        </div>

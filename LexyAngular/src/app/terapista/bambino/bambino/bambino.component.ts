@@ -2,12 +2,12 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ControlFormDirective} from "../../../form/control-form.directive";
 import {Router} from "@angular/router";
-import {BambinoService, RegisterChild} from "./bambino.service";
+import {BambinoService, RegisterChild, UpdateChild} from "./bambino.service";
 import {AccessService} from "../../../access.service";
 import {
   dataValidator,
   multiPatternValidator,
-  multiPatternValidatorSelect
+  multiPatternValidatorSelect,
 } from "../../../form/Validator/validator";
 import {InputSelectComponent} from "../../../form/input-select/input-select.component";
 import {InputTextComponent} from "../../../form/input_text/input_text.component";
@@ -15,6 +15,7 @@ import {NgForOf, NgIf} from "@angular/common";
 import {Bambino} from "../../dashboard/riquest.service";
 import {cloneDeep} from "lodash";
 import {catchError, of, tap} from "rxjs";
+import {StringUtilsService} from "../../../Utilitys/string-utils.service";
 
 @Component({
   selector: 'app-bambino',
@@ -44,7 +45,8 @@ export class BambinoComponent implements OnInit, OnDestroy{
               protected formD: ControlFormDirective,
               private router: Router,
               private InscrizioneBambinoService : BambinoService,
-              private accessService:  AccessService
+              private accessService:  AccessService,
+              private stringUtils : StringUtilsService
   ) {
     this.url = this.router.url.split("/").at(-1);
     this.formGroup = this.fb.group({});
@@ -332,8 +334,8 @@ export class BambinoComponent implements OnInit, OnDestroy{
    set_initialize_formgroup(){
       this.formD.setEqualsEndDisable();
       this.formGroup.addControl("Descrizione", new FormControl(this.bambino?.descrizione? this.bambino.descrizione : ""));
-      this.formGroup.addControl('AssociaTerapisti', new FormControl( this.bambino?.terapista_associati.length !== 0 ? this.bambino?.terapista_associati : false));
-      this.formGroup.addControl('ValidazioneTerapista', new FormControl( this.bambino?.controllo_terapista ? this.bambino.controllo_terapista : true));
+      this.formGroup.addControl('AssociaTerapisti', new FormControl( this.bambino?.terapista_associati.length !== 0));
+      this.formGroup.addControl('ValidazioneTerapista', new FormControl( this.bambino?.controllo_terapista ));
      if(this.is_url_ceck() ==='Visualizza'){
          this.formGroup.get("Descrizione")?.disable();
          this.formGroup.get("ValidazioneTerapista")?.disable();
@@ -369,7 +371,7 @@ export class BambinoComponent implements OnInit, OnDestroy{
 
 
   set_list_all_patologie() {
-    this.InscrizioneBambinoService.registerPathology().subscribe(data => {
+    this.InscrizioneBambinoService.register_pathology().subscribe(data => {
       this.list_pathology = data['args']['response']['pathology'];
     });
   }
@@ -404,9 +406,90 @@ createBambino( ) {
     this.formD.form[6].input.disabled=false;
     this.formGroup.get("Patologie")?.enable();
     this.formGroup.get("Terapisti")?.enable();
-  }else{
-    this.is_modifica=false;
+    }else if (this.formGroup.valid) {
+        const modifiche = this.is_update();
+        if (Object.keys(modifiche).length !== 0) {
+            const newBody:  UpdateChild= {
+            id_bambino: String(this.bambino?.id_bambino),
+            nome: String(this.formGroup.value["Nome"]),
+            cognome:  String(this.formGroup.value["Cognome"]),
+            username:  String(this.bambino?.username),
+            email:  String(this.formGroup.value["Email"]),
+            data:  String(this.formGroup.value["Data"]),
+            descrizione: this.formGroup.value["Descrizione"],
+            patologie :(this.formGroup.value["Patologie"]),
+            id_terapista: this.accessService.getId(),
+            controllo_terapista: Boolean(this.formGroup.value["ValidazioneTerapista"]),
+            terapisti_associati: this.formGroup.value['AssociaTerapisti']? this.formGroup.value['Terapisti']: null,
+            update_value :  Object.keys(modifiche)
+            };
+            this.InscrizioneBambinoService.update_child(newBody)
+              .pipe(
+                tap(response => {
+                  if (response.args.completed) {
+                     this.is_modifica = false;
+                     if(this.bambino) {
+                       this.bambino.id_bambino = String(this.bambino?.id_bambino);
+                       this.bambino.nome = String(this.formGroup.value["Nome"]);
+                       this.bambino.cognome =  String(this.formGroup.value["Cognome"]);
+                       this.bambino.email = String(this.formGroup.value["Email"]);
+                       this.bambino.data_nascita =  String(this.formGroup.value["Data"]);
+                       this.bambino.descrizione = this.formGroup.value["Descrizione"];
+                       this.bambino.patologie = cloneDeep(this.formGroup.value["Patologie"]);
+                       this.bambino.controllo_terapista = this.formGroup.value["ValidazioneTerapista"];
+                       this.bambino.terapista_associati = cloneDeep(this.formGroup.value["Terapisti"]);
+                     }
+                   this.disable_all_component();
+                  } else {
+                    for (let i = 0; i < response.args.error.number_error ;i++) {
+                      let keys = Object.keys(response.args.error.message[i]);
+                      this.set_error_clone_register(keys[0]);
+                    }
+                  }
+                }),
+                catchError(error => {
+                  console.error('Errore durante la registrazione:', error);
+                  return of(null);
+                })
+              )
+              .subscribe();
+      }else{
+       this.annulla_modifiche();
+      }
+    }
   }
+
+  is_update():any {
+    let update= Object();
+    if(this.bambino != undefined){
+      this.is_update_string("Nome",this.bambino.nome, this.formGroup.get("Nome")?.value, update);
+      this.is_update_string("Congome",this.bambino.cognome, this.formGroup.get("Cognome")?.value, update);
+      this.is_update_string("Email",this.bambino.email,  this.formGroup.get("Email")?.value, update);
+      this.is_update_string("Data",this.bambino.data_nascita,  this.formGroup.get("Data")?.value, update);
+      this.is_update_string("Descrizione",this.bambino.descrizione,  this.formGroup.get("Descrizione")?.value, update);
+      if(!this.stringUtils.compareArrays(this.bambino.patologie , this.formGroup.get("Patologie")?.value)){
+             update["Patologie"]= true;
+      }
+      if(this.bambino.controllo_terapista!= this.formGroup.get("ValidazioneTerapista")?.value){
+         update["ValidazioneTerapista"]= true;
+      }
+      if(this.bambino.terapista_associati ){
+        console.log(this.stringUtils.compareArrays(this.bambino.terapista_associati, this.formGroup.get("Terapisti")?.value));
+        if( this.bambino?.terapista_associati.length!=0 != this.formGroup.get("AssociaTerapisti")?.value){
+           update["AssociaTerapisti"]= true;
+        }
+        if(!this.stringUtils.compareArrays(this.bambino.terapista_associati, this.formGroup.get("Terapisti")?.value)){
+            update["Terapisti"]= true;
+        }
+       }
+    }
+    return update
+  }
+
+  is_update_string(keys:string, element1:string, element2:string, dict_error:any){
+    if(element1 != element2 && !this.stringUtils.equalsAnyIgnoreCase(element1 ,element2)) {
+       dict_error[keys] = true;
+     }
   }
 
   registra_bambino(){
@@ -422,7 +505,7 @@ createBambino( ) {
       controllo_terapista: Boolean(this.formGroup.value["ValidazioneTerapista"]),
       terapisti_associati: this.formGroup.value['AssociaTerapisti']? this.formGroup.value['Terapisti']: null
     };
-    this.InscrizioneBambinoService.registerChild(newBody)
+    this.InscrizioneBambinoService.register_child(newBody)
       .pipe(
         tap(response => {
           if (response.args.completed) {
@@ -448,27 +531,18 @@ createBambino( ) {
     if (keys === "email") {
     this.formGroup.get("Email")?.setErrors({"emailExist":true});
     this.formGroup.updateValueAndValidity();
-    console.log( this.formGroup.get("Email")?.errors);
-
     } else {
       this.formGroup.get(["Username"])?.setErrors({"usernameExist": true});
     }
   }
 
 
-  AnnullaModifiche() {
+  annulla_modifiche() {
     this.is_modifica= false;
-    this.formGroup.get("Nome")?.disable();
-    this.formGroup.get("Email")?.disable();
-    this.formGroup.get("Cognome")?.disable();
-    this.formGroup.get("Data")?.disable();
-    this.formGroup.get("Descrizione")?.disable();
-    this.formGroup.get("ValidazioneTerapista")?.disable();
-    this.formGroup.get("AssociaTerapisti")?.disable();
-    this.formD.form[5].input.disabled=true;
-    this.formD.form[6].input.disabled=true;
+    this.disable_all_component();
     this.formGroup.get("Terapisti")?.setValue(cloneDeep(this.bambino?.terapista_associati));
     this.formGroup.get("Patologie")?.setValue(cloneDeep(this.bambino?.patologie));
+    console.log(this.bambino?.controllo_terapista);
     this.formGroup.patchValue({
       Nome: this.bambino?.nome,
       Cognome: this.bambino?.cognome,
@@ -479,5 +553,18 @@ createBambino( ) {
       AssociaTerapisti: this.bambino?.terapista_associati.length !== 0
     });
   }
-
+  disable_all_component(){
+    this.formGroup.get("Nome")?.disable();
+    this.formGroup.get("Email")?.disable();
+    this.formGroup.get("Cognome")?.disable();
+    this.formGroup.get("Data")?.disable();
+    this.formGroup.get("Descrizione")?.disable();
+    this.formGroup.get("ValidazioneTerapista")?.disable();
+    this.formGroup.get("AssociaTerapisti")?.disable();
+    this.formD.form[5].input.disabled=true;
+    this.formD.form[6].input.disabled=true;
+  }
 }
+
+
+

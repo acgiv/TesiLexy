@@ -16,19 +16,23 @@ export class BambinoService {
   }
 
 
-  registerChild(body: any): Observable<any> {
+  register_child(body: any): Observable<any> {
    const headers = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<RegisterChild>(this.url +'registerchild', body, {headers});
   }
 
-  registerPathology(): Observable<any> {
-
+  register_pathology(): Observable<any> {
       return this.http.get<RequestListSelect>(this.url +'pathology_list');
   }
 
   list_user_therapist(body:any): Observable<any> {
       const headers = new HttpHeaders({'Content-Type': 'application/json', 'User-Agent': 'Custom'});
       return this.http.post<RequestListSelect>(this.url +'all_email', body, {headers});
+  }
+
+  update_child(body: any): Observable<any> {
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<UpdateChild>(this.url +'updatechild', body, {headers});
   }
 
 }
@@ -61,3 +65,19 @@ export interface RequestListSelect {
     "completed": boolean
   }
 }
+
+export interface UpdateChild{
+  id_bambino:string;
+  nome: string;
+  cognome:  string;
+  username:  string;
+  email: string;
+  data: string;
+  descrizione: string | null;
+  patologie : string[];
+  id_terapista: string;
+  controllo_terapista: boolean;
+  terapisti_associati: [string] | null;
+  update_value: string[]
+}
+

@@ -6,11 +6,12 @@ from flask import current_app
 from model.dao.base_dao import BaseDao
 from extensions import db
 from model.entity.patologiaBambino import PatologiaBambino
-
+import uuid
 
 class PatologiaBambinoReposistory(BaseDao, ABC):
     def __init__(self) -> None:
         self.database = db.session
+        self.patologia_bambino = PatologiaBambino
 
     def insert(self, patologia_bambino: Union[PatologiaBambino, List[PatologiaBambino]]) -> None:
         try:
@@ -58,14 +59,21 @@ class PatologiaBambinoReposistory(BaseDao, ABC):
 
     def find_all(self, limit: Union[int, None]) -> List[PatologiaBambino] | None:
         try:
-            return PatologiaBambino.query.order_by(PatologiaBambino.id_persona).limit(limit).all()
+            return self.patologia_bambino.query.order_by(PatologiaBambino.id_persona).limit(limit).all()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca di tutti i logopedisti: {str(e)}")
             return list()
 
     def find_all_by_id(self, id_patologia: int, type_search: Union[str, None] = None) -> Union[List, None]:
         try:
-            return PatologiaBambino.query.filter_by(_id_patologia_bambino=id_patologia).first()
+            return self.patologia_bambino.query.filter_by(_id_patologia_bambino=id_patologia).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None
+
+    def get_find_by_id_bambino(self, id_bambino: uuid, limit: Union[int, None]) -> Union[List[PatologiaBambino], None]:
+        try:
+            return self.patologia_bambino.query.filter(PatologiaBambino._idbambino == id_bambino).limit(limit).all()
+        except SQLAlchemyError as e:
+            current_app.web_logger.error(f"Errore durante la ricerca di tutti i logopedisti: {str(e)}")
+            return list()
