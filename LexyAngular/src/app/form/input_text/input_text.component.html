@@ -27,8 +27,8 @@
     </div>
     <app-bar-security-password *ngIf="elem.input.passwordBar" [inputComponent]="elem" [formGroup]="formGroup" [submit]="submit" ></app-bar-security-password>
   <div  *ngIf="(formGroup.get(elem.input.name)?.touched || formGroup.get(elem.input.name)?.dirty || submit) &&  formGroup.get(elem.input.name)?.errors as errors" >
-    <div *ngFor="let keyError of Object.keys(errors)">
-        <p class="text-danger pt-2 m-0 error-message">{{elem.input.errorMessages[String(keyError)]}}</p>
-    </div>
-   </div>
+      <div *ngFor="let keyError of Object.keys(errors)">
+          <p class="text-danger pt-2 m-0 error-message">{{elem.input.errorMessages[String(keyError)]}}</p>
+      </div>
+  </div>
 </div>

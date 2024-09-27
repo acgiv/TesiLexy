@@ -92,7 +92,6 @@ export class BambinoComponent implements OnInit, OnDestroy{
         id_terapista: state["id_terapista"],
         id_utente: state["id_utente"],
         terapista_associati:  cloneDeep(state["terapista_associati"])
-
         }
         this.lista_terapisti  = cloneDeep(state["terapista_associati"]);
     }
@@ -334,8 +333,8 @@ export class BambinoComponent implements OnInit, OnDestroy{
    set_initialize_formgroup(){
       this.formD.setEqualsEndDisable();
       this.formGroup.addControl("Descrizione", new FormControl(this.bambino?.descrizione? this.bambino.descrizione : ""));
-      this.formGroup.addControl('AssociaTerapisti', new FormControl( this.bambino?.terapista_associati.length !== 0));
-      this.formGroup.addControl('ValidazioneTerapista', new FormControl( this.bambino?.controllo_terapista ));
+      this.formGroup.addControl('AssociaTerapisti', new FormControl(this.bambino?.terapista_associati?this.bambino?.terapista_associati.length >0:false));
+      this.formGroup.addControl('ValidazioneTerapista', new FormControl( this.bambino?.controllo_terapista!= undefined?this.bambino?.controllo_terapista:true));
      if(this.is_url_ceck() ==='Visualizza'){
          this.formGroup.get("Descrizione")?.disable();
          this.formGroup.get("ValidazioneTerapista")?.disable();
@@ -467,7 +466,7 @@ createBambino( ) {
       this.is_update_string("Email",this.bambino.email,  this.formGroup.get("Email")?.value, update);
       this.is_update_string("Data",this.bambino.data_nascita,  this.formGroup.get("Data")?.value, update);
       this.is_update_string("Descrizione",this.bambino.descrizione,  this.formGroup.get("Descrizione")?.value, update);
-      if(!this.stringUtils.compareArrays(this.bambino.patologie , this.formGroup.get("Patologie")?.value)){
+      if(!this.stringUtils.compareArrays(this.bambino.patologie, this.formGroup.get("Patologie")?.value)){
              update["Patologie"]= true;
       }
       if(this.bambino.controllo_terapista!= this.formGroup.get("ValidazioneTerapista")?.value){

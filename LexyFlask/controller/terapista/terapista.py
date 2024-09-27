@@ -1,5 +1,12 @@
+import configparser
+import hashlib
+import uuid
 from typing import List
+
 from flask import Blueprint, request, jsonify
+
+from controller.main.main import check_credential, check_username_exists, set_error_message_response
+from extensions import socketio
 from model.Service.bambino_service import BambinoService
 from model.Service.patologia_bambino_service import PatologiaBambinoService
 from model.Service.patologia_service import PatologiaService
@@ -7,14 +14,8 @@ from model.Service.terapista_associato_service import TerapistaAssociatoService
 from model.Service.user_service import UtenteService
 from model.entity.bambino import Bambino
 from model.entity.patologia import Patologia
-from controller.main.main import check_credential, check_username_exists, set_error_message_response
-import configparser
-import uuid
-import hashlib
-
 from model.entity.terapista_associato import TerapistaAssociato
 from model.entity.utente import Utente
-from extensions import socketio
 
 config = configparser.ConfigParser()
 config.read(".\\gobal_variable.ini")
@@ -94,6 +95,10 @@ def create_child(child: BambinoService, pathology: PatologiaService, user_servic
                                                   operation="insert"
                                                   )
             terapista_child_service.insert(TerapistaAssociato(bambino.id_bambino, bambino.id_terapista))
+            terapisti = terapista_child_service.find_all_terapisti_associati(id_search=bambino.id_bambino,
+                                                                             id_terapista=bambino.id_terapista)
+            socketio.emit("message", {"operazione": "insert", **bambino.to_dict(),
+                                      "terapista_associati": {email: t.to_dict() for t, email in terapisti}})
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:
         return {"errorKey": f"not found this key: {key}"}
@@ -231,7 +236,13 @@ def update_child(child: BambinoService, user_service: UtenteService,
                 insert_pathology(is_not_exist_pathology(parameters["patologie"], pathology), pathology)
                 pa_bambino_service.update_patologie(parameters["id_bambino"], parameters["patologie"])
             if "Terapisti" in parameters["update_value"]:
-                terapista_child_service.update_terapisti_associati(parameters["id_bambino"], parameters["id_terapista"], parameters["terapisti_associati"])
+                terapista_child_service.update_terapisti_associati(parameters["id_bambino"], parameters["id_terapista"],
+                                                                   parameters["terapisti_associati"])
+        terapisti = terapista_child_service.find_all_terapisti_associati(id_search=user.id_bambino,
+                                                                         id_terapista=user.id_terapista)
+        socketio.emit("message",
+                      {"operazione": "update", **user.to_dict(),
+                       "terapista_associati": {email: t.to_dict() for t, email in terapisti}})
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:
         return {"errorKey": f"not found this key: {key}"}

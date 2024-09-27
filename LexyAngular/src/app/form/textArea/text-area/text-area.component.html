@@ -1,0 +1,29 @@
+<div [formGroup]="formGroup" >
+  <div class="d-flex align-items-center flex-column p-md-0 ">
+    <div class="w-50">
+         <label [for]="elem.input.id" class="form-label mt-3 d-flex">
+          <span class="fw-semibold">{{elem.label.name}}</span>
+          <span *ngIf="elem.label.isRequired && !elem.input.disabled" class="ps-1 text-danger ">*</span>
+          <span *ngIf="elem.label.emojiInfo" [ngClass]="{'ms-auto': elem.label.emojiInfo.is_position==='end'}">
+              <fa-icon
+                   [ngClass]="getIconClasses(elem)"
+                   placement="top" ngbTooltip="{{elem.label.emojiInfo.message}}"
+                   tooltipClass="tooltip-class "
+                   [icon]="elem.label.emojiInfo.emoji ?? faInfoCircle" ></fa-icon>
+          </span>
+        </label>
+       <div class="input-group">
+            <textarea [placeholder]="elem.input.placeholder" [id]="elem.input.id" [style]="elem.input.style"  [formControlName]="elem.input.name" [ngClass]="elem.input.class + (getErrors(elem.input.name) ? 'border-danger':'border-dark')" [name]="elem.input.name"
+                      autocomplete="off" >
+            </textarea>
+        </div>
+     </div>
+
+  </div>
+
+  <div class="d-flex align-items-center flex-column p-md-0" *ngIf="(formGroup.get(elem.input.name)?.touched || formGroup.get(elem.input.name)?.dirty || submit) &&  formGroup.get(elem.input.name)?.errors as errors" >
+    <div  class="w-50 mt-1 " *ngFor="let keyError of Object.keys(errors)">
+        <p class="text-danger pt-2 m-0 error-message">{{elem.input.errorMessages[String(keyError)]}}</p>
+    </div>
+  </div>
+</div>

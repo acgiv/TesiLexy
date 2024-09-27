@@ -20,7 +20,7 @@ export class StringUtilsService {
     return others.some(value => value !== null && base.toLowerCase() === value.toLowerCase());
   }
 
-  compareArrays = (a:[], b:[]) => {
+  compareArrays = (a: string[], b: []) => {
     return (a!= undefined && b!=undefined )
       && (a.length == b.length)
       &&  JSON.stringify(cloneDeep(a).sort()) === JSON.stringify(cloneDeep(b).sort());

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import {ResponseLogin} from "../../login/login";
+
 
 
 @Injectable({
@@ -62,5 +62,5 @@ export interface Bambino {
     "username": string,
     "email": string,
     "tipologia": string,
-    "terapista_associati":[]
+    "terapista_associati": string[]
 }

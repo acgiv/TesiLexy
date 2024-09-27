@@ -1,17 +1,17 @@
 import { Component, Input, CUSTOM_ELEMENTS_SCHEMA, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { NgClass, NgForOf } from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import { register } from 'swiper/element/bundle';
 import {Router} from "@angular/router";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {Bambino} from "../terapista/dashboard/riquest.service";
+import {Bambino} from "../../terapista/dashboard/riquest.service";
 
 register();
 
 @Component({
   selector: 'app-carosello',
   standalone: true,
-  imports: [NgForOf, NgClass, FaIconComponent],
+  imports: [NgForOf, NgClass, FaIconComponent, NgIf],
   templateUrl: './carosello.component.html',
   styleUrls: ['./carosello.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -20,6 +20,7 @@ export class CaroselloComponent implements AfterViewInit {
   @Input() sectionTitle!: string;
   @Input() buttonText!: string;
   @Input() contentList!: Bambino[];
+  @Input() element: any ;
 
   @ViewChild('swiperContainer', { static: true }) swiperContainer!: ElementRef;
 
@@ -51,13 +52,12 @@ export class CaroselloComponent implements AfterViewInit {
         320: { slidesPerView: 1 }
       }
     };
-
     Object.assign(swiperElement, swiperOptions);
     swiperElement.initialize();
   }
 
-  VisualizzaPaziente(paziente: Bambino) {
-     this.router.navigate(['/terapista/dashboard/visualizzaPaziente'],{
+  viewElementCard(paziente: Bambino, direct: string) {
+     this.router.navigate([direct],{
        state: {
           nome: paziente.nome,
           cognome: paziente.cognome,
@@ -74,8 +74,8 @@ export class CaroselloComponent implements AfterViewInit {
        }
      }).then(() => {});
   }
-  createBambino() {
-     this.router.navigate(['terapista/dashboard/inserisciPaziente']).then(() => {});
+  crea_element(direct: string) {
+     this.router.navigate([direct]).then(() => {});
   }
   protected readonly faPlus = faPlus;
 }
