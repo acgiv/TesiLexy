@@ -13,7 +13,7 @@ class BambinoSchema(UtenteSchema):
         fields = UtenteSchema.Meta.fields + ('idbambino', 'nome', 'cognome', 'dataNascita', 'descrizione', 'patologia' )
 
 
-class PatologiaSchema(UtenteSchema):
+class PatologiaSchema(ma.Schema):
     class Meta:
         fields = UtenteSchema.Meta.fields + ('idpatologia', 'nome')
 
@@ -50,6 +50,11 @@ class VersioneMessaggioSchema(ma.Schema):
                   'datacreazione', 'modifica_messaggio')
 
 
+class TipoloigiaTestoSchema(ma.Schema):
+    class Meta:
+        fields = UtenteSchema.Meta.fields + ('idtipologia', 'nome')
+
+
 utente_schema = UtenteSchema()
 utenti_schema = UtenteSchema(many=True)
 
@@ -77,6 +82,8 @@ messaggio_Schemas = MessaggioSchema(many=True)
 versione_messaggio_schema = VersioneMessaggioSchema()
 versione_messaggio_schemas = VersioneMessaggioSchema(many=True)
 
+tipologia_testo = TipoloigiaTestoSchema()
+tipologia_testos = TipoloigiaTestoSchema(many=True)
 
 def create_table(db):
     current_app.web_logger.info("Database creato con successo")

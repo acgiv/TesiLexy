@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {NgClass, NgIf} from "@angular/common";
 import {FormControl, Validators} from "@angular/forms";
@@ -48,7 +48,9 @@ export class HeaderComponent implements OnInit {
     this.isChatActive = this.isActive('/chat') || this.isActive('/terapista/chat');
     this.isDashboardActive = this.isActive('/terapista/dashboard')
       || this.isActive('/terapista/dashboard/inserisciPaziente')
-        || this.isActive('/terapista/dashboard/visualizzaPaziente');
+      || this.isActive('/terapista/dashboard/inserisciPaziente')
+      || this.isActive('/terapista/dashboard/inserisciTesto')
+      || this.isActive('/terapista/dashboard/visualizzaTesto');
     this.isRegistrationActive = this.isActive('/terapista/registrati');
 
   }

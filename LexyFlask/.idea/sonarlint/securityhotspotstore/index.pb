@@ -269,3 +269,11 @@ F
 model/dao/label_dao.py,e\d\ed747ffa211ee08b392b5b62f6351c9858f3bc48
 J
 model/dao/messaggio_dao.py,3\9\39afd26a0f3698d2e73f25c0b0ff2a7213a8e6b5
+N
+model/entity/tipologiaTesto.py,b\3\b316be56fef2ef0ce9d21d91dfd2ac2cd8fe570e
+`
+0model/repository/tipologiatesto_toreposistory.py,2\b\2b73d7ca20aec806c8a4544a0e124f1e34b94fc8
+O
+model/dao/tipologiatesto_dao.py,4\f\4f8eade78ba120e23d2313b21638a058f63f7b9b
+W
+'model/Service/tipologiatesto_service.py,4\0\405183a560dbf5c275882a89babd822b90116f0f
