@@ -1,0 +1,33 @@
+.bg-section{
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.main-title {
+  margin-top: 1rem;
+  color: #000000;
+}
+
+.card {
+  padding-left: 10px;
+  padding-right: 10px;
+  min-height: 8rem;
+  width: auto;
+  margin: 0.5rem 1rem 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+.card:first-child {
+    margin-left: 4px;
+}
+.card-title {
+  font-size: 1.5rem;
+}
+.terapisti-list {
+  white-space: nowrap; /* Evita il wrapping del testo */
+  overflow: hidden; /* Nasconde il testo che va oltre i limiti */
+  text-overflow: ellipsis; /* Aggiunge i "..." alla fine del testo che trabocca */
+  width: 100%; /* Imposta la larghezza del contenitore */
+  display: inline-block; /* Mantiene tutto in una singola riga */
+}

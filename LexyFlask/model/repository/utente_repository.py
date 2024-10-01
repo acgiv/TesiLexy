@@ -1,14 +1,13 @@
 import uuid
-from abc import ABC
+
 from typing import Union, List
 from sqlalchemy.exc import SQLAlchemyError
 from extensions import db
 from flask import current_app
-from model.dao.base_dao import BaseDao
 from model.entity.utente import Utente
 
 
-class UtenteRepository(BaseDao, ABC):
+class UtenteRepository:
 
     def __init__(self) -> None:
         self.database = db.session
@@ -60,14 +59,14 @@ class UtenteRepository(BaseDao, ABC):
 
     def find_all(self, limit: Union[int, None]) -> Union[List[Utente], None]:
         try:
-            return Utente.query.limit(limit).all()
+            return self.user.query.limit(limit).all()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca di tutti gli utenti: {str(e)}")
             return list()
 
-    def find_all_by_id(self, id_utente: int, type_search: Union[Utente, None] = None) -> Union[List, None]:
+    def find_all_by_id(self, id_utente: uuid) -> Union[Utente, None]:
         try:
-            return Utente.query.filter_by(_id_utente=id_utente).first()
+            return self.user.query.filter_by(_id_utente=id_utente).first()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None
@@ -95,7 +94,7 @@ class UtenteRepository(BaseDao, ABC):
 
     def find_all_email_therapist(self, type_user: str) -> Union[List[str], None]:
         try:
-            return  self.user.query.with_entities(self.user._email).filter_by(_tipologia=type_user).all()
+            return self.user.query.with_entities(self.user._email).filter_by(_tipologia=type_user).all()
         except SQLAlchemyError as e:
             current_app.web_logger.error(f"Errore durante la ricerca per username: {str(e)}")
             return None

@@ -11,9 +11,15 @@ export class RiquestService {
 
   protected url: string;
 
-  RiquestChild(body: any): Observable<any> {
+  request_child(body: any): Observable<any> {
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<Riquest>(this.url+"find_child_therapist", body, {headers});
+
+  }
+
+  request_text(body: any): Observable<any> {
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<Riquest>(this.url+"find_all_text_original", body, {headers});
 
   }
 

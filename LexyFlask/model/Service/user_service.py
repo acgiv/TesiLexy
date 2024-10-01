@@ -60,5 +60,3 @@ class UtenteService(UtenteServiceInterface, ABC):
 
     def find_all_email_therapist(self, type_user: str) -> Union[List[str], None]:
         return self.__utente_dao.find_all_email_therapist(type_user=type_user)
-
-

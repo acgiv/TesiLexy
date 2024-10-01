@@ -17,70 +17,88 @@ class TipologiaTestoReposistory(BaseDao, ABC):
             if isinstance(tipologia, TipologiaTesto):
                 self.database.add(tipologia)
                 self.database.commit()
-                current_app.web_logger.info("Inserimento del tipologia è stato completato con successo.")
+                if hasattr(current_app, 'web_logger'):
+                    current_app.web_logger.info("Inserimento della tipologia del testo è stato completato con successo.")
             elif isinstance(tipologia, List):
                 self.database.add_all(tipologia)
                 self.database.commit()
-                current_app.web_logger.info("Inserimento dei logopedisti completato con successo.")
+                if hasattr(current_app, 'web_logger'):
+                    current_app.web_logger.info("Inserimento delle tipologie dei testi sono stati  completati"
+                                                " con successo.")
         except SQLAlchemyError as e:
             self.database.rollback()
-            current_app.web_logger.error(f"Errore durante l'inserimento dei logopedisti: {str(e)}")
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante l'inserimento delle tipologie dei testi: {str(e)}")
 
     def delete(self, tipologia: Union[TipologiaTesto, list[TipologiaTesto]]) -> None:
         try:
             if isinstance(tipologia, TipologiaTesto):
                 self.database.delete(tipologia)
                 self.database.commit()
-                current_app.web_logger.info("Eliminazione del tipologia è stato completato con successo.")
+                if hasattr(current_app, 'web_logger'):
+                    current_app.web_logger.info("Eliminazione della tipologia del testc è stata"
+                                                " completata con successo.")
             elif isinstance(tipologia, list):
                 for component in tipologia:
                     self.database.delete(component)
                     self.database.commit()
-                    current_app.web_logger.info("Eliminazione dei logopedisti è stato completato con successo.")
+                    if hasattr(current_app, 'web_logger'):
+                        current_app.web_logger.info("Eliminazione dei logopedisti è stato completato con successo.")
         except SQLAlchemyError as e:
             self.database.rollback()
-            current_app.web_logger.error(f"Errore durante l'eliminazione dei logopedisti: {str(e)}")
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante l'eliminazione delle tipologie dei testi: {str(e)}")
 
     def update(self, tipologia: Union[TipologiaTesto, List[TipologiaTesto]]) -> None:
         try:
             if isinstance(tipologia, TipologiaTesto):
                 self.database.merge(tipologia)
                 self.database.commit()
-                current_app.web_logger.info("Aggiornamento del tipologia è stato completato con successo.")
+                if hasattr(current_app, 'web_logger'):
+                    current_app.web_logger.info("Aggiornamento della tipologia dei testi è stata completata"
+                                                " con successo.")
             elif isinstance(tipologia, List):
                 for u in tipologia:
                     self.database.merge(u)
                     self.database.commit()
-                    current_app.web_logger.info("Aggiornamento dei logopedisti è stato completato con successo.")
+                    if hasattr(current_app, 'web_logger'):
+                        current_app.web_logger.info("Aggiornamento delle tipologie dei testi è"
+                                                    " stata completata con successo.")
         except SQLAlchemyError as e:
             self.database.rollback()
-            current_app.web_logger.error(f"Errore durante l'aggiornamento dei logopedisti: {str(e)}")
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante l'aggiornamento delle tipologie dei testi: {str(e)}")
 
     def find_all(self, limit: Union[int, None]) -> List[TipologiaTesto] | None:
         try:
             return self.tipologia.query.limit(limit).all()
         except SQLAlchemyError as e:
-            current_app.web_logger.error(f"Errore durante la ricerca di tutti i logopedisti: {str(e)}")
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante la ricerca di tutte le tipologie dei testi: {str(e)}")
             return list()
 
-    def find_all_by_id(self, id_tipologia: int, type_search: Union[str, None] = None) -> Union[List, None]:
+    def find_all_by_id(self, id_tipologia: int) -> Union[TipologiaTesto, None]:
         try:
             return self.tipologia.query.filter_by(_id_tipologia=id_tipologia).first()
         except SQLAlchemyError as e:
-            current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante la ricerca per ID della tipologia dei testi: {str(e)}")
             return None
 
     def find_in_list(self, list_tipologia: list[str]) -> list[TipologiaTesto] | None:
         try:
             return TipologiaTesto.query.filter(self.tipologia._nome.in_(list_tipologia)).all()
         except SQLAlchemyError as e:
-            current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante la ricerca di una determinata tipologia"
+                                             f" prensente nella lista: {str(e)}")
             return None
 
     def find_id_by_name(self, nome: str) -> Union[List, None]:
         try:
             return db.session.query(self.tipologia._id_tipologia).filter_by(_nome=nome).scalar()
         except SQLAlchemyError as e:
-            current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante la ricerca per NOME delle tipologie: {str(e)}")
             return None
 

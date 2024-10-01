@@ -7,11 +7,11 @@
         </div>
       </div>
     </div>
-      <div *ngFor="let el of  directiveCarosello.element_carosello">
-          <app-carosello [element]="el" [contentList]="list_user" ></app-carosello>
-      </div>
-      <!--<app-carosello [sectionTitle]="'I miei pazienti'" [contentList]="list_user" [buttonText]="'Nuovo Paziente'"></app-carosello>
-      <app-carosello class=" mt-3"  [sectionTitle]="'Testi'" [buttonText]="'Nuovo Testo'"></app-carosello> -->
+
+          <app-carosello_pazienti  [contentList]="list_user" ></app-carosello_pazienti>
+          <app-carosello_testo  [contentList]="list_text"></app-carosello_testo>
+
+
   </div>
 
   <div>

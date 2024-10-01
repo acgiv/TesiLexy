@@ -11,10 +11,13 @@ from model.Service.bambino_service import BambinoService
 from model.Service.patologia_bambino_service import PatologiaBambinoService
 from model.Service.patologia_service import PatologiaService
 from model.Service.terapista_associato_service import TerapistaAssociatoService
+from model.Service.testo_service import TestoOriginaleService
+from model.Service.tipologiatesto_service import TipologiaTestoService
 from model.Service.user_service import UtenteService
 from model.entity.bambino import Bambino
 from model.entity.patologia import Patologia
 from model.entity.terapista_associato import TerapistaAssociato
+from model.entity.testo import TestoOriginale
 from model.entity.utente import Utente
 
 config = configparser.ConfigParser()
@@ -157,13 +160,15 @@ def get_email_terapist_list(user_service: UtenteService):
         return {"errorKey": f"not found this key: {key}"}
 
 
-@terapista.route('/prova', methods=["GET"])
-def prova(terapista_associato: TerapistaAssociatoService):
-    list_terapisti = terapista_associato.find_by_email_terapista("7c88d168-e55f-43dc-9816-90e19c2e8be8")
-    if list_terapisti:
-        print(list_terapisti)
-        print([el[0] for el in list_terapisti])
-    return {}
+@terapista.route('/lista_materia_testo', methods=["GET"])
+def lista_materia_testo(tipologia_service: TipologiaTestoService):
+    response_copy = response.copy()
+    materie = tipologia_service.find_all(None)
+    if materie:
+        response_copy["response"] = {
+            "materia": [materia.nome for materia in materie]
+        }
+    return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
 
 
 @terapista.route('/find_child_therapist', methods=["POST"])
@@ -182,9 +187,10 @@ def find_child_therapist(
                 terapista_child_service.find_by_email_terapista(bambino.id_bambino)
                 list_terapisti = terapista_child_service.find_by_email_terapista(bambino.id_bambino)
                 if list_terapisti:
-                    terapisti_associati['terapista_associati'] = [el[0] for el in list_terapisti]
-                    (terapisti_associati['terapista_associati'].
-                     remove(utente_service.get_find_all_by_id_utente(bambino.id_terapista).email))
+                    user = utente_service.get_find_all_by_id_utente(bambino.id_terapista)
+                    if user:
+                        terapisti_associati['terapista_associati'] = [el[0] for el in list_terapisti]
+                        (terapisti_associati['terapista_associati'].remove(user.email))
                 response_copy["response"]["list_child"].append({**bambino.to_dict(), **terapisti_associati})
         return response_copy
     except KeyError as key:
@@ -206,6 +212,7 @@ def update_child(child: BambinoService, user_service: UtenteService,
         response_copy = response.copy()
         response_copy["error"]["number_error"] = 0
         response_copy["error"]["message"].clear()
+
         parameters["email"] = request.json["email"]
         parameters["id_bambino"] = request.json["id_bambino"]
         parameters["nome"] = request.json["nome"]
@@ -243,6 +250,50 @@ def update_child(child: BambinoService, user_service: UtenteService,
         socketio.emit("message",
                       {"operazione": "update", **user.to_dict(),
                        "terapista_associati": {email: t.to_dict() for t, email in terapisti}})
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+    except KeyError as key:
+        return {"errorKey": f"not found this key: {key}"}
+
+
+@terapista.route('/insert_text', methods=["POST"])
+def insert_text(testo_service: TestoOriginaleService, tipologia_service: TipologiaTestoService):
+    response_copy = response.copy()
+    testo = TestoOriginale(id_testo=None, titolo=request.json['titolo'], testo=request.json['testo'],
+                           id_tipologia_testo=tipologia_service.find_id_by_name(request.json['materia'][0]),
+                           eta_riferimento=request.json['eta_riferimento'], id_terapista=request.json['id_terapista'])
+    testo_service.insert(testo)
+    return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+
+
+@terapista.route('/find_all_text_original', methods=["POST"])
+def find_all_text_original(testo_service: TestoOriginaleService, tipologia_service: TipologiaTestoService):
+    try:
+        response_copy = response.copy()
+        lista = testo_service.find_by_tipologia(request.json['tipologia'], request.json['limite'])
+        if lista:
+            dic = {"testi": [el.to_dict() for el in lista]}
+            for el in dic['testi']:
+                nome = tipologia_service.find_all_by_id(el['id_tipologia_testo']).nome
+                if nome:
+                    el['tipologia_testo'] = nome
+            response_copy["response"] = dic
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+    except KeyError as key:
+        return {"errorKey": f"not found this key: {key}"}
+
+
+@terapista.route('/update_text', methods=["POST"])
+def update_text_original(testo_service: TestoOriginaleService, tipologia_service: TipologiaTestoService):
+    try:
+        response_copy = response.copy()
+        testo = testo_service.find_by_id(request.json['id_testo'])
+        testo.titolo = request.json['titolo']
+        testo.testo = request.json['testo']
+        testo.eta_riferimento = request.json['eta_riferimento']
+        id_materia = tipologia_service.find_id_by_name(request.json['materia'])
+        if id_materia:
+            testo.id_tipologia_testo = id_materia
+        testo_service.update(testo)
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:
         return {"errorKey": f"not found this key: {key}"}

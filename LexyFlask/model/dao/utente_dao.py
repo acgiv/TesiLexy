@@ -1,13 +1,11 @@
 import uuid
-from abc import ABC
 from typing import Union, List
 from injector import inject
 from model.repository.utente_repository import UtenteRepository
-from model.dao.base_dao import BaseDao
 from model.entity.utente import Utente
 
 
-class UtenteDao(BaseDao, ABC):
+class UtenteDao:
     @inject
     def __init__(self) -> None:
         self.__repository = UtenteRepository()
@@ -24,8 +22,8 @@ class UtenteDao(BaseDao, ABC):
     def find_all(self, limit: Union[uuid, None]) -> Union[List[Utente], None]:
         return self.__repository.find_all(limit)
 
-    def find_all_by_id(self, id_utente: uuid, type_search: Union[Utente, None] = None) -> Union[List, None]:
-        return self.__repository.find_all_by_id(id_utente, type_search=type_search)
+    def find_all_by_id(self, id_utente: uuid) -> Union[List, None]:
+        return self.__repository.find_all_by_id(id_utente)
 
     def find_by_username_and_password(self, username: str, password: str) -> Union[Utente, None]:
         return self.__repository.find_by_username_and_password(username, password)

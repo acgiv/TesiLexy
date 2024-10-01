@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="col-md-6 d-flex align-items-center flex-column ps-md-3 ps-lg-3   align-items-md-start align-items-lg-start ">
-            <div  *ngFor="let elem of formD.form.slice(3, 5)">
+            <div class="w-50 mt-1 " *ngFor="let elem of formD.form.slice(3, 5)">
               <app-input_text [elem]="elem" [formGroup]="formGroup" [submit]="submit"></app-input_text>
             </div>
           <div class="w-50 mt-1 "  *ngFor="let elem of formD.form.slice(5,6)">

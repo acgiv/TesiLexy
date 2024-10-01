@@ -1,6 +1,5 @@
 from abc import ABC
 from typing import Union, List
-import uuid
 from sqlalchemy.exc import SQLAlchemyError
 from flask import current_app
 from model.dao.base_dao import BaseDao

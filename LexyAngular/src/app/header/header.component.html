@@ -17,7 +17,7 @@
           </a>
         </li>
          <li *ngIf="this.accessService.getAccess()" class="nav-item link-size p-0">
-          <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active"  [routerLink]="'/terapista/dashboard'"  routerLinkActive="active">Dashboard
+          <a class="nav-link h p-1 me-2 m-0 "    [routerLink]="['/terapista/dashboard']" routerLinkActive="active">Dashboard
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isDashboardActive">
           </a>
         </li>

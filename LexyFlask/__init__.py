@@ -13,6 +13,7 @@ from model.Service.bambino_service import BambinoService
 from model.Service.patologia_bambino_service import PatologiaBambinoService
 from model.Service.patologia_service import PatologiaService
 from model.Service.terapista_associato_service import TerapistaAssociatoService
+from model.Service.testo_service import TestoOriginaleService
 from model.Service.tipologiatesto_service import TipologiaTestoService
 from model.Service.user_service import UtenteService
 from model.dao.chat_dao import ChatDao
@@ -38,6 +39,7 @@ def configure(binder):
     binder.bind(PatologiaBambinoService)
     binder.bind(TerapistaAssociatoService)
     binder.bind(TipologiaTestoService)
+    binder.bind(TestoOriginaleService)
 
 
 def create_app():
@@ -62,6 +64,6 @@ def create_app():
     FlaskInjector(app=app, modules=[configure])
 
     with app.app_context():
-        #database.drop_all_table(db)
+        # database.drop_all_table(db)
         database.create_table(db)
     return app

@@ -41,19 +41,18 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  updateActiveLinks() {
-    this.isHomeActive = this.isActive('/') || this.isActive('/terapista');
-    this.isLoginActive = this.isActive('/login') || this.isActive('/terapista/login');
-    this.isSignUpActive = this.isActive('/signup') || this.isActive('/terapista/signup');
-    this.isChatActive = this.isActive('/chat') || this.isActive('/terapista/chat');
-    this.isDashboardActive = this.isActive('/terapista/dashboard')
-      || this.isActive('/terapista/dashboard/inserisciPaziente')
-      || this.isActive('/terapista/dashboard/inserisciPaziente')
-      || this.isActive('/terapista/dashboard/inserisciTesto')
-      || this.isActive('/terapista/dashboard/visualizzaTesto');
-    this.isRegistrationActive = this.isActive('/terapista/registrati');
-
-  }
+ updateActiveLinks() {
+  this.isHomeActive = this.isActive('/') || this.isActive('/terapista');
+  this.isLoginActive = this.isActive('/login') || this.isActive('/terapista/login');
+  this.isSignUpActive = this.isActive('/signup') || this.isActive('/terapista/signup');
+  this.isChatActive = this.isActive('/chat') || this.isActive('/terapista/chat');
+  this.isDashboardActive = this.isActive('/terapista/dashboard') ||
+    this.isActive('/terapista/dashboard/inserisciPaziente') ||
+    this.isActive('/terapista/dashboard/inserisciTesto') ||
+    this.isActive('/terapista/dashboard/visualizzaPaziente') ||
+    this.isActive('/terapista/dashboard/visualizzaTesto');
+  this.isRegistrationActive = this.isActive('/terapista/registrati');
+}
 
 
   isTerapista(): boolean {

@@ -4,23 +4,22 @@ import { register } from 'swiper/element/bundle';
 import {Router} from "@angular/router";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {Bambino} from "../../terapista/dashboard/riquest.service";
+import {Bambino} from "../riquest.service";
 
 register();
 
 @Component({
-  selector: 'app-carosello',
+  selector: 'app-carosello_pazienti',
   standalone: true,
   imports: [NgForOf, NgClass, FaIconComponent, NgIf],
-  templateUrl: './carosello.component.html',
-  styleUrls: ['./carosello.component.css'],
+  templateUrl: './carosello_pazienti.component.html',
+  styleUrls: ['./carosello_pazienti.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class CaroselloComponent implements AfterViewInit {
+export class CaroselloPazientiComponent implements AfterViewInit {
   @Input() sectionTitle!: string;
   @Input() buttonText!: string;
   @Input() contentList!: Bambino[];
-  @Input() element: any ;
 
   @ViewChild('swiperContainer', { static: true }) swiperContainer!: ElementRef;
 
@@ -56,8 +55,8 @@ export class CaroselloComponent implements AfterViewInit {
     swiperElement.initialize();
   }
 
-  viewElementCard(paziente: Bambino, direct: string) {
-     this.router.navigate([direct],{
+  visualizza_pazienti(paziente: Bambino) {
+     this.router.navigate(["/terapista/dashboard/visualizzaPaziente"],{
        state: {
           nome: paziente.nome,
           cognome: paziente.cognome,
@@ -74,8 +73,9 @@ export class CaroselloComponent implements AfterViewInit {
        }
      }).then(() => {});
   }
-  crea_element(direct: string) {
-     this.router.navigate([direct]).then(() => {});
+  crea_pazienti() {
+     this.router.navigate(["terapista/dashboard/inserisciPaziente"]).then(() => {});
   }
   protected readonly faPlus = faPlus;
+
 }

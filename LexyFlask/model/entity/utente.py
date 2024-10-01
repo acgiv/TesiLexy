@@ -57,6 +57,14 @@ class Utente(db.Model):
     def email(self, email: str) -> None:
         self._email = email
 
+    @property
+    def tipologia(self) -> str:
+        return self._tipologia
+
+    @tipologia.setter
+    def tipologia(self, tipologia: str) -> None:
+        self._tipologia = tipologia
+
     def __str__(self):
         return f"id utente: {self._id_utente} username: {self._username} email: {self._email}"
 
@@ -74,6 +82,7 @@ class Utente(db.Model):
             "email": self._email,
             "tipologia": self._tipologia
         }
+
 
 class Terapista(Utente):
     __mapper_args__ = {

@@ -103,6 +103,7 @@ export class BambinoComponent implements OnInit, OnDestroy{
     const is_visualizza = this.is_url_ceck() ==='Visualizza';
 
         this.formD.form.push(
+
           {
             label: {
               name: 'Nome',
@@ -199,7 +200,9 @@ export class BambinoComponent implements OnInit, OnDestroy{
               },
             },
             insertEmoji: false,
-          }, {
+          },
+
+          {
             label: {
               name: 'Cognome',
               isRequired: true,
@@ -210,7 +213,7 @@ export class BambinoComponent implements OnInit, OnDestroy{
               },
             },
             input: {
-              class: "form-control border border-1 border-dark rounded",
+              class: "form-control  rounded rounded-1  border  border-dark ",
               typeText: 'text',
               name: 'Cognome',
               id: "Cognome",

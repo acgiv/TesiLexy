@@ -277,3 +277,11 @@ O
 model/dao/tipologiatesto_dao.py,4\f\4f8eade78ba120e23d2313b21638a058f63f7b9b
 W
 'model/Service/tipologiatesto_service.py,4\0\405183a560dbf5c275882a89babd822b90116f0f
+E
+model/entity/testo.py,e\f\efd9eeb664c31e881c58df73388c9377805cf07c
+F
+model/dao/testo_dao.py,f\f\ff9f997a87cd0bbafc4c2158e7235bb6052cb9c3
+U
+%model/repository/testo_reposistory.py,5\5\554745c33a56ef7c734ba2ae81c66b205e48b64d
+N
+model/Service/testo_service.py,7\d\7df0053bfd44cb0e8a66cf6c762561b511610006

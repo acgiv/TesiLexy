@@ -1,0 +1,21 @@
+<div class="product-carousel bg-section p-4">
+  <div class="d-flex justify-content-between align-items-baseline mb-3">
+    <h3 class="main-title"> Testi originali </h3>
+        <button class="btn btn-primary ps-4 pe-4  me-4 " type="submit" (click)="crea_testo()">
+          <fa-icon [icon]="faPlus" size="1x" class="pe-2"></fa-icon> <span class="h6"> Nuovo Testo</span>
+        </button>
+
+  </div>
+  <swiper-container #swiperContainer >
+    <swiper-slide *ngFor="let item of contentList">
+      <div class="card ms-3 me-3" (click)=" visualizza_testo(item)" onKeyDown="">
+        <div class="card-body" >
+           <h6 class="card-title">{{ item.titolo }}</h6>
+          <span class="mb-1">Materia: <b>{{ item.tipologia_testo }}</b></span><br>
+          <span class="mb-1">Eta di riferimento: <b>{{ item.eta_riferimento }}</b></span><br>
+          <span class="d-inline-block text-truncate col-12">Testo:  <b>{{ item.testo}} </b></span>
+        </div>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</div>

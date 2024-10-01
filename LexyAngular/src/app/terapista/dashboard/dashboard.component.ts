@@ -1,11 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {CaroselloComponent} from "../../form/carosello/carosello.component";
+import {
+  CaroselloPazientiComponent
+} from "./carosello_pazienti/carosello_pazienti.component";
 import {SocketService} from "./socket.service";
 import {NgForOf} from "@angular/common";
 import {Bambino, RiquestService} from "./riquest.service";
 import {AccessService} from "../../access.service";
-import {DashboardDirective} from "./dashboard.directive";
+import {CarosellotestoComponent} from "./carosello_testo/carosello_testo.component";
+import {Testo} from "../testo/testo.service";
 
 
 @Component({
@@ -13,26 +16,33 @@ import {DashboardDirective} from "./dashboard.directive";
   standalone: true,
   imports: [
     FaIconComponent,
-    CaroselloComponent,
-    NgForOf
+    NgForOf,
+    CaroselloPazientiComponent,
+    CarosellotestoComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements  OnInit{
   list_user: Bambino[] = [];
+  list_text: Testo[] = [];
 
   constructor(
                private socketService: SocketService,
                private  riquestDashBoard: RiquestService,
                private accessService:  AccessService,
-               protected directiveCarosello: DashboardDirective
   ) {
 
   }
 
   ngOnInit(): void {
-      this.riquestDashBoard.RiquestChild({"id_terapista": this.accessService.getId()}).subscribe(data => {
+      this.request_child();
+      this.request_text();
+      this.socket_child();
+    }
+
+  request_child(){
+       this.riquestDashBoard.request_child({"id_terapista": this.accessService.getId()}).subscribe(data => {
        let bambino: Bambino;
         for(const element of data.response.list_child){
           bambino = {
@@ -52,9 +62,23 @@ export class DashboardComponent implements  OnInit{
           }
           this.list_user.push(bambino)
         }
-      })
+      });
+  }
 
-      this.socketService.getMessage().subscribe((element: any) => {
+    request_text(){
+      let body = Object();
+      body.tipologia = 'testo_originale';
+      body.limite = null;
+      this.riquestDashBoard.request_text(body).subscribe(data=> {
+        for(const element of data.args.response.testi){
+          this.list_text.push(element);
+        }
+        console.log(this.list_text);
+      });
+  }
+
+  socket_child(){
+     this.socketService.getMessage().subscribe((element: any) => {
         console.log(element);
         const email = this.accessService.getEmail();
          const terapisti = Object.keys(element.terapista_associati);
@@ -117,6 +141,7 @@ export class DashboardComponent implements  OnInit{
              }
          }
       });
-    }
+  }
+
 
 }

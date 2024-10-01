@@ -1,16 +1,23 @@
-from sqlalchemy import Column, ForeignKey, CHAR
+from sqlalchemy import Column, ForeignKey, CHAR, PrimaryKeyConstraint
 from extensions import db
 
 
 class TerapistaAssociato(db.Model):
     __tablename__ = 'TerapistaAssociato'
 
-    _idbambino = Column('idbambino', CHAR(36), ForeignKey('bambino.idbambino', ondelete='CASCADE'), primary_key=True)
-    _idterapista = Column('idterapista', CHAR(36), ForeignKey("utente.idutente", ondelete='CASCADE'),
-                          primary_key=True)
+    _idbambino = Column('idbambino', CHAR(36), ForeignKey('bambino.idbambino', ondelete='CASCADE'))
+    _idterapista = Column('idterapista', CHAR(36), ForeignKey("utente.idutente", ondelete='CASCADE'))
 
     _priority_idbambino = 1
     _priority_idterapista = 2
+
+    #  consente di definire le colonne che costituiscono la chiave
+    __table_args__ = (
+        PrimaryKeyConstraint('idbambino', 'idterapista'),
+    )
+
+    bambino = db.relationship('Bambino', backref="terapisti_associati", foreign_keys=[_idbambino])
+    terapista = db.relationship('Utente', backref="bambini_associati", foreign_keys=[_idterapista])
 
     def __init__(self, idbambino: str, idterapista: str):
         self._idbambino = idbambino
