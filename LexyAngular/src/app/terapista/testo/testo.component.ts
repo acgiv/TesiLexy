@@ -41,7 +41,6 @@ export class TestoComponent implements OnInit, OnDestroy{
               protected testo_service :TestoService,
               private accessService:  AccessService,
               ) {
-    console.log(this.router.url);
     this.url = this.router.url.split("/").at(-1);
     this.formGroup = this.fb.group({});
     this.formD.form.splice(0, this.formD.form.length);
@@ -102,6 +101,7 @@ export class TestoComponent implements OnInit, OnDestroy{
               name:"Materia",
               placeholder: 'Materia',
               disabled: visualizza,
+              multi_select:false,
               value: this.testo?cloneDeep([this.testo.tipologia_testo]):['Materia'],
               validator: [
                 multiPatternValidatorSelect('Materia', "required")
@@ -172,6 +172,7 @@ export class TestoComponent implements OnInit, OnDestroy{
               ],
               errorMessages: {
                 required: 'Campo è obbligatorio',
+                notUniqueTitolo: "Esiste gia un testo con questo titolo."
               },
             },
             insertEmoji: false
@@ -257,7 +258,6 @@ export class TestoComponent implements OnInit, OnDestroy{
          body.eta_riferimento =this.formGroup.get("Eta")?.value;
          body.materia =this.formGroup.get("Materia")?.value[0];
          this.testo_service.update_text(body).subscribe((data =>{
-           console.log(data.args.response);
          }));
        }
        this.disable_component();
@@ -302,10 +302,17 @@ is_update(): any {
       body.eta_riferimento = this.formGroup.get("Eta")?.value;
       body.materia = this.formGroup.get("Materia")?.value;
       body.id_terapista = this.accessService.getId();
+      body.tipologia = "originale";
+      body.id_testo_spiegato = -1;
       this.testo_service.insert_text(body).subscribe((data =>{
         if(data.args.completed){
            this.router.navigate(["terapista/dashboard"]).then(() => {});
-        }
+        }else {
+          for (let i = 0; i < data.args.error.number_error; i++) {
+            let keys = Object.keys(data.args.error.message[i])[0];
+            this.set_error_clone_register(keys);
+          }
+      }
       }));
     }
 
@@ -315,4 +322,9 @@ is_update(): any {
       });
   }
 
+  private set_error_clone_register(keys: string) {
+    if (keys ==="notUniqueTitolo"){
+      this.formGroup.get("Titolo")?.setErrors({"notUniqueTitolo":true});
+    }
+  }
 }

@@ -1,10 +1,14 @@
 from abc import ABC
 from typing import Union, List
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import aliased
+
 from extensions import db
 from flask import current_app
 from model.dao.base_dao import BaseDao
+from model.entity.bambino_testo import BambinoTesto
 from model.entity.testo import TestoOriginale
+from model.entity.tipologiaTesto import TipologiaTesto
 
 
 class TestoOriginaleRepository(BaseDao, ABC):
@@ -105,3 +109,26 @@ class TestoOriginaleRepository(BaseDao, ABC):
                 current_app.web_logger.error(f"Errore durante la ricerca per tipologia: {str(e)}")
             return None
 
+    def find_all_by_tipologia(self, tipologia: str, limit: Union[int, None]) -> Union[List[dict], None]:
+        try:
+            testo_alias = aliased(TestoOriginale)
+            return [row._asdict() for row in (
+                self.database.query(testo_alias._id_testo,
+                                    TipologiaTesto._nome,
+                                    testo_alias._tipologia,
+                                    testo_alias._titolo,
+                                    testo_alias._testo,
+                                    testo_alias._eta_riferimento,
+                                    testo_alias._id_testo_spiegato,
+                                    )
+                    .select_from(testo_alias)  # Indica che parte  dall'alias TestoOriginale
+                    .join(TipologiaTesto, testo_alias._id_tipologia_testo == TipologiaTesto._id_tipologia)
+                    .filter(testo_alias._tipologia == tipologia)
+                    .limit(limit)
+                    .all()
+                    )]
+
+        except SQLAlchemyError as e:
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante la ricerca per tipologia: {str(e)}")
+            return None

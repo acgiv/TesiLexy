@@ -8,7 +8,6 @@ from flask import Blueprint, request, jsonify
 from model.Service.user_service import UtenteService
 import configparser
 
-from model.entity.utente import Utente
 
 config = configparser.ConfigParser()
 config.read(".\\gobal_variable.ini")

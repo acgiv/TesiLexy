@@ -7,8 +7,9 @@ import {RecuperoService} from "./recupero/recupero.service";
 import {ControlFormDirective} from "./form/control-form.directive";
 import {BambinoService} from "./terapista/bambino/bambino/bambino.service";
 import {TestoService} from "./terapista/testo/testo.service";
+import {DashboardDirective} from "./terapista/dashboard/dashboard.directive";
 
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideHttpClient(), RecuperoService,  ControlFormDirective, BambinoService , TestoService]
+  providers: [provideRouter(routes), provideHttpClient(), RecuperoService,  ControlFormDirective, BambinoService , TestoService, DashboardDirective]
 };

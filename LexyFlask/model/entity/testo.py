@@ -7,14 +7,15 @@ from sqlalchemy.dialects.mysql import LONGTEXT
 
 
 class TestoOriginale(db.Model):
-    __tablename__ = "Testo"
+    __tablename__ = "testo"
     _id_testo = Column('idtesto', Integer, primary_key=True, autoincrement=True)
-    _titolo = Column('titolo', LONGTEXT)
+    _titolo = Column('titolo', String(255), unique=True)
     _testo = Column('testo', LONGTEXT, nullable=False)
     _eta_riferimento = Column('eta_riferimento', Integer, nullable=False)
     _tipologia = Column('tipologia', String(50), nullable=False, default="testo_originale")
     _id_tipologia_testo = Column("tiologia_testo", Integer, ForeignKey("tipologia.idtipologia"), nullable=False)
     _id_terapista = Column("idterapista", String(36), ForeignKey("utente.idutente"))
+    _id_testo_spiegato = Column("id_testo_spiegato", Integer, ForeignKey("testo.idtesto"))
 
     __mapper_args__ = {
         'polymorphic_on': _tipologia,
@@ -23,7 +24,8 @@ class TestoOriginale(db.Model):
 
     def __init__(self, id_testo: Union[int, None], titolo: str, testo: str, id_tipologia_testo: int,
                  eta_riferimento: Union[int, None] = 0,
-                 tipologia: Union[str, None] = None, id_terapista: Union[str, None] = None):
+                 tipologia: Union[str, None] = None, id_terapista: Union[str, None] = None,
+                 id_testo_spiegato: int = -1):
         self._id_testo = id_testo
         self._titolo = titolo
         self._testo = testo
@@ -34,10 +36,24 @@ class TestoOriginale(db.Model):
             self._tipologia = tipologia
         if id_terapista:
             self._id_terapista = id_terapista
+        if id_testo_spiegato != -1:
+            self._id_testo_spiegato = id_testo_spiegato
 
     @property
     def id_testo(self) -> int:
         return self._id_testo
+
+    @id_testo.setter
+    def id_testo(self, id_testo: str) -> None:
+        self._id_testo = id_testo
+
+    @property
+    def id_testo_spiegato(self) -> int:
+        return self._id_testo_spiegato
+
+    @id_testo_spiegato.setter
+    def id_testo_spiegato(self, id_testo_spiegato: str) -> None:
+        self._id_testo_spiegato = id_testo_spiegato
 
     @property
     def titolo(self) -> str:
@@ -103,7 +119,8 @@ class TestoOriginale(db.Model):
             "eta_riferimento": self._eta_riferimento,
             "tipologia": self._tipologia,
             "id_tipologia_testo": self._id_tipologia_testo,
-            "id_terapista": self._id_terapista
+            "id_terapista": self._id_terapista,
+            "id_testo_spiegato": self._id_testo_spiegato
         }
 
 

@@ -284,6 +284,7 @@ export class BambinoComponent implements OnInit, OnDestroy{
               name:"Patologie",
               placeholder: 'Patologie',
               disabled: is_visualizza,
+               multi_select:true,
               value:   this.bambino?.patologie ? cloneDeep(this.bambino.patologie): ['Patologie'],
               validator: [
                 multiPatternValidatorSelect('Patologie', "required")
@@ -307,6 +308,7 @@ export class BambinoComponent implements OnInit, OnDestroy{
               name:"Terapisti",
               placeholder: 'Terapisti',
               disabled: is_visualizza,
+              multi_select:true,
               value:  this.bambino?.terapista_associati? cloneDeep(this.bambino.terapista_associati) : ['Terapisti'],
               validator: [
                 multiPatternValidatorSelect('Terapisti', "required")

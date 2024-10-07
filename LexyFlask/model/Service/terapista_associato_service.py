@@ -48,3 +48,6 @@ class TerapistaAssociatoService:
             for email in lista_update:
                 self.insert(TerapistaAssociato(idterapista=ut.find_by_email(email=email).id_utente,
                                                idbambino=id_search))
+
+    def find_all_user_child_by_therapist(self, id_search: uuid) -> Union[List, None]:
+        return self.__bambino_associato_dao.find_all_user_child_by_therapist(id_search=id_search)

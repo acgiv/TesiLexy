@@ -7,8 +7,10 @@ import {SocketService} from "./socket.service";
 import {NgForOf} from "@angular/common";
 import {Bambino, RiquestService} from "./riquest.service";
 import {AccessService} from "../../access.service";
-import {CarosellotestoComponent} from "./carosello_testo/carosello_testo.component";
+
 import {Testo} from "../testo/testo.service";
+import {CarosellotestoComponent} from "./carosello_testo/carosello_testo.component";
+import {CarosellotestospiegatoComponent} from "./carosello_testo_spiegato/carosello_testo_spiegato.component";
 
 
 @Component({
@@ -18,7 +20,12 @@ import {Testo} from "../testo/testo.service";
     FaIconComponent,
     NgForOf,
     CaroselloPazientiComponent,
-    CarosellotestoComponent
+    CarosellotestoComponent,
+    CarosellotestoComponent,
+    CarosellotestoComponent,
+    CarosellotestoComponent,
+    CarosellotestoComponent,
+    CarosellotestospiegatoComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
@@ -26,10 +33,11 @@ import {Testo} from "../testo/testo.service";
 export class DashboardComponent implements  OnInit{
   list_user: Bambino[] = [];
   list_text: Testo[] = [];
+  list_text_adatatti: any[] = [];
 
   constructor(
                private socketService: SocketService,
-               private  riquestDashBoard: RiquestService,
+               private riquestDashBoard: RiquestService,
                private accessService:  AccessService,
   ) {
 
@@ -70,16 +78,23 @@ export class DashboardComponent implements  OnInit{
       body.tipologia = 'testo_originale';
       body.limite = null;
       this.riquestDashBoard.request_text(body).subscribe(data=> {
-        for(const element of data.args.response.testi){
+        for(const element of data.args.response.text){
           this.list_text.push(element);
         }
-        console.log(this.list_text);
       });
+    body.tipologia = 'testo_spiegato';
+    this.riquestDashBoard.request_text(body).subscribe(data=> {
+      for(const element of data.args.response.text){
+        this.list_text_adatatti.push(element);
+      }
+    });
   }
+
+
+
 
   socket_child(){
      this.socketService.getMessage().subscribe((element: any) => {
-        console.log(element);
         const email = this.accessService.getEmail();
          const terapisti = Object.keys(element.terapista_associati);
          const bambino = {

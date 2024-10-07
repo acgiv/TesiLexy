@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
 
 import {JsonPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -8,6 +8,7 @@ import {faClose} from "@fortawesome/free-solid-svg-icons";
 import {Subscription} from "rxjs";
 import { FormInput} from "../form";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons/faInfoCircle";
+import {StringUtilsService} from "../../Utilitys/string-utils.service";
 @Component({
   selector: 'app-input-select',
   standalone: true,
@@ -38,9 +39,10 @@ export class InputSelectComponent implements OnInit{
    protected readonly String = String;
    private search_name: any;
    private component_name: any;
+   @Output() indexSelected: EventEmitter<number> = new EventEmitter<number>();
 
 
-   constructor() {
+   constructor(private string_utils :StringUtilsService) {
     }
 
   ngOnInit() {
@@ -76,7 +78,7 @@ export class InputSelectComponent implements OnInit{
      this.elementFocused ='';
   }
 
-   selectPatologia() {
+   selectItem() {
     this.clickablePatologia = !this.clickablePatologia;
     this.removeFocusedSearch(this.elementFocused);
     this.formGroup.get(this.search_name)?.setValue("");
@@ -85,11 +87,12 @@ export class InputSelectComponent implements OnInit{
 
   }
 
-  selectItemPatologia(patologia: string) {
+  selectItemListMenu(patologia: string, index: number) {
     this.formGroup.get(this.component_name)?.markAsDirty();
     this.selectItemMenu(patologia,this.formGroup.get(this.component_name)?.value);
     this.clickablePatologia = false;
     this.formGroup.get(this.search_name)?.setValue("");
+    this.indexSelected.emit(index);
   }
 
   selectItemMenu(item: any, lista: any): void {
@@ -101,7 +104,13 @@ export class InputSelectComponent implements OnInit{
       if (dashIndex !== -1) {
         lista.splice(dashIndex, 1);
       }
-      lista.push(item);
+      if (this.elem.input.multi_select){
+         lista.push(item);
+      }else{
+        lista.length = 0;
+        lista.push(item)
+      }
+
     }
 
     if (lista.length === 0) {
@@ -118,9 +127,13 @@ export class InputSelectComponent implements OnInit{
   onKeydown(event: KeyboardEvent) {
     if(event.key === "Enter"){
         event.preventDefault();
-        const elem = this.formGroup.get(this.search_name)?.value;
+        let elem = this.formGroup.get(this.search_name)?.value;
+        elem = this.string_utils.capitalize(elem);
         this.selectItemMenu(elem,this.formGroup.get(this.component_name)?.value);
         this.clickablePatologia = !this.clickablePatologia;
+        if(!this.elem.input.multi_select){
+          this.list_elem.push(elem);
+        }
     }
   }
 

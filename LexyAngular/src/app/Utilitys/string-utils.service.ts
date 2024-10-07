@@ -23,6 +23,16 @@ export class StringUtilsService {
   compareArrays = (a: string[], b: []) => {
     return (a!= undefined && b!=undefined )
       && (a.length == b.length)
-      &&  JSON.stringify(cloneDeep(a).sort()) === JSON.stringify(cloneDeep(b).sort());
+      &&  JSON.stringify(cloneDeep(a).sort((a, b) => a.localeCompare(b))) === JSON.stringify(cloneDeep(b).sort());
   };
+
+  capitalize (str : string): string{
+    if (str.length >2){
+        str =  str[0].toUpperCase() + str.slice(1);
+    }else if (str.length ==1){
+       str =  str[0].toUpperCase()
+    }
+     return str
+  }
+
 }

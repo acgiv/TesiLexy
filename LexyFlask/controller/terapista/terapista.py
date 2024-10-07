@@ -8,6 +8,7 @@ from flask import Blueprint, request, jsonify
 from controller.main.main import check_credential, check_username_exists, set_error_message_response
 from extensions import socketio
 from model.Service.bambino_service import BambinoService
+from model.Service.bambino_testo_service import BambinoTestoService
 from model.Service.patologia_bambino_service import PatologiaBambinoService
 from model.Service.patologia_service import PatologiaService
 from model.Service.terapista_associato_service import TerapistaAssociatoService
@@ -15,9 +16,11 @@ from model.Service.testo_service import TestoOriginaleService
 from model.Service.tipologiatesto_service import TipologiaTestoService
 from model.Service.user_service import UtenteService
 from model.entity.bambino import Bambino
+from model.entity.bambino_testo import BambinoTesto
 from model.entity.patologia import Patologia
 from model.entity.terapista_associato import TerapistaAssociato
 from model.entity.testo import TestoOriginale
+from model.entity.tipologiaTesto import TipologiaTesto
 from model.entity.utente import Utente
 
 config = configparser.ConfigParser()
@@ -42,16 +45,12 @@ def register(user_service: UtenteService):
     try:
         parameters = dict()
         response_copy = response.copy()
-        parameters["email"] = request.json["email"]
-        parameters["username"] = request.json["username"]
-        parameters["password"] = request.json["password"]
         response_copy = check_credential(user_service, parameters, response_copy)
         if response_copy["error"]["number_error"] == 0:
             response_copy["response"] = {"id_utente": uuid.uuid4()}
             user_service.insert_utente(Utente(id_utente=response_copy["response"]["id_utente"],
-                                              email=parameters["email"], password=parameters["password"],
-                                              username=parameters["username"]))
-
+                                              email=request.json["email"], password=request.json["password"],
+                                              username=request.json["username"]))
         return response_copy
     except KeyError as key:
         print(key)
@@ -62,38 +61,27 @@ def register(user_service: UtenteService):
 def create_child(child: BambinoService, pathology: PatologiaService, user_service: UtenteService,
                  pa_bambino_service: PatologiaBambinoService, terapista_child_service: TerapistaAssociatoService):
     try:
-        parameters = dict()
         response_copy = response.copy()
         response_copy["error"]["number_error"] = 0
         response_copy["error"]["message"].clear()
-        parameters["email"] = request.json["email"]
-        parameters["nome"] = request.json["nome"]
-        parameters["cognome"] = request.json["cognome"]
-        parameters["username"] = request.json["username"]
-        parameters["data"] = request.json["data"]
-        parameters["descrizione"] = request.json["descrizione"]
-        parameters["patologie"] = request.json["patologie"]
-        parameters["id_terapista"] = request.json["id_terapista"]
-        parameters["validazione_terapista"] = request.json["controllo_terapista"]
-        parameters["terapisti_associati"] = request.json["terapisti_associati"]
-        insert_pathology(is_not_exist_pathology(parameters["patologie"], pathology), pathology)
-        response_copy = check_credential(user_service, parameters, response_copy)
+        insert_pathology(is_not_exist_pathology(request.json["patologie"], pathology), pathology)
+        response_copy = check_credential(user_service, request.json, response_copy)
         if response_copy["error"]["number_error"] == 0:
             h = hashlib.new('sha256')
-            h.update(f"{parameters["cognome"]}.{parameters["nome"]}".encode('ascii'))
+            h.update(f"{request.json["cognome"]}.{request.json["nome"]}".encode('ascii'))
             password = h.hexdigest()
-            bambino = Bambino(id_utente=uuid.uuid4(), nome=parameters["nome"],
-                              cognome=parameters["cognome"], password=password,
-                              username=parameters["username"], data_nascita=parameters["data"],
-                              descrizione=parameters["descrizione"], email=parameters["email"],
-                              id_terapista=parameters["id_terapista"],
-                              controllo_terapista=parameters["validazione_terapista"])
+            bambino = Bambino(id_utente=uuid.uuid4(), nome=request.json["nome"],
+                              cognome=request.json["cognome"], password=password,
+                              username=request.json["username"], data_nascita=request.json["data"],
+                              descrizione=request.json["descrizione"], email=request.json["email"],
+                              id_terapista=request.json["id_terapista"],
+                              controllo_terapista=request.json["controllo_terapista"])
             child.insert_bambino(bambino)
             pa_bambino_service.insert_patologie_bambino(id_bambino=bambino.id_bambino,
-                                                        patologie_bambino=parameters["patologie"])
-            if parameters["terapisti_associati"]:
+                                                        patologie_bambino=request.json["patologie"])
+            if request.json["terapisti_associati"]:
                 insert_associaton_therapist_child(id_child=bambino.id_bambino,
-                                                  list_email=parameters["terapisti_associati"],
+                                                  list_email=request.json["terapisti_associati"],
                                                   user_service=user_service, terapista_child=terapista_child_service,
                                                   operation="insert"
                                                   )
@@ -212,7 +200,6 @@ def update_child(child: BambinoService, user_service: UtenteService,
         response_copy = response.copy()
         response_copy["error"]["number_error"] = 0
         response_copy["error"]["message"].clear()
-
         parameters["email"] = request.json["email"]
         parameters["id_bambino"] = request.json["id_bambino"]
         parameters["nome"] = request.json["nome"]
@@ -256,30 +243,35 @@ def update_child(child: BambinoService, user_service: UtenteService,
 
 
 @terapista.route('/insert_text', methods=["POST"])
-def insert_text(testo_service: TestoOriginaleService, tipologia_service: TipologiaTestoService):
+def insert_text(testo_service: TestoOriginaleService, tipologia_service: TipologiaTestoService,
+                bm_text_s: BambinoTestoService, ut_service: UtenteService):
     response_copy = response.copy()
-    testo = TestoOriginale(id_testo=None, titolo=request.json['titolo'], testo=request.json['testo'],
-                           id_tipologia_testo=tipologia_service.find_id_by_name(request.json['materia'][0]),
-                           eta_riferimento=request.json['eta_riferimento'], id_terapista=request.json['id_terapista'])
-    testo_service.insert(testo)
+    if request.json['titolo'] and not testo_service.find_by_titolo(request.json['titolo']):
+        testo = TestoOriginale(id_testo=None, titolo=request.json['titolo'], testo=request.json['testo'],
+                               id_tipologia_testo=tipologia_service.find_id_by_name(request.json['materia'][0]),
+                               eta_riferimento=request.json['eta_riferimento'],
+                               id_terapista=request.json['id_terapista'],
+                               tipologia="testo_originale" if request.json['tipologia'].__eq__("originale")
+                               else "testo_spiegato",
+                               id_testo_spiegato=request.json["id_testo_spiegato"])
+        testo = testo_service.insert(testo)
+        insert_bambini_assocati_testo(testo=testo, utente_service=ut_service, tipologia_testo_service=bm_text_s)
+    else:
+        set_error_message_response(response_copy, {"notUniqueTitolo": "Eiste gia un testo con questo titolo"})
     return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
 
 
-@terapista.route('/find_all_text_original', methods=["POST"])
-def find_all_text_original(testo_service: TestoOriginaleService, tipologia_service: TipologiaTestoService):
-    try:
-        response_copy = response.copy()
-        lista = testo_service.find_by_tipologia(request.json['tipologia'], request.json['limite'])
-        if lista:
-            dic = {"testi": [el.to_dict() for el in lista]}
-            for el in dic['testi']:
-                nome = tipologia_service.find_all_by_id(el['id_tipologia_testo']).nome
-                if nome:
-                    el['tipologia_testo'] = nome
-            response_copy["response"] = dic
-        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
-    except KeyError as key:
-        return {"errorKey": f"not found this key: {key}"}
+def insert_bambini_assocati_testo(testo: TestoOriginale, utente_service: UtenteService,
+                                  tipologia_testo_service: BambinoTestoService):
+
+    if (not request.json['tipologia'].__eq__("originale")
+        and request.json["lista_user_child"].__len__() > 0
+        and request.json["id_testo_spiegato"] != -1) \
+            and testo:
+        for user in request.json["lista_user_child"]:
+            ut = utente_service.find_by_username(username=user)
+            if ut:
+                tipologia_testo_service.insert(BambinoTesto(idbambino=ut.id_utente, idtesto=str(testo.id_testo)))
 
 
 @terapista.route('/update_text', methods=["POST"])
@@ -293,6 +285,11 @@ def update_text_original(testo_service: TestoOriginaleService, tipologia_service
         id_materia = tipologia_service.find_id_by_name(request.json['materia'])
         if id_materia:
             testo.id_tipologia_testo = id_materia
+        else:
+            tipologia_service.insert(TipologiaTesto(nome=request.json['materia']))
+            id_materia = tipologia_service.find_id_by_name(request.json['materia'])
+            if id_materia:
+                testo.id_tipologia_testo = id_materia
         testo_service.update(testo)
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:

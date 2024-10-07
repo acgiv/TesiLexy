@@ -41,6 +41,7 @@ export interface Input {
   dependency?: Dependency;
   disabled?:boolean;
   error_custom?:boolean;
+  multi_select?:boolean;
 }
 
 export interface Dependency {

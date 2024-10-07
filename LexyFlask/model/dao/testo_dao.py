@@ -32,3 +32,6 @@ class TestoOriginaleDao(BaseDao, ABC):
 
     def find_by_tipologia(self, tipologia: str,  limit: Union[int, None]) -> Union[List[TestoOriginale], None]:
         return self.__repository.find_by_tipologia(tipologia, limit)
+
+    def find_all_by_tipologia(self, tipologia: str, limit: Union[int, None]) -> Union[List[dict], None]:
+        return self.__repository.find_all_by_tipologia(tipologia=tipologia, limit=limit)

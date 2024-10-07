@@ -1,0 +1,74 @@
+
+  <div class="modal fade" #modal_error tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger"> Errore Testi Originali!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body ">
+          Non esiste ancora nessun Testo originale per creare un testo spiegato associato ad esso!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn_annulla" data-bs-dismiss="modal" (click)="redirectDashboard()">Torna alla dashboard</button>
+          <button type="button" class="btn btn-primary" (click)="redirectCreaTesto()">Crea testo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<h1 class="mt-4 mx-auto text-center fw-bolder"> {{this.is_url_ceck() == "Visualizza" || this.is_url_ceck() =="Modifica"?'Testo Adattato': "Nuovo Testo Adattato"}}</h1>
+ <form  [formGroup]="formGroup" >
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6 d-flex align-items-center flex-column pe-md-3 pe-lg-3   align-items-md-end ">
+        <div class="w-50 mt-1 " *ngFor="let elem of formD.form.slice(0,1)">
+           <app-input_text [elem]="elem" [formGroup]="formGroup" [submit]="submit"></app-input_text>
+        </div>
+      </div>
+      <div class="col-md-6 d-flex align-items-center flex-column ps-md-3 ps-lg-3   align-items-md-start align-items-lg-start ">
+        <div class="w-50 mt-1 " *ngFor="let elem of formD.form.slice(1,2)">
+          <app-input_text [elem]="elem" [formGroup]="formGroup" [submit]="submit"></app-input_text>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex align-items-center flex-column   ">
+    <div class=" mt-1 w-50" *ngFor="let elem of formD.form.slice(2,3)">
+      <app-input-select (indexSelected)="onIndexSelected($event)" [elem]="elem"  [formGroup]="formGroup"  [submit]="submit" [list_elem]="this.lista_titoli"> </app-input-select>
+    </div>
+  </div>
+
+  <div class=" mt-1 "  *ngFor="let elem of formD.form.slice(3, 4)">
+    <app-text-area [submit]="this.submit" [formGroup]="formGroup" [elem]="elem"></app-text-area>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6 d-flex align-items-center flex-column pe-md-3 pe-lg-3   align-items-md-end ">
+        <div class="w-50 mt-1 " *ngFor="let elem of formD.form.slice(4,5)">
+          <app-input_text [elem]="elem" [formGroup]="formGroup" [submit]="submit"></app-input_text>
+        </div>
+      </div>
+      <div class="col-md-6 d-flex align-items-center flex-column ps-md-3 ps-lg-3   align-items-md-start align-items-lg-start ">
+        <div class="w-50 mt-1 "  *ngFor="let elem of formD.form.slice(5,6)">
+          <app-input-select [elem]="elem"  [formGroup]="formGroup"  [submit]="submit" [list_elem]="this.lista_bambini"> </app-input-select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class=" mt-1 "  *ngFor="let elem of formD.form.slice(6, 8)">
+    <app-text-area [submit]="this.submit" [formGroup]="formGroup" [elem]="elem"></app-text-area>
+  </div>
+
+  <div class="d-flex  mb-5 justify-content-center ">
+    <div class="flex-column-reverse mt-4">
+      <button class="btn btn-primary ps-4 pe-4" type="submit" (click)="creaTesto()">
+        <span class="h6">{{this.is_url_ceck() == "Visualizza"?"Modifica": (!this.is_modifica?  "Crea": "Conferma Modifica ")}} Testo Adattato</span></button>
+        <button *ngIf="is_modifica" class="btn btn-secondary ps-4 pe-4 ms-4 btn_annulla " type="submit" (click)="annulla_modifiche()">
+        <span class="h6">Annulla</span></button>
+    </div>
+  </div>
+</form>

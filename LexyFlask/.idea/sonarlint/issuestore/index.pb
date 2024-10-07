@@ -285,3 +285,15 @@ U
 %model/repository/testo_reposistory.py,5\5\554745c33a56ef7c734ba2ae81c66b205e48b64d
 N
 model/Service/testo_service.py,7\d\7df0053bfd44cb0e8a66cf6c762561b511610006
+T
+$.venv/Lib/site-packages/flask/cli.py,6\3\63493e88a267668068db3cef9d048b837b02a6fb
+M
+model/entity/bambino_testo.py,8\3\8356c62da082d5fa4739264cecdf8d145150e239
+\
+,model/repository/bambino_testo_repository.py,2\a\2a664eeb5935fba48e3b32dc1ca2ef1f6574a5f5
+N
+model/dao/bambino_testo_dao.py,2\4\24772399e7c9d16148d04636045dde2d5c27de10
+V
+&model/Service/bambino_testo_service.py,1\4\14b7aceb2e81478553646d403e0c58fdb8680d71
+`
+0.venv/Lib/site-packages/sqlalchemy/sql/schema.py,6\1\6146468f2379df593bec334183677a797affad45

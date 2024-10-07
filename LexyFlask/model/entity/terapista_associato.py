@@ -5,8 +5,8 @@ from extensions import db
 class TerapistaAssociato(db.Model):
     __tablename__ = 'TerapistaAssociato'
 
-    _idbambino = Column('idbambino', CHAR(36), ForeignKey('bambino.idbambino', ondelete='CASCADE'))
-    _idterapista = Column('idterapista', CHAR(36), ForeignKey("utente.idutente", ondelete='CASCADE'))
+    _idbambino = Column('idbambino', CHAR(36), ForeignKey('bambino.idbambino', ondelete='CASCADE'), primary_key=True)
+    _idterapista = Column('idterapista', CHAR(36), ForeignKey("utente.idutente", ondelete='CASCADE'), primary_key=True)
 
     _priority_idbambino = 1
     _priority_idterapista = 2

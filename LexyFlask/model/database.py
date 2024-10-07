@@ -57,7 +57,12 @@ class TipoloigiaTestoSchema(ma.Schema):
 
 class TestoOriginaleSchema(ma.Schema):
     class Meta:
-        fields = ('idtesto', 'titolo', 'testo', 'eta_riferimento', 'tipologia', "tiologia_testo")
+        fields = ('idtesto', 'titolo', 'testo', 'eta_riferimento', 'tipologia', "tiologia_testo", " id_testo_spiegato")
+
+
+class BambinoTestoSchema(ma.Schema):
+    class Meta:
+        fields = ('idbambino', 'idtesto')
 
 
 utente_schema = UtenteSchema()
@@ -92,6 +97,9 @@ tipologia_testos = TipoloigiaTestoSchema(many=True)
 
 testo_schema = TestoOriginaleSchema()
 testoschemas = TestoOriginaleSchema(many=True)
+
+testo_assiciato_schema = BambinoTestoSchema()
+testo_assiciato_schemas = BambinoTestoSchema(many=True)
 
 
 def create_table(db):

@@ -1,6 +1,9 @@
 from typing import List, Union
 from injector import inject
 
+from flask import current_app
+
+
 from model.dao.testo_dao import TestoOriginaleDao
 from model.entity.testo import TestoOriginale
 
@@ -10,8 +13,9 @@ class TestoOriginaleService:
     def __init__(self) -> None:
         self.__dao = TestoOriginaleDao()
 
-    def insert(self, testo: Union[TestoOriginale, List[TestoOriginale]]) -> None:
+    def insert(self, testo: Union[TestoOriginale, List[TestoOriginale]]) -> None | TestoOriginale:
         self.__dao.insert(testo)
+        return self.find_by_titolo(testo.titolo)
 
     def delete(self, testo: Union[TestoOriginale, List[TestoOriginale]]) -> None:
         self.__dao.delete(testo)
@@ -30,3 +34,17 @@ class TestoOriginaleService:
 
     def find_by_tipologia(self, tipologia: str,  limit: Union[int, None]) -> Union[List[TestoOriginale], None]:
         return self.__dao.find_by_tipologia(tipologia, limit)
+
+    def find_all_by_tipologia(self, tipologia: str, limit: Union[int, None]) -> Union[List[dict], None]:
+        results = self.__dao.find_all_by_tipologia(tipologia=tipologia, limit=limit)
+        if results:
+            if hasattr(current_app, "api_logger"):
+                current_app.api_logger.info(f"sono stati trovati i testi con questa tipologia:{tipologia}")
+            results_as_dict = [
+                {key.lstrip('_').replace("nome", "materia"): value for key, value in row.items()}
+                for row in results]
+            return results_as_dict
+        if hasattr(current_app, "api_logger"):
+            current_app.api_logger.info(f"non sono stati trovati i testi con questa tipologia:{tipologia}")
+        return None
+

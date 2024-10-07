@@ -13,14 +13,19 @@
 
   <input *ngIf="elem.input.disabled" class="form-control pass rounded rounded-1  border  border-dark "  [value]="(formGroup.get(this.get_element_name_form())?.value).join(', ')" disabled>
   <div *ngIf="!elem.input.disabled"  [ngClass]="'dropdown border border-1 rounded  '+ (getErrors(elem.input.name) ? 'border-danger':'border-dark') ">
-    <button   [id]="elem.input.id" (click)="selectPatologia()" [class]="elem.input.class "
-              [type]="elem.input.typeText" data-bs-toggle="dropdown" aria-expanded="false"
+    <button [id]="elem.input.id" (click)="selectItem()" [class]="elem.input.class "
+            [type]="elem.input.typeText" data-bs-toggle="dropdown" aria-expanded="false"
      >
      <span [ngClass]="'dropdown-toggle position-absolute me-3 end-0 ' + (getErrors(elem.input.name)   ? 'text-danger': '')  "></span>
       <span class="d-flex flex-wrap" *ngIf="formGroup.get(this.get_element_name_form())?.value[0] != elem.input.placeholder|| (formGroup.get(this.get_element_name_form())?.value).length !=1 ">
-        <span *ngFor="let p of (formGroup.get(this.get_element_name_form())?.value)" class="me-1 pt-1 bg-body-tertiary">
-          <span  class="border border-1 pe-1 ps-1 border-dark rounded  ">
-            <fa-icon class="pe-1 ps-1" [icon]="faClose" (click)="removeSelect(p)"  onKeyDown=""></fa-icon>{{p}}</span>
+      <span *ngIf="elem.input.multi_select">
+          <span  *ngFor="let p of (formGroup.get(this.get_element_name_form())?.value)" class="me-1 pt-1 bg-body-tertiary">
+            <span  class="border border-1 pe-1 ps-1 border-dark rounded  ">
+              <fa-icon class="pe-1 ps-1" [icon]="faClose" (click)="removeSelect(p)"  onKeyDown=""></fa-icon>{{p}}</span>
+          </span>
+        </span>
+        <span *ngIf="!elem.input.multi_select">
+          {{formGroup.get(this.get_element_name_form())?.value[0]}}
         </span>
       </span>
       <span *ngIf="formGroup.get(this.get_element_name_form())?.value[0] == elem.input.placeholder && (formGroup.get(this.get_element_name_form())?.value).length ===1">{{formGroup.get(this.get_element_name_form())?.value[0]}}</span>
@@ -29,8 +34,8 @@
       <li class="input-group pb-2">
         <input type="text" class="form-control rounded-0 " [formControlName]="'search'+elem.input.name" (keydown)="onKeydown($event)"  placeholder="Cerca..." >
       </li>
-      <li  *ngFor="let pa of this.list_elem">
-        <a class="dropdown-item" [id]="pa" (click)="selectItemPatologia(pa)" >{{pa}}</a>
+      <li  *ngFor="let elem of this.list_elem; let i = index">
+        <a class="dropdown-item" [id]="elem" (click)="selectItemListMenu(elem, i)" >{{elem}}</a>
       </li>
     </ul>
   </div>

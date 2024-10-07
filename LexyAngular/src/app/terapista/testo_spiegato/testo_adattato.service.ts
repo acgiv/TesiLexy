@@ -6,19 +6,22 @@ import {Riquest} from "../dashboard/riquest.service";
 @Injectable({
   providedIn: 'root'
 })
-export class TestoService {
+export class TestoAdattatoService {
 
 
   protected url: string;
+  protected url_api: string;
 
   constructor(private http: HttpClient) {
     this.url = 'http://127.0.0.1:5000/terapista/'
-
+    this.url_api = 'http://127.0.0.1:5000/api/'
   }
 
-  find_all_materia(): Observable<any> {
-    return this.http.get<Riquest>(this.url+"lista_materia_testo");
+  set_list_all_user_child(body: any): Observable<any> {
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<Riquest>(this.url_api+"find_all_user_child_by_therapist", body, {headers});
   }
+
 
   insert_text(body: any): Observable<any>{
      const headers = new HttpHeaders({'Content-Type': 'application/json'});
@@ -31,6 +34,7 @@ export class TestoService {
   }
 
 
+
 }
 
 export interface Testo {
@@ -39,8 +43,6 @@ export interface Testo {
   id_testo: number;
   tipologia_testo: string;
   testo: string;
-  materia?: string;
+  tipologia?: string;
   titolo: string;
-  id_testo_spiegato?: number;
-  child?:string[];
 }

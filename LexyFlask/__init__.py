@@ -10,6 +10,7 @@ from configuration.config import DATABASE
 from extensions import db, ma, socketio
 from model import database
 from model.Service.bambino_service import BambinoService
+from model.Service.bambino_testo_service import BambinoTestoService
 from model.Service.patologia_bambino_service import PatologiaBambinoService
 from model.Service.patologia_service import PatologiaService
 from model.Service.terapista_associato_service import TerapistaAssociatoService
@@ -40,6 +41,7 @@ def configure(binder):
     binder.bind(TerapistaAssociatoService)
     binder.bind(TipologiaTestoService)
     binder.bind(TestoOriginaleService)
+    binder.bind(BambinoTestoService)
 
 
 def create_app():

@@ -6,7 +6,6 @@ import {
   ViewChild,
   ElementRef,
   OnDestroy,
-  OnInit
 } from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import { register } from 'swiper/element/bundle';
@@ -25,7 +24,7 @@ register();
   styleUrls: ['./carosello_testo.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class CarosellotestoComponent implements AfterViewInit, OnDestroy, OnInit{
+export class CarosellotestoComponent implements AfterViewInit, OnDestroy{
   @Input() sectionTitle!: string;
   @Input() buttonText!: string;
   @Input() contentList!: Testo[];
@@ -35,9 +34,6 @@ export class CarosellotestoComponent implements AfterViewInit, OnDestroy, OnInit
   constructor(private router: Router) {
   }
 
-  ngOnInit() {
-    console.log(this.contentList);
-  }
 
   ngAfterViewInit(): void {
     const swiperElement = this.swiperContainer.nativeElement;
@@ -70,14 +66,13 @@ export class CarosellotestoComponent implements AfterViewInit, OnDestroy, OnInit
   }
 
   visualizza_testo(element: Testo) {
-    console.log(element)
      this.router.navigate(["/terapista/dashboard/visualizzaTesto"], {
         state: {
           id_testo: element.id_testo,
           Titolo: element.titolo,
-          Materia: element.tipologia_testo,
+          Materia: element.materia,
           Testo: element.testo,
-          Eta: element.eta_riferimento,
+          Eta: element.eta_riferimento
         }
      }).then(() => {});
   }
