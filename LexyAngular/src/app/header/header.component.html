@@ -1,42 +1,41 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light nav-shadow" >
   <div class="container-fluid mx-4">
       <a class="navbar-brand  h3 px-3 " >
-        <a class="lexy_logo nav-link fw-bold" routerLinkActive="active"
-             [routerLinkActiveOptions]="{exact:true}" [routerLink]="isTerapista()? '/' :'/terapista'">LEXY</a>
+        <a class="lexy_logo nav-link fw-bold cursor_link" routerLinkActive="active"
+             [routerLinkActiveOptions]="{exact:true}"  (click)="setState(isTerapista()? '/' :'/terapista')">LEXY</a>
       </a>
-       <button class="navbar-toggler" type="button" (click)="toggleNavbar()" aria-expanded="false" aria-controls="navbarText" aria-label="Toggle navigation">
+       <button class="navbar-toggler" type="button"  (click)="toggleNavbar()" aria-expanded="false" aria-controls="navbarText" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse mt-1 ms-5 mx-auto text-center" [ngClass]="{'show': isNavbarOpen}" id="navbarText">
       <ul class="navbar-nav  ">
         <li class="nav-item p-0">
-          <a class="nav-link link-size p-1 me-2 m-0 " routerLinkActive="active"
-             [routerLinkActiveOptions]="{exact:true}" [routerLink]="isTerapista()? '/' :'/terapista'"> Home
+          <a class="nav-link link-size p-1 me-2 m-0 cursor_link " routerLinkActive="active"
+             [routerLinkActiveOptions]="{exact:true}" (click)="setState(isTerapista()? '/' :'/terapista')"   > Home
             <hr class="hr-link mt-2  mx-auto m-0" *ngIf="isHomeActive">
           </a>
         </li>
-         <li *ngIf="this.accessService.getAccess()" class="nav-item link-size p-0">
-          <a class="nav-link h p-1 me-2 m-0 "    [routerLink]="['/terapista/dashboard']" routerLinkActive="active">Dashboard
+         <li *ngIf="this.accessService && this.accessService.getRuolo()=='terapista'" class="nav-item link-size p-0">
+          <a class="nav-link h p-1 me-2 m-0  cursor_link"    (click)="setState('/terapista/dashboard')" routerLinkActive="active">Dashboard
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isDashboardActive">
           </a>
         </li>
         <li *ngIf=" !this.accessService.getAccess()" class="nav-item link-size  p-0">
-          <a class="nav-link p-1 me-2 m-0 " [routerLink]=" isActive('/login') ?  '/login' : (isActive('/') ?  '/login': '/terapista/login') " routerLinkActive="active">Login
+          <a class="nav-link p-1 me-2 m-0 cursor_link " (click)="setState(isActive('/login') ?  '/login' : (isActive('/') ?  '/login': '/terapista/login'))" routerLinkActive="active">Login
             <hr class="hr-link mt-2 mx-auto m-0 " *ngIf="isLoginActive">
           </a>
         </li>
         <li *ngIf="!isTerapista() && !this.accessService.getAccess()" class="nav-item link-size p-0">
-          <a class="nav-link h p-1 me-2 m-0 " [routerLink]="'/terapista/registrati'"  routerLinkActive="active">Registrati
+          <a class="nav-link h p-1 me-2 m-0 cursor_link" (click)="setState('/terapista/registrati')" routerLinkActive="active">Registrati
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isRegistrationActive">
           </a>
         </li>
-        <li *ngIf="this.accessService.getAccess()" class="nav-item link-size p-0">
-          <a class="nav-link h p-1 me-2 m-0 " routerLinkActive="active"  [routerLink]=" isActive('/chat') ?  '/chat' : (isActive('/') ?  '/chat': '/terapista/chat') " [routerLinkActiveOptions]="{exact:true}">Chat
+        <li *ngIf="isTerapista() && this.accessService.getAccess() && this.accessService.getRuolo()=='bambino'" class="nav-item link-size p-0">
+          <a class="nav-link h p-1 me-2 m-0 cursor_link " routerLinkActive="active"   (click)="setState('/chat')" [routerLink]="'/chat'" [routerLinkActiveOptions]="{exact:true}">Chat
             <hr class="hr-link mt-2 mx-auto m-0" *ngIf="isChatActive">
           </a>
         </li>
-
       </ul>
       <div class="navbar-nav">
         <div *ngIf="this.accessService.getAccess()" class=" nav-item dropdown pb-2">

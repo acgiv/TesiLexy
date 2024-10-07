@@ -276,8 +276,9 @@ def insert_bambini_assocati_testo(testo: TestoOriginale, utente_service: UtenteS
 
 @terapista.route('/update_text', methods=["POST"])
 def update_text_original(testo_service: TestoOriginaleService, tipologia_service: TipologiaTestoService):
+    response_copy = response.copy()
     try:
-        response_copy = response.copy()
+
         testo = testo_service.find_by_id(request.json['id_testo'])
         testo.titolo = request.json['titolo']
         testo.testo = request.json['testo']
@@ -293,4 +294,50 @@ def update_text_original(testo_service: TestoOriginaleService, tipologia_service
         testo_service.update(testo)
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:
-        return {"errorKey": f"not found this key: {key}"}
+        set_error_message_response(response_copy, {"KeyError": f"Errore non è stata"
+                                                               f" trovata questa chiave {str(key)} nel body"})
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+
+
+@terapista.route('/update_text_adattato', methods=["POST"])
+def update_text_adattato(testo_service: TestoOriginaleService,
+                         bambino_testo_service: BambinoTestoService,
+                         user_service: UtenteService):
+    response_copy = response.copy()
+    try:
+        if request.json["update_text"]:
+            testo = testo_service.find_by_id(request.json["id_testo"])
+            if testo:
+                testo.titolo = request.json["titolo"]
+                testo.testo = request.json["testo"],
+                testo.eta_riferimento = request.json["eta_riferimento"]
+                testo_service.update(testo)
+        if request.json["update_list_child"]:
+            lista_child = bambino_testo_service.find_by_idtesto(idtesto=request.json["id_testo"])
+            if lista_child:
+                lista_user = [(user_service.get_find_all_by_id_utente(str(child.idbambino)).username,
+                               user_service.get_find_all_by_id_utente(str(child.idbambino)).id_utente)
+                              for child in lista_child]
+                update_child_text(request.json["id_testo"], lista_user, request.json["lista_bambini"],
+                                  user_service, bambino_testo_service)
+
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+    except KeyError as key:
+        set_error_message_response(response_copy, {"KeyError": f"Errore non è stata"
+                                                               f" trovata questa chiave {str(key)} nel body"})
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+
+
+def update_child_text(id_testo: str, list_user: list[(str, str)], list_user_update: list[str],
+                      user_sevice: UtenteService,
+                      bambino_testo_service) -> None:
+    for el in list_user:
+        if el[0] in list_user_update:
+            list_user_update.remove(el[0])
+        else:
+            bambino_testo_service.delete_by_bambino_and_testo(idbambino=el[1], idtesto=id_testo)
+    if list_user_update.__len__() > 0:
+        for user in list_user_update:
+            bambino_testo_service.insert(BambinoTesto(idbambino=user_sevice.find_by_username(username=user).id_utente,
+                                                      idtesto=id_testo))
+

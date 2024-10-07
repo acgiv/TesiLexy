@@ -203,7 +203,7 @@ export class RegistratiComponent implements OnInit{
         tap(response => {
           if (response.completed) {
              this.accessService.insertAccess(response,this.formGroup.value["Username"], true);
-             this.router.navigate(['/terapista']).then(() => {});
+             this.router.navigate(['/terapista'], {state: {navigatedByButton: true}}).then(() => {});
              this.formD.ngOnDestroy()
           } else {
             for (let i = 0; i < response.error.number_error  ;i++) {

@@ -38,7 +38,6 @@ export class CarosellotestospiegatoComponent implements AfterViewInit,  OnInit{
   }
 
   ngOnInit() {
-    console.log(this.contentList);
   }
 
   ngAfterViewInit(): void {
@@ -111,12 +110,14 @@ crea_testo() {
         this.router.navigate(["terapista/dashboard/inserisciTestoAdattato"], {
           state: {
             lista: data['args']['response']['text'],
+            navigatedByButton: true
+
           }
         }).then(() => {
         });
       }  , error: () => {
         this.router.navigate(["terapista/dashboard/inserisciTestoAdattato"], {
-          state: {}
+          state: {navigatedByButton: true}
         }).then(() => {});
       },
       });

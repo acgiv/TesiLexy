@@ -513,7 +513,7 @@ createBambino( ) {
       .pipe(
         tap(response => {
           if (response.args.completed) {
-              this.router.navigate(['/terapista/dashboard']).then(() => { this.formD.ngOnDestroy()});
+              this.router.navigate(['/terapista/dashboard'], {state: {navigatedByButton: true}}).then(() => { this.formD.ngOnDestroy()});
           } else {
             for (let i = 0; i < response.args.error.number_error ;i++) {
               let keys = Object.keys(response.args.error.message[i]);

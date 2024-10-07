@@ -45,6 +45,7 @@ def login(utente_service: UtenteService):
                                          "id_utente": result.id_utente,
                                          "username": result.username,
                                          "email": result.email,
+                                         "ruolo": result.tipologia,
                                          "result_connection": True,
                                          }
             return response_copy

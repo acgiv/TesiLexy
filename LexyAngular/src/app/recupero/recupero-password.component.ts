@@ -213,7 +213,9 @@ export class RecuperoPasswordComponent implements OnInit{
             this.formGroup = this.formD.setRangeValidator(this.fb,2,5);
       } else if(this.rangelist[0]!= 0){
         await this.changePassword(this.formGroup.value["Password"], this.newBody.data.email);
-        await this.router.navigate([!this.isTerapista()?'/terapista/login':'/login']);
+        await this.router.navigate([!this.isTerapista()?'/terapista/login':'/login'], {
+              state: {navigatedByButton: true}
+        });
         }
     }
   }

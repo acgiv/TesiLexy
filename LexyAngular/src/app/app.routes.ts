@@ -8,24 +8,24 @@ import {DashboardComponent} from "./terapista/dashboard/dashboard.component";
 import {BambinoComponent} from "./terapista/bambino/bambino/bambino.component";
 import {TestoComponent} from "./terapista/testo/testo.component";
 import {TestoAdattatoComponent} from "./terapista/testo_spiegato/testo-adattato.component";
+import {authGuard} from "./auth.guard";
 
 
 
 export const routes: Routes = [
-  {path:'', component: HomeComponent},
-  {path:'login', component: LoginComponent},
-  {path:'terapista', component: HomeComponent},
-  {path:'terapista/login', component: LoginComponent},
-  {path:'terapista/registrati', component: RegistratiComponent},
-  {path:'terapista/chat', component: ChatComponent},
-  {path:'chat', component: ChatComponent},
-  {path:'terapista/recuperoPassword', component:  RecuperoPasswordComponent},
-  {path:'recuperoPassword', component: RecuperoPasswordComponent},
-  {path:'terapista/dashboard', component: DashboardComponent },
-  { path: 'terapista/dashboard/inserisciPaziente', component: BambinoComponent },
-  { path: 'terapista/dashboard/visualizzaPaziente', component: BambinoComponent },
-  { path: 'terapista/dashboard/inserisciTesto', component: TestoComponent },
-  { path: 'terapista/dashboard/visualizzaTesto', component: TestoComponent },
-  { path: 'terapista/dashboard/inserisciTestoAdattato', component: TestoAdattatoComponent},
-  { path: 'terapista/dashboard/visualizzaTestoAdattato', component: TestoAdattatoComponent }
+  {path:'', component: HomeComponent , canActivate: [authGuard], data: { expectedRole:[ 'bambino', '', 'terapista'] }},
+  {path:'login', component: LoginComponent, canActivate: [authGuard], data: { expectedRole:[ 'bambino', '', 'terapista']}},
+  {path:'terapista', component: HomeComponent, canActivate: [authGuard], data: { expectedRole:[ 'bambino', '', 'terapista']}},
+  {path:'terapista/login', component: LoginComponent, canActivate: [authGuard], data: { expectedRole:[ 'bambino', '', 'terapista']}},
+  {path:'terapista/registrati', component: RegistratiComponent, canActivate: [authGuard], data: { expectedRole:[ 'bambino', '', 'terapista']}},
+  {path:'chat', component: ChatComponent,  canActivate: [authGuard], data: { expectedRole: ['bambino'] } },
+  {path:'terapista/recuperoPassword', component:  RecuperoPasswordComponent, canActivate: [authGuard], data: { expectedRole:[ 'bambino', '', 'terapista']}},
+  {path:'recuperoPassword', component: RecuperoPasswordComponent, canActivate: [authGuard], data: { expectedRole:[ 'bambino', '', 'terapista']}},
+  {path:'terapista/dashboard', component: DashboardComponent,  canActivate: [authGuard], data: { expectedRole: ['terapista'] }},
+  { path: 'terapista/dashboard/inserisciPaziente', component: BambinoComponent ,  canActivate: [authGuard],  data: { expectedRole: ['terapista'] }},
+  { path: 'terapista/dashboard/visualizzaPaziente', component: BambinoComponent ,  canActivate: [authGuard], data: { expectedRole: ['terapista'] }},
+  { path: 'terapista/dashboard/inserisciTesto', component: TestoComponent,  canActivate: [authGuard], data: { expectedRole: ['terapista'] } },
+  { path: 'terapista/dashboard/visualizzaTesto', component: TestoComponent,  canActivate: [authGuard], data: { expectedRole: ['terapista'] } },
+  { path: 'terapista/dashboard/inserisciTestoAdattato', component: TestoAdattatoComponent,   canActivate: [authGuard], data: { expectedRole: ['terapista'] }},
+  { path: 'terapista/dashboard/visualizzaTestoAdattato', component: TestoAdattatoComponent,   canActivate: [authGuard], data: { expectedRole: ['terapista'] }}
 ];

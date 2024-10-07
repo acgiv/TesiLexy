@@ -15,7 +15,6 @@ export class AccessService {
     this.cookieService.set('username',"", { path: '/', expires: 7 });
     this.cookieService.set('email',"", { path: '/', expires: 7 });
     this.cookieService.set('ruolo', "", { path: '/', expires: 7 });
-    this.cookieService.set('eta', "", { path: '/', expires: 7 });
     this.cookieService.set('id','', { path: '/', expires: 7 });
   }
 
@@ -25,9 +24,6 @@ export class AccessService {
     this.cookieService.set('email', response.response.email, { path: '/', expires: 7 });
     this.cookieService.set('ruolo', response.response.ruolo, { path: '/', expires: 7 });
     this.cookieService.set('id',response.response.id_utente, { path: '/', expires: 7 });
-    if(response.response.eta){
-      this.cookieService.set('eta', String(response.response.eta), { path: '/', expires: 7 });
-    }
 
   }
 
@@ -50,7 +46,4 @@ export class AccessService {
     return this.cookieService.check('ruolo') ? this.cookieService.get('ruolo')  : "";
   }
 
-   getEta():number | null {
-    return this.cookieService.check('eta') ?Number(this.cookieService.get('eta'))  : null;
-  }
 }

@@ -257,7 +257,7 @@ export class TestoComponent implements OnInit, OnDestroy{
          body.titolo = this.formGroup.get("Titolo")?.value;
          body.eta_riferimento =this.formGroup.get("Eta")?.value;
          body.materia =this.formGroup.get("Materia")?.value[0];
-         this.testo_service.update_text(body).subscribe((data =>{
+         this.testo_service.update_text(body).subscribe((_ =>{
          }));
        }
        this.disable_component();
@@ -306,7 +306,7 @@ is_update(): any {
       body.id_testo_spiegato = -1;
       this.testo_service.insert_text(body).subscribe((data =>{
         if(data.args.completed){
-           this.router.navigate(["terapista/dashboard"]).then(() => {});
+           this.router.navigate(["terapista/dashboard"], {state: {navigatedByButton: true}}).then(() => {});
         }else {
           for (let i = 0; i < data.args.error.number_error; i++) {
             let keys = Object.keys(data.args.error.message[i])[0];

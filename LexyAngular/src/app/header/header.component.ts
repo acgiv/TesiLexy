@@ -30,7 +30,6 @@ export class HeaderComponent implements OnInit {
 
 
   constructor(private router: Router, protected accessService: AccessService) {
-
   }
 
   ngOnInit(): void {
@@ -50,6 +49,8 @@ export class HeaderComponent implements OnInit {
     this.isActive('/terapista/dashboard/inserisciPaziente') ||
     this.isActive('/terapista/dashboard/inserisciTesto') ||
     this.isActive('/terapista/dashboard/visualizzaPaziente') ||
+    this.isActive('/terapista/dashboard/visualizzaTestoAdattato') ||
+    this.isActive('/terapista/dashboard/inserisciTestoAdattato') ||
     this.isActive('/terapista/dashboard/visualizzaTesto');
   this.isRegistrationActive = this.isActive('/terapista/registrati');
 }
@@ -66,6 +67,7 @@ export class HeaderComponent implements OnInit {
 
   exit() {
     this.accessService.resetAccess()
+     this.router.navigate([this.router.url.split("/").at(1) == 'terapista'?"/terapista": "/" ]).then(() => {});
   }
 
   closeOption() {
@@ -76,5 +78,11 @@ export class HeaderComponent implements OnInit {
   toggleNavbar() {
     this.isNavbarOpen = !this.isNavbarOpen;
     console.log(this.isNavbarOpen);
+  }
+
+  setState(url: string) {
+     this.router.navigate([url], {
+       state: {navigatedByButton: true}
+     }).then(_ =>{} );
   }
 }

@@ -126,10 +126,14 @@ export class LoginComponent implements OnInit{
               this.error = response.response.result_connection;
                this.accessService.insertAccess(response, username, true);
                this.formD.ngOnDestroy()
-              if (!this.isTerapista()) {
-                this.router.navigate(['/terapista']).then(() => {});
+              if (this.accessService.getRuolo() =="terapista") {
+                this.router.navigate(['/terapista'], {
+                 state: {navigatedByButton: true}
+               }).then(() => {});
               } else {
-                this.router.navigate(['/']).then(() => {});
+                this.router.navigate(['/'], {
+                 state: {navigatedByButton: true}
+               }).then(() => {});
               }
             }else{
                 this.error = false;

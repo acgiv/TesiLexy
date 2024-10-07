@@ -46,3 +46,7 @@
 .custom-toggler.navbar-toggler {
   border-color:white;
 }
+
+.cursor_link{
+  cursor: pointer;
+}

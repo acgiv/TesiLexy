@@ -30,7 +30,7 @@ export class TestoAdattatoService {
 
   update_text(body: any): Observable<any>{
      const headers = new HttpHeaders({'Content-Type': 'application/json'});
-     return this.http.post<Riquest>(this.url+"update_text", body, {headers});
+     return this.http.post<Riquest>(this.url+"update_text_adattato", body, {headers});
   }
 
 

@@ -11,6 +11,7 @@ import {AccessService} from "../../access.service";
 import {cloneDeep} from "lodash";
 import {TestoAdattatoService} from "./testo_adattato.service";
 import {Testo} from "../testo/testo.service";
+import {StringUtilsService} from "../../Utilitys/string-utils.service";
 declare let bootstrap: any;
 
 @Component({
@@ -53,6 +54,7 @@ export class TestoAdattatoComponent  implements OnInit, AfterViewInit {
               protected testo_service: TestoAdattatoService,
               private accessService: AccessService,
               private cdr: ChangeDetectorRef,
+              private String_utils_service: StringUtilsService
   ) {
     this.formGroup = this.fb.group({});
     this.url = this.router.url.split("/").at(-1);
@@ -408,18 +410,11 @@ export class TestoAdattatoComponent  implements OnInit, AfterViewInit {
   annulla_modifiche() {
     this.is_modifica = false;
     this.disable_component();
-    console.log("sono qui");
     this.undo_value();
 
   }
 
   undo_value() {
-    console.log(this.index_list_testo_state);
-    this.index_list_testo = cloneDeep(this.index_list_testo_state);
-    this.formGroup.get("Titolo")?.setValue(cloneDeep([this.lista_text_original[this.index_list_testo].titolo]));
-    this.formGroup.get("Testo")?.setValue(cloneDeep(this.lista_text_original[this.index_list_testo].testo));
-    this.formGroup.get("Eta")?.setValue(cloneDeep(this.lista_text_original[this.index_list_testo].eta_riferimento));
-    this.formGroup.get("Materia")?.setValue(cloneDeep(this.lista_text_original[this.index_list_testo].materia));
     this.formGroup.get("EtaAssociato")?.setValue(cloneDeep(this.testo_adattato?.eta_riferimento));
     this.formGroup.get("Bambini")?.setValue(cloneDeep(this.lista_bambini_state));
     this.formGroup.get("TitoloAssociato")?.setValue(cloneDeep(this.testo_adattato?.titolo));
@@ -438,13 +433,17 @@ export class TestoAdattatoComponent  implements OnInit, AfterViewInit {
       this.is_modifica = true;
       this.enable_component();
     } else if (this.formGroup.valid) {
-      if (this.is_update()) {
+      let update = this.is_update();
+      if (update.change) {
+         console.log("sono qui");
         this.body=  Object();
-        this.body.id_testo = this.testo?.id_testo;
-        this.body.testo = this.formGroup.get("Testo")?.value;
-        this.body.titolo = this.formGroup.get("Titolo")?.value;
-        this.body.eta_riferimento = this.formGroup.get("Eta")?.value;
-        this.body.materia = this.formGroup.get("Materia")?.value[0];
+        this.body.id_testo = this.testo_adattato?.id_testo;
+        this.body.titolo = String(this.formGroup.get("TitoloAssociato")?.value);
+        this.body.testo = this.formGroup.get("TestoAdattato")?.value;
+        this.body.eta_riferimento = String(this.formGroup.get("EtaAssociato")?.value)
+        this.body.lista_bambini = this.formGroup.get("Bambini")?.value
+        this.body.update_list_child = update.child;
+         this.body.update_text = update.text;
         this.testo_service.update_text(this.body).subscribe((_ => {}));
       }
       this.disable_component();
@@ -453,21 +452,32 @@ export class TestoAdattatoComponent  implements OnInit, AfterViewInit {
   }
 
   is_update(): any {
-    for (let index in this.formD.form) {
-      let component = this.formD.form[index];
-      if (this.formGroup.get(component.input.name)?.value != this.state[component.input.name]) {
-        return true;
-      }
-    }
-    return false;
+    let update: any = Object();
+    update.change = update.child =  update.text= false;
+    if(this.testo_adattato){
+        if (!this.String_utils_service.equalsAnyIgnoreCase(String(this.formGroup.get("EtaAssociato")?.value), cloneDeep(String(this.testo_adattato?.eta_riferimento)))){
+          update.text = true;
+          update.change = true;
+        }
+        if (!this.String_utils_service.equalsAnyIgnoreCase(String(this.formGroup.get("TitoloAssociato")?.value), cloneDeep(this.testo_adattato?.titolo))){
+          update.text = true;
+          update.change = true;
+        }
+        if (!this.String_utils_service.equalsAnyIgnoreCase(String(this.formGroup.get("TestoAdattato")?.value), cloneDeep(this.testo_adattato?.testo))){
+          update.text = true;
+          update.change = true;
+        }
+        if (!this.String_utils_service.compareArrays( cloneDeep(this.lista_bambini_state),  this.formGroup.get("Bambini")?.value )){
+           update.child = true;
+           update.change = true;
+        }
+       }
+    return update;
   }
 
   disable_component() {
-    let component = this.formD.form[2];
-      this.formGroup.get(component.input.name)?.disable()
-      component.input.disabled = true;
       let len = this.formD.form.length
-      for (let index=3; index< len; index++) {
+      for (let index=4; index< len; index++) {
          let component = this.formD.form[index];
          if( component.input.name){
            this.formGroup.get(component.input.name)?.disable()
@@ -480,14 +490,10 @@ export class TestoAdattatoComponent  implements OnInit, AfterViewInit {
   }
 
   enable_component() {
-      let component = this.formD.form[2];
-      this.formGroup.get(component.input.name)?.enable()
-      component.input.disabled = false;
       let len = this.formD.form.length
-      for (let index=3; index<len ; index++) {
+      for (let index=4; index<len ; index++) {
          let component = this.formD.form[index];
           if(component.input != undefined){
-            console.log(index, this.formD.form[index])
            this.formGroup.get(component.input.name)?.enable()
            if (component.tipeInput === 'Select') {
              component.input.disabled = false;
@@ -509,7 +515,7 @@ export class TestoAdattatoComponent  implements OnInit, AfterViewInit {
     this.body.lista_user_child = this.formGroup.get("Bambini")?.value
     this.testo_service.insert_text(this.body).subscribe((response => {
       if (response.args.completed) {
-        this.router.navigate(["terapista/dashboard"]).then(() => {
+        this.router.navigate(["terapista/dashboard"], {state: {navigatedByButton: true}}).then(() => {
         });
       } else {
           for (let i = 0; i < response.args.error.number_error; i++) {
@@ -527,7 +533,7 @@ export class TestoAdattatoComponent  implements OnInit, AfterViewInit {
   }
 
   redirectDashboard() {
-     this.router.navigate(["terapista/dashboard"]).then(() => {
+     this.router.navigate(["terapista/dashboard"], {state: {navigatedByButton: true}}).then(() => {
        this.formD.ngOnDestroy()
        this.lista_text_original.length=0;
        this.lista_bambini.length=0;
@@ -536,7 +542,7 @@ export class TestoAdattatoComponent  implements OnInit, AfterViewInit {
   }
 
     redirectCreaTesto() {
-      this.router.navigate(["terapista/dashboard/inserisciTesto"]).then(() => {
+      this.router.navigate(["terapista/dashboard/inserisciTesto"], {state: {navigatedByButton: true}}).then(() => {
          this.formD.ngOnDestroy()
          this.lista_text_original.length=0;
          this.lista_bambini.length=0;

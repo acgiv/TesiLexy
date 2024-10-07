@@ -72,14 +72,17 @@ export class CarosellotestoComponent implements AfterViewInit, OnDestroy{
           Titolo: element.titolo,
           Materia: element.materia,
           Testo: element.testo,
-          Eta: element.eta_riferimento
+          Eta: element.eta_riferimento,
+          navigatedByButton: true
         }
      }).then(() => {});
   }
   protected readonly faPlus = faPlus;
 
   crea_testo() {
-    this.router.navigate(["terapista/dashboard/inserisciTesto"]).then(() => {});
+    this.router.navigate(["terapista/dashboard/inserisciTesto"], {
+       state: {navigatedByButton: true}
+     }).then(() => {});
   }
 
 

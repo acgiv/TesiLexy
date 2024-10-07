@@ -69,12 +69,13 @@ export class CaroselloPazientiComponent implements AfterViewInit {
           id_terapista: paziente.id_terapista,
           patologie: paziente.patologie, // Potresti dover serializzare meglio questo campo
           tipologia: paziente.tipologia,
-          terapista_associati: paziente.terapista_associati
+          terapista_associati: paziente.terapista_associati,
+          navigatedByButton: true
        }
      }).then(() => {});
   }
   crea_pazienti() {
-     this.router.navigate(["terapista/dashboard/inserisciPaziente"]).then(() => {});
+     this.router.navigate(["terapista/dashboard/inserisciPaziente"],  {state: {navigatedByButton: true}}).then(() => {});
   }
   protected readonly faPlus = faPlus;
 
