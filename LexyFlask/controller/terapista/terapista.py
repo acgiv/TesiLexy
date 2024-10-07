@@ -43,14 +43,16 @@ response = {
 @terapista.route('/register', methods=["POST"])
 def register(user_service: UtenteService):
     try:
-        parameters = dict()
         response_copy = response.copy()
-        response_copy = check_credential(user_service, parameters, response_copy)
+        response_copy = check_credential(user_service, request.json, response_copy)
         if response_copy["error"]["number_error"] == 0:
             response_copy["response"] = {"id_utente": uuid.uuid4()}
             user_service.insert_utente(Utente(id_utente=response_copy["response"]["id_utente"],
                                               email=request.json["email"], password=request.json["password"],
                                               username=request.json["username"]))
+            response_copy["response"]["email"] = request.json["email"]
+            response_copy["response"]["username"] = request.json["username"]
+            response_copy["response"]["ruolo"] = "terapista"
         return response_copy
     except KeyError as key:
         print(key)
@@ -340,4 +342,3 @@ def update_child_text(id_testo: str, list_user: list[(str, str)], list_user_upda
         for user in list_user_update:
             bambino_testo_service.insert(BambinoTesto(idbambino=user_sevice.find_by_username(username=user).id_utente,
                                                       idtesto=id_testo))
-

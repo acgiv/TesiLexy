@@ -206,6 +206,7 @@ export class RegistratiComponent implements OnInit{
              this.router.navigate(['/terapista'], {state: {navigatedByButton: true}}).then(() => {});
              this.formD.ngOnDestroy()
           } else {
+            console.log(response);
             for (let i = 0; i < response.error.number_error  ;i++) {
               let keys = Object.keys(response.error.message[i])[0];
               this.set_error_clone_register(keys);

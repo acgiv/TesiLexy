@@ -137,6 +137,7 @@ def check_username_exists(user_service: UtenteService, parameter: str, select_ty
 
 
 def check_credential(user_service: UtenteService, parameter: dict, response_request: dict):
+    print(parameter["email"])
     _, is_email = check_username_exists(user_service, parameter["email"], "email")
     if is_email:
         set_error_message_response(response_request, {"email": "Esiste gia un utente con questa email"})

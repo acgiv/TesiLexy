@@ -18,23 +18,13 @@ export const authGuard: CanActivateFn = (route, state) => {
        state.url === '/terapista/login'  ||
        state.url === "/recuperoPassword"  ||
        state.url === "/terapista/recuperoPassword")) {
-    router.navigate([userRole == "terapista" ? "/terapista" : "/"]).then(() => {});
+    router.navigate([userRole == "terapista" ? "/terapista" : "/"],{state: {navigatedByButton: true}}).then(() => {});
     return false;
   }
 
   if (expectedRoles.includes(userRole)) {
     if (navigatedByButton === undefined || !navigatedByButton) {
-      if (userRole === "terapista" && !is_terapista_url()) {
-        router.navigate(["/terapista"], {state: {navigatedByButton: true}}).then(() => {});
-        return false;
-      } else if (userRole !== "terapista" && is_terapista_url()) {
-        console.log("sono qui")
-        router.navigate([is_terapista_url() ? "/terapista" : "/"], {state: {navigatedByButton: true}}).then(() => {});
-        return false;
-      }
-        router.navigate([userRole === "terapista" && is_terapista_url() ? "/terapista" : "/"], {
-        state: {navigatedByButton: true}}).then(() => {});
-        return false;
+       return is_rule_terapisturl();
     }
 
     return true;
@@ -44,6 +34,16 @@ export const authGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
+  function is_rule_terapisturl():boolean {
+    if (userRole === "terapista" && !is_terapista_url()) {
+        router.navigate(["/terapista"], {state: {navigatedByButton: true}}).then(() => {});
+      } else if (userRole !== "terapista" && is_terapista_url()) {
+        router.navigate([is_terapista_url() ? "/terapista" : "/"], {state: {navigatedByButton: true}}).then(() => {});
+      }
+        router.navigate([userRole === "terapista" && is_terapista_url() ? "/terapista" : "/"], {
+        state: {navigatedByButton: true}}).then(() => {});
+       return false
+  }
 
   function is_terapista_url() {
     const url = state.url.split("/")[1]; // Modifica qui per prendere correttamente la seconda parte dell'URL
