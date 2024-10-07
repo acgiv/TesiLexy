@@ -9,6 +9,8 @@ import {BambinoComponent} from "./terapista/bambino/bambino/bambino.component";
 import {TestoComponent} from "./terapista/testo/testo.component";
 import {TestoAdattatoComponent} from "./terapista/testo_spiegato/testo-adattato.component";
 import {authGuard} from "./auth.guard";
+import {NotFoundError} from "rxjs";
+import {NotfoundComponent} from "./notfoud/notfound.component";
 
 
 
@@ -27,5 +29,6 @@ export const routes: Routes = [
   { path: 'terapista/dashboard/inserisciTesto', component: TestoComponent,  canActivate: [authGuard], data: { expectedRole: ['terapista'] } },
   { path: 'terapista/dashboard/visualizzaTesto', component: TestoComponent,  canActivate: [authGuard], data: { expectedRole: ['terapista'] } },
   { path: 'terapista/dashboard/inserisciTestoAdattato', component: TestoAdattatoComponent,   canActivate: [authGuard], data: { expectedRole: ['terapista'] }},
-  { path: 'terapista/dashboard/visualizzaTestoAdattato', component: TestoAdattatoComponent,   canActivate: [authGuard], data: { expectedRole: ['terapista'] }}
+  { path: 'terapista/dashboard/visualizzaTestoAdattato', component: TestoAdattatoComponent,   canActivate: [authGuard], data: { expectedRole: ['terapista'] }},
+  { path:"**", component: NotfoundComponent}
 ];

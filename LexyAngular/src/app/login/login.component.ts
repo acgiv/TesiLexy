@@ -152,4 +152,10 @@ export class LoginComponent implements OnInit{
    const pattern = /\/terapista/; // Definisci il pattern regolare
     return  new FormControl(this.router.url, [Validators.required, urlValidator(pattern)]).errors != null;
   }
+
+  setState(url: string) {
+     this.router.navigate([url], {
+       state: {navigatedByButton: true}
+     }).then(_ =>{} );
+  }
 }

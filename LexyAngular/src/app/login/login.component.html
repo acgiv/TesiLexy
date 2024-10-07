@@ -13,13 +13,13 @@
                 </div>
                 <p class="error text-danger mt-2" [hidden]="error">Username o password sono errati</p>
                 <div class="justify-content-end mt-2">
-                  <a [routerLink]="isTerapista()? '/recuperoPassword' :'/terapista/recuperoPassword'" routerLinkActive="active" class=" mt-4">Passowrd dimenticata?</a>
+                  <a  (click)="setState(isTerapista()? '/recuperoPassword' :'/terapista/recuperoPassword')"  class=" mt-4 cursor_link">Passowrd dimenticata?</a>
                   </div>
                 <div class="text-center">
                   <button class="mt-5 btn-primary btn w-75 py-2 text-center" type="submit"  >Login</button>
                   <div *ngIf="!isTerapista()" class="mt-5 text-center">
                     <p>Non hai un account?</p>
-                    <a [routerLink]="'/terapista/registrati'">Registrati</a>
+                    <a (click)="setState('/terapista/registrati')" [routerLink]="'/terapista/registrati'">Registrati</a>
                   </div>
                 </div>
               </form>

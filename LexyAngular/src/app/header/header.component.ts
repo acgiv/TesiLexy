@@ -39,10 +39,12 @@ export class HeaderComponent implements OnInit {
       }
     });
   }
-
  updateActiveLinks() {
   this.isHomeActive = this.isActive('/') || this.isActive('/terapista');
-  this.isLoginActive = this.isActive('/login') || this.isActive('/terapista/login');
+  this.isLoginActive = this.isActive('/login') ||
+    this.isActive('/terapista/login') ||
+    this.isActive('/recuperoPassword') ||
+    this.isActive('/terapista/recuperoPassword');
   this.isSignUpActive = this.isActive('/signup') || this.isActive('/terapista/signup');
   this.isChatActive = this.isActive('/chat') || this.isActive('/terapista/chat');
   this.isDashboardActive = this.isActive('/terapista/dashboard') ||

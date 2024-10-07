@@ -22,14 +22,14 @@ export const authGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  // Se il ruolo dell'utente è incluso nei ruoli attesi
   if (expectedRoles.includes(userRole)) {
     if (navigatedByButton === undefined || !navigatedByButton) {
       if (userRole === "terapista" && !is_terapista_url()) {
         router.navigate(["/terapista"], {state: {navigatedByButton: true}}).then(() => {});
         return false;
       } else if (userRole !== "terapista" && is_terapista_url()) {
-        router.navigate(["/"], {state: {navigatedByButton: true}}).then(() => {});
+        console.log("sono qui")
+        router.navigate([is_terapista_url() ? "/terapista" : "/"], {state: {navigatedByButton: true}}).then(() => {});
         return false;
       }
         router.navigate([userRole === "terapista" && is_terapista_url() ? "/terapista" : "/"], {
@@ -37,16 +37,14 @@ export const authGuard: CanActivateFn = (route, state) => {
         return false;
     }
 
-
     return true;
   } else {
-    // Se il ruolo non corrisponde a quelli attesi, reindirizza
     router.navigate([userRole === "terapista" && !is_terapista_url() ? "/terapista" : "/"], {
        state: {navigatedByButton: true}}).then(() => {});
     return false;
   }
 
-  // Funzione per verificare se l'URL è per la rotta 'terapista'
+
   function is_terapista_url() {
     const url = state.url.split("/")[1]; // Modifica qui per prendere correttamente la seconda parte dell'URL
     return url === "terapista";
