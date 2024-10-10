@@ -3,7 +3,7 @@
     <img src="assets/pepper_avatar.png" alt="Pepper Avatar" class="rounded-circle">
   </div>
   <div class="w-100 w-md-50">
-    <div class="message-content p-3 rounded" [ngClass]="{'bg-light': isFromPepper, 'message-user': !isFromPepper}">
+    <div class="message-content p-3 rounded" [ngClass]="{'bg-light border border-1': isFromPepper, 'message-user': !isFromPepper}">
       {{ messageText }}
     </div>
     <div class="message-footer mt-1 d-flex justify-content-between align-items-center small text-muted">

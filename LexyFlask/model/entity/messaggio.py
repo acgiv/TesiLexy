@@ -1,6 +1,8 @@
 import uuid
+from uuid import UUID
 
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, CHAR
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, CHAR, PrimaryKeyConstraint
+from sqlalchemy.orm import relationship
 
 from extensions import db
 from datetime import datetime
@@ -8,45 +10,49 @@ from datetime import datetime
 
 class Messaggio(db.Model):
     __tablename__ = "messaggio"
-    _id_messaggio = Column('idmessaggio', Integer, primary_key=True, autoincrement=True)
-    _id_chat = Column('idchat', Integer, ForeignKey('chat.idchat', ondelete='CASCADE'), nullable=False)
-    _id_utente = Column('idutente', CHAR(36), ForeignKey('utente.idutente', ondelete='CASCADE'), nullable=False)
+    _id_messaggio = Column('idmessaggio', CHAR(36), primary_key=True)
+    _id_chat = Column('idchat', CHAR(36), ForeignKey('chat.idchat', ondelete='CASCADE'), nullable=False,
+                      primary_key=True)
+    _id_bambino = Column('idbambino', CHAR(36), ForeignKey('bambino.idbambino', ondelete='CASCADE'), nullable=False,
+                         primary_key=True)
     _testo = Column('testo', String(255), nullable=False)
-    _data_creazione = Column('datacreazione', DateTime, nullable=False)
-    _data_modifica = Column('datamodifica', DateTime)
-    _numero_versioni_messaggio = Column('numeroversionimessaggio', Integer, default=0)
+    _data_creazione = Column('datacreazione', DateTime, nullable=False, default=datetime.utcnow)
+    _versione_corrente = Column('versione_corrente', Integer, default=0)
+    _tipologia = Column('tipologia', String(20), default='messaggio')
+    _versione_messaggio = Column('versione_messaggio', CHAR(36), ForeignKey('messaggio.idmessaggio'))
 
-    _priority_id_messaggio = 1
-    _priority_id_chat = 2
-    _priority_id_utente = 3
-    _priority_testo = 4
-    _priority_data_creazione = 5
-    _priority_data_modifica = 6
-    _priority_numero_versioni_messaggio = 7
+    __table_args__ = (
+        PrimaryKeyConstraint('idmessaggio', 'idchat', 'idbambino'),
+    )
 
-    _utente = db.relationship("Utente", back_populates="_messaggi")
+    _utente = db.relationship("Bambino", back_populates="_messaggi")
     _chat = db.relationship("Chat", back_populates="_messaggi")
-    _versioni_messaggi = db.relationship("VersioneMessaggio",  back_populates="_messaggi", cascade="all, delete-orphan")
 
-    def __init__(self, id_chat: int, id_utente: int, testo: str, data_creazione: datetime,
-                 data_modifica: datetime, numero_versioni_messaggio: int = 0):
+    __mapper_args__ = {
+        'polymorphic_on': _tipologia,
+        'polymorphic_identity': 'messaggio'
+    }
+
+    def __init__(self, id_chat: str, id_bambino: str, testo: str,
+                 numero_versioni_messaggio: int = 0, tipologia: str = None):
+        self._id_messaggio = uuid.uuid4()
         self._id_chat = id_chat
-        self._id_utente = id_utente
+        self._id_bambino = id_bambino
         self._testo = testo
-        self._data_creazione = data_creazione
-        self._data_modifica = data_modifica
         self._numero_versioni_messaggio = numero_versioni_messaggio
+        if tipologia:
+            self._tipologia = tipologia
 
     @property
-    def id_messaggio(self) -> int:
+    def id_messaggio(self) -> UUID:
         return self._id_messaggio
 
     @id_messaggio.setter
-    def id_messaggio(self, id_messaggio: int) -> None:
+    def id_messaggio(self, id_messaggio: str) -> None:
         self._id_messaggio = id_messaggio
 
     @property
-    def id_chat(self) -> int:
+    def id_chat(self) -> str:
         return self._id_chat
 
     @id_chat.setter
@@ -54,12 +60,12 @@ class Messaggio(db.Model):
         self._id_chat = id_chat
 
     @property
-    def id_utente(self) -> int:
-        return self._id_utente
+    def id_bambino(self) -> uuid:
+        return self._id_bambino
 
-    @id_utente.setter
-    def id_utente(self, id_utente: uuid) -> None:
-        self._id_utente = id_utente
+    @id_bambino.setter
+    def id_bambino(self, id_bambino: uuid) -> None:
+        self._id_bambino = id_bambino
 
     @property
     def testo(self) -> str:
@@ -78,20 +84,12 @@ class Messaggio(db.Model):
         self._data_creazione = data_creazione
 
     @property
-    def data_modifica(self) -> datetime:
-        return self._data_modifica
+    def versione_messaggio(self) -> str:
+        return self.versione_messaggio
 
-    @data_modifica.setter
-    def data_modifica(self, data_modifica: datetime) -> None:
-        self._data_modifica = data_modifica
-
-    @property
-    def numero_versioni_messaggio(self) -> int:
-        return self._numero_versioni_messaggio
-
-    @numero_versioni_messaggio.setter
-    def numero_versioni_messaggio(self, numero_versioni_messaggio: int) -> None:
-        self._numero_versioni_messaggio = numero_versioni_messaggio
+    @versione_messaggio.setter
+    def versione_messaggio(self, versione_messaggio: str) -> None:
+        self._versione_messaggio = versione_messaggio
 
     @id_messaggio.deleter
     def id_messaggio(self) -> None:
@@ -101,9 +99,9 @@ class Messaggio(db.Model):
     def id_chat(self) -> None:
         del self._id_chat
 
-    @id_utente.deleter
-    def id_utente(self) -> None:
-        del self._id_utente
+    @id_bambino.deleter
+    def id_bambino(self) -> None:
+        del self._id_bambino
 
     @testo.deleter
     def testo(self) -> None:
@@ -113,17 +111,23 @@ class Messaggio(db.Model):
     def data_creazione(self) -> None:
         del self._data_creazione
 
-    @data_modifica.deleter
-    def data_modifica(self) -> None:
-        del self._data_modifica
-
-    @numero_versioni_messaggio.deleter
-    def numero_versioni_messaggio(self) -> None:
-        del self._numero_versioni_messaggio
+    @versione_messaggio.deleter
+    def versione_messaggio(self) -> None:
+        del self._versione_messaggio
 
     def __str__(self):
-        return f"id_messaggio: {self._id_messaggio}, id_chat: {self._id_chat}, id_utente: {self._id_utente}, testo: {self._testo}, data_creazione: {self._data_creazione}, data_modifica: {self._data_modifica}, numero_versioni_messaggio: {self._numero_versioni_messaggio}"
+        return (f"id_messaggio: {self._id_messaggio}, id_chat: {self._id_chat}, id_bambino: {self._id_bambino},"
+                f" testo: {self._testo}, data_creazione: {self._data_creazione},"
+                f"  numero_versioni_messaggio: {self._versione_messaggio}")
 
     def __repr__(self):
-        return f"<id_messaggio: {self._id_messaggio}, id_chat: {self._id_chat}, id_utente: {self._id_utente}, testo: {self._testo}, data_creazione: {self._data_creazione}, data_modifica: {self._data_modifica}, numero_versioni_messaggio: {self._numero_versioni_messaggio}>"
+        return (f"<id_messaggio: {self._id_messaggio},"
+                f" id_chat: {self._id_chat},  id_bambino: {self._id_bambino},"
+                f" testo: {self._testo}, data_creazione: {self._data_creazione}, "
+                f" numero_versioni_messaggio: {self._versione_messaggio}>")
 
+
+class MessaggioPepper(Messaggio):
+    __mapper_args__ = {
+        'polymorphic_identity': 'messaggio_pepper'
+    }

@@ -12,18 +12,20 @@ class ChatRepository(BaseDao):
         self.database = db.session
         self.chat = Chat
 
-    def insert(self, chat: Union[Chat, List[Chat]]) -> None:
+    def insert(self, chat: Union[Chat, List[Chat]]) -> Chat | list[Chat]:
         try:
             if isinstance(chat, Chat):
                 self.database.add(chat)
                 self.database.commit()
                 if hasattr(current_app, 'web_logger'):
                     current_app.web_logger.info("Inserimento della chat è stato completato con successo.")
+                return chat
             elif isinstance(chat, list):
                 self.database.add_all(chat)
                 self.database.commit()
                 if hasattr(current_app, 'web_logger'):
                     current_app.web_logger.info("Inserimento delle chat è stato completato con successo.")
+                return chat
         except SQLAlchemyError as e:
             self.database.rollback()
             if hasattr(current_app, 'web_logger'):
@@ -76,9 +78,17 @@ class ChatRepository(BaseDao):
                 current_app.web_logger.error(f"Errore durante la ricerca di tutte le chat: {str(e)}")
             return []
 
-    def find_all_by_id(self, id_chat: int) -> Union[List, None]:
+    def find_all_by_id(self, id_chat: str) -> Union[Chat, None]:
         try:
             return self.chat.query.filter_by(_id_chat=id_chat).first()
+        except SQLAlchemyError as e:
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
+            return None
+
+    def find_all_by_id_child(self, id_child: str, limit: int | None = None) -> Union[List[Chat], None]:
+        try:
+            return self.chat.query.filter_by(_id_bambino=id_child).limit(limit).all()
         except SQLAlchemyError as e:
             if hasattr(current_app, 'web_logger'):
                 current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")

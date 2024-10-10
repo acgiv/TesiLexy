@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from model.entity.patologiaBambino import PatologiaBambino
 from model.entity.utente import Utente
 import uuid
+from extensions import db
 
 
 class Bambino(Utente):
@@ -19,9 +20,12 @@ class Bambino(Utente):
     _controllo_terapista = Column("controllo_terapista", BOOLEAN)
 
     __mapper_args__ = {
-        'polymorphic_identity': 'bambino',  # Identità polimorfica per Bambino
+        'polymorphic_identity': 'bambino',
         'inherit_condition': _id_bambino == Utente._id_utente  # Condizione di eredità basata su _id_bambino
     }
+
+    _messaggi = db.relationship("Messaggio", back_populates="_utente")
+    _chat = db.relationship("Chat", back_populates="_utente")
 
     def __init__(self, username: str, password: str, nome: str, cognome: str, data_nascita: str,
                  descrizione: str, email: str, id_terapista: str, controllo_terapista: bool,

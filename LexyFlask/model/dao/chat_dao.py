@@ -10,8 +10,8 @@ class ChatDao(BaseDao):
     def __init__(self) -> None:
         self.__repository = ChatRepository()
 
-    def insert(self, chat: Union[Chat, List[Chat]]) -> None:
-        self.__repository.insert(chat)
+    def insert(self, chat: Union[Chat, List[Chat]]) -> Chat | list[Chat]:
+        return self.__repository.insert(chat)
 
     def delete(self, chat: Union[Chat, List[Chat]]) -> None:
         self.__repository.delete(chat)
@@ -22,6 +22,8 @@ class ChatDao(BaseDao):
     def find_all(self, limit: int | None = None) -> list[Type[Chat]]:
         return self.__repository.find_all(limit)
 
-    def find_all_by_id(self, id_chat: int, type_search: Union[str, None] = None) -> Union[List, None]:
-        return self.__repository.find_all_by_id(id_chat, type_search=type_search)
+    def find_all_by_id(self, id_chat: str) -> Union[Chat, None]:
+        return self.__repository.find_all_by_id(id_chat)
 
+    def find_all_by_id_child(self, id_child: str, limit: int | None = None) -> Union[List[Chat], None]:
+        return self.__repository.find_all_by_id_child(id_child, limit)

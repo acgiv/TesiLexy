@@ -7,32 +7,32 @@ from flask_injector import FlaskInjector
 from configuration.logger import LOGGING_CONFIG
 from flask import Flask
 from configuration.config import DATABASE
+from controller.bambino.bambino import bambino
 from extensions import db, ma, socketio
 from model import database
 from model.Service.bambino_service import BambinoService
 from model.Service.bambino_testo_service import BambinoTestoService
+from model.Service.chat_service import ChatService
+from model.Service.messaggio_service import MessaggioService
 from model.Service.patologia_bambino_service import PatologiaBambinoService
 from model.Service.patologia_service import PatologiaService
 from model.Service.terapista_associato_service import TerapistaAssociatoService
 from model.Service.testo_service import TestoOriginaleService
 from model.Service.tipologiatesto_service import TipologiaTestoService
 from model.Service.user_service import UtenteService
-from model.dao.chat_dao import ChatDao
 from model.dao.label_dao import LabelDao
 from controller.main.main import main
 from controller.api.api import api
 from controller.terapista.terapista import terapista
+
 import logging
-from model.dao.messaggio_dao import MessaggioDao
-from model.dao.versione_messaggio_dao import VersioneMessaggioDao
 
 
 # Configurazione della dependency injection
 
 def configure(binder):
-    binder.bind(ChatDao)
-    binder.bind(MessaggioDao)
-    binder.bind(VersioneMessaggioDao)
+    binder.bind(ChatService)
+    binder.bind(MessaggioService)
     binder.bind(LabelDao)
     binder.bind(UtenteService)
     binder.bind(BambinoService)
@@ -62,6 +62,7 @@ def create_app():
     app.register_blueprint(main, url_prefix='/')
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(terapista, url_prefix='/terapista')
+    app.register_blueprint(bambino, url_prefix='/bambino')
 
     FlaskInjector(app=app, modules=[configure])
 

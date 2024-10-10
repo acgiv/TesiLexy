@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from smtplib import SMTP
 from configuration.config import SMTP_HOST, SMTP_PORT, EMAIL_ACCOUNT, PSW_ACCOUNT
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from model.Service.user_service import UtenteService
 import configparser
 
@@ -24,6 +24,18 @@ response = {
         },
     "completed": True
 }
+
+
+def web_log_type(type_log: str, message: str):
+    if hasattr(current_app, 'web_logger'):
+        if type_log.__eq__("error"):
+            current_app.web_logger.error(message)
+        elif type_log.__eq__("info"):
+            current_app.web_logger.info(message)
+        elif type_log.__eq__("critical"):
+            current_app.web_logger.critical(message)
+        else:
+            current_app.web_logger.worning(message)
 
 
 @main.route('/user', methods=['GET'])

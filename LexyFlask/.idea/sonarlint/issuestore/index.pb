@@ -297,3 +297,7 @@ V
 &model/Service/bambino_testo_service.py,1\4\14b7aceb2e81478553646d403e0c58fdb8680d71
 `
 0.venv/Lib/site-packages/sqlalchemy/sql/schema.py,6\1\6146468f2379df593bec334183677a797affad45
+N
+controller/bambino/__init__.py,4\c\4cbdf02f8e483131ba3c20fb792ce28024e30e42
+M
+controller/bambino/bambino.py,8\6\86e127f59ad303ab0331766c1918dccfa823ad6d

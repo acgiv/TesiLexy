@@ -5,7 +5,6 @@ import {
   AfterViewInit,
   ViewChild,
   ElementRef,
-  OnInit
 } from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import { register } from 'swiper/element/bundle';
@@ -25,7 +24,7 @@ register();
   styleUrls: ['./carosello_testo_spiegato.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class CarosellotestospiegatoComponent implements AfterViewInit,  OnInit{
+export class CarosellotestospiegatoComponent implements AfterViewInit{
   @Input() sectionTitle!: string;
   @Input() buttonText!: string;
   @Input() contentList!: Testo[];
@@ -37,8 +36,6 @@ export class CarosellotestospiegatoComponent implements AfterViewInit,  OnInit{
               ) {
   }
 
-  ngOnInit() {
-  }
 
   ngAfterViewInit(): void {
     const swiperElement = this.swiperContainer.nativeElement;
@@ -76,7 +73,6 @@ export class CarosellotestospiegatoComponent implements AfterViewInit,  OnInit{
       body.limite = null;
       this.riquestDashBoard.request_text(body).subscribe({
       next: (data) => {
-        console.log(data.child)
         this.router.navigate(["/terapista/dashboard/visualizzaTestoAdattato"], {
           state: {
             lista: data['args']['response']['text'],
@@ -93,9 +89,7 @@ export class CarosellotestospiegatoComponent implements AfterViewInit,  OnInit{
       }  , error: () => {
         this.router.navigate(["/terapista/dashboard/visualizzaTestoAdattato"], {
           state: {}
-        }).then(() => {
-          console.log("Navigazione avvenuta con successo");
-        });
+        }).then(() => {});
       },
       });
   }

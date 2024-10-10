@@ -22,9 +22,6 @@ class Utente(db.Model):
         'polymorphic_on': _tipologia,
     }
 
-    _messaggi = db.relationship("Messaggio", back_populates="_utente")
-    _chat = db.relationship("Chat", back_populates="_utente")
-
     def __init__(self, id_utente: Union[uuid, None], username: str, password: str, email: str, tipologia: str = None):
         self._id_utente = id_utente
         self._username = username

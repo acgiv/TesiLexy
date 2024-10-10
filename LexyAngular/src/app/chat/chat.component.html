@@ -1,19 +1,42 @@
+
+  <div class="modal fade" #modal_modifica tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title "> Modifica il Titolo della Chat</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form [formGroup]="formGroup"  >
+            <div class="col-12 d-flex justify-content-center"  *ngFor="let elem of formD.form">
+              <div class="w-75 mt- mb-5 mt-2">
+                <app-input_text [elem]="elem" [formGroup]="formGroup"  [submit]="submit"></app-input_text>
+              </div>
+            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary " data-bs-dismiss="modal" (click)="modificaModal()">Modifica</button>
+            <button type="button" class="btn btn_annulla " (click)="annullaModal()">Annulla</button>
+          </div>
+          </form>
+        </div>
+      </div>
+  </div>
+
 <div class="sidebar-toggle" (click)="toggleSidebar()" [ngClass]="{'hide-tab': !isOpen}">
   <fa-icon [icon]="isOpen ? faChevronLeft : faChevronRight" [ngStyle]="{'color': 'white'}"></fa-icon>
 </div>
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" [ngClass]="{'hide-bar': !isOpen}">
   <button class="btn btn-primary mb-4" type="button" (click)="newChat()">Nuova Chat</button>
-  <div>
+  <div *ngFor="let chat of this.chat_directive.list_chat">
     <small class="text-muted">Oggi</small>
     <ul class="nav flex-column mb-auto">
       <li class="nav-item">
-        <div class="d-flex justify-content-between align-items-center nav-link active py-2 px-0" aria-current="page">
-          <span (click)="viewText()">Le Piramidi</span>
-          <div class="dropdown">
-            <a class="d-flex align-items-center dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"></a>
+        <div  class="d-flex justify-content-between align-items-center nav-link active py-2 px-0" aria-current="page">
+          <span (click)="viewText()" >{{chat.titolo}}</span>
+          <div class="dropdown"  id="dropdownChatMenu">
+            <fa-icon class="text-secondary  border border-1 rounded rounded-3  ps-2 pe-2"  [icon]="faEllipsisH"  (click)="toggleDropdown($event)"  (keydown)="onKeyDown($event)">></fa-icon>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-              <li><button class="dropdown-item" (click)="renameChat()">Rinomina</button></li>
-              <li><button class="dropdown-item" (click)="deleteChat()">Elimina </button></li>
+              <li><button class="dropdown-item" (click)="renameChat(chat.idchat, chat.titolo, chat.idbambino)">Rinomina</button></li>
+              <li><button class="dropdown-item" (click)="deleteChat(chat.idchat)">Elimina </button></li>
             </ul>
           </div>
         </div>
@@ -31,7 +54,30 @@
         [isFromPepper]="true"
         timestamp="14:30 | Mar 04"
         messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
-
+      <app-chat-message
+        [isFromPepper]="false"
+        timestamp="14:45 | Mar 04"
+        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
+       <app-chat-message
+        [isFromPepper]="true"
+        timestamp="14:30 | Mar 04"
+        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
+      <app-chat-message
+        [isFromPepper]="false"
+        timestamp="14:45 | Mar 04"
+        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
+       <app-chat-message
+        [isFromPepper]="true"
+        timestamp="14:30 | Mar 04"
+        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
+      <app-chat-message
+        [isFromPepper]="false"
+        timestamp="14:45 | Mar 04"
+        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
+       <app-chat-message
+        [isFromPepper]="true"
+        timestamp="14:30 | Mar 04"
+        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
       <app-chat-message
         [isFromPepper]="false"
         timestamp="14:45 | Mar 04"

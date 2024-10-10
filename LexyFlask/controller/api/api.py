@@ -56,7 +56,7 @@ def find_all_user_child_by_therapist(therapist_associate_service: TerapistaAssoc
 @api.route('/find_all_test', methods=["POST"])
 def find_all_text(testo_service: TestoOriginaleService,
                   tipologia_service: TipologiaTestoService,
-                  bambnino_testo_service: BambinoTestoService,
+                  child_text_service: BambinoTestoService,
                   user_service: UtenteService):
     response_copy = response.copy()
     try:
@@ -67,14 +67,9 @@ def find_all_text(testo_service: TestoOriginaleService,
                 nome = tipologia_service.find_all_by_id(el['id_tipologia_testo']).nome
                 if nome:
                     el['materia'] = nome
-                if request.json['tipologia'] == "testo_spiegato":
-                    el["child"] = list()
-                    id_bambini = bambnino_testo_service.find_by_idtesto(el["id_testo"])
-                    if id_bambini:
-                        for bambino in id_bambini:
-                            user = user_service.get_find_all_by_id_utente(str(bambino.idbambino))
-                            if user:
-                                el["child"].append(user.username)
+
+                    find_id_user_by_text_explain(element=el, child_text_service=child_text_service,
+                                                 user_service=user_service)
             response_copy["response"] = dic
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:
@@ -82,3 +77,14 @@ def find_all_text(testo_service: TestoOriginaleService,
         set_error_message_response(response_copy, {"KeyError": f"Errore non è stata"
                                                                f" trovata questa chiave {str(key)} nel body"})
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+
+
+def find_id_user_by_text_explain(element: dict, child_text_service: BambinoTestoService, user_service: UtenteService):
+    if request.json['tipologia'] == "testo_spiegato":
+        element["child"] = list()
+        id_bambini = child_text_service.find_by_idtesto(element["id_testo"])
+        if id_bambini:
+            for bambino in id_bambini:
+                user = user_service.get_find_all_by_id_utente(str(bambino.idbambino))
+                if user:
+                    element["child"].append(user.username)

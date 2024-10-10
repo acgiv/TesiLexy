@@ -23,32 +23,32 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   if (expectedRoles.includes(userRole)) {
-    if (navigatedByButton === undefined || !navigatedByButton) {
-       return is_rule_terapisturl();
-    }
-
-    return true;
+       return navigator_control();
   } else {
-    router.navigate([userRole === "terapista" && !is_terapista_url() ? "/terapista" : "/"], {
-       state: {navigatedByButton: true}}).then(() => {});
-    return false;
-  }
-
-  function is_rule_terapisturl():boolean {
-    if (userRole === "terapista" && !is_terapista_url()) {
-        router.navigate(["/terapista"], {state: {navigatedByButton: true}}).then(() => {});
-      } else if (userRole !== "terapista" && is_terapista_url()) {
-        router.navigate([is_terapista_url() ? "/terapista" : "/"], {state: {navigatedByButton: true}}).then(() => {});
-      }
-        router.navigate([userRole === "terapista" && is_terapista_url() ? "/terapista" : "/"], {
-        state: {navigatedByButton: true}}).then(() => {});
-       return false
+      router.navigate(["/"], {
+      state: {navigatedByButton: true}}).then(() => {});
+      return false;
   }
 
   function is_terapista_url() {
-    const url = state.url.split("/")[1]; // Modifica qui per prendere correttamente la seconda parte dell'URL
+    const url = state.url.split("/")[1];
     return url === "terapista";
   }
+
+  function navigator_control(){
+    if (navigatedByButton ) {
+        if ( navigatedByButton['navigatedByButton']) {
+          return true;
+        }else{
+          router.navigate([userRole === "terapista" && is_terapista_url()? "/terapista" : "/"], {state: {navigatedByButton: true}}).then(() => {});
+          return false;
+        }
+      }else{
+         router.navigate([userRole === "terapista" && is_terapista_url()? "/terapista" : "/"], {state: {navigatedByButton: true}}).then(() => {});
+          return false;
+      }
+  }
+
 };
 
 

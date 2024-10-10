@@ -1,6 +1,5 @@
 from flask import current_app
 from extensions import ma
-from model.entity.terapista_associato import TerapistaAssociato
 
 
 class UtenteSchema(ma.Schema):
@@ -40,14 +39,7 @@ class ChatSchema(ma.Schema):
 
 class MessaggioSchema(ma.Schema):
     class Meta:
-        fields = ('idmessaggio', 'idchat', 'idpersona', 'testo', 'datacreazione',
-                  'datamodifica', 'numeroversionimessaggio')
-
-
-class VersioneMessaggioSchema(ma.Schema):
-    class Meta:
-        fields = ('idversionemessaggio', 'idmessaggio', 'testomessaggioversione', 'testo',
-                  'datacreazione', 'modifica_messaggio')
+        fields = ('idmessaggio', 'idchat', 'idbambino', 'testo', 'datacreazione', 'versione_corrente', 'versione_messaggio')
 
 
 class TipoloigiaTestoSchema(ma.Schema):
@@ -89,9 +81,6 @@ chat_Schemas = ChatSchema(many=True)
 messaggio_Schema = MessaggioSchema()
 messaggio_Schemas = MessaggioSchema(many=True)
 
-versione_messaggio_schema = VersioneMessaggioSchema()
-versione_messaggio_schemas = VersioneMessaggioSchema(many=True)
-
 tipologia_testo = TipoloigiaTestoSchema()
 tipologia_testos = TipoloigiaTestoSchema(many=True)
 
@@ -103,10 +92,12 @@ testo_assiciato_schemas = BambinoTestoSchema(many=True)
 
 
 def create_table(db):
-    current_app.web_logger.info("Database creato con successo")
+    if hasattr(current_app,'web_logger'):
+        current_app.web_logger.info("Database creato con successo")
     db.create_all()
 
 
 def drop_all_table(db):
-    current_app.web_logger.info("Database Cancellato con successo")
+    if hasattr(current_app, 'web_logger'):
+        current_app.web_logger.info("Database Cancellato con successo")
     db.drop_all()
