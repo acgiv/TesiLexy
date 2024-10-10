@@ -9,8 +9,8 @@ class MessaggioService:
     def __init__(self) -> None:
         self.__messaggio_dao = MessaggioDao()
 
-    def insert(self, messaggio: Union[Messaggio, List[Messaggio]]) -> None:
-        self.__messaggio_dao.insert(messaggio)
+    def insert(self, messaggio: Union[Messaggio, List[Messaggio]]) -> Messaggio:
+        return self.__messaggio_dao.insert(messaggio)
 
     def delete(self, messaggio: Union[Messaggio, List[Messaggio]]) -> None:
         self.__messaggio_dao.delete(messaggio)

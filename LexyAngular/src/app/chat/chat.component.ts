@@ -5,12 +5,15 @@ import {faChevronLeft, faChevronRight, faEllipsisH} from "@fortawesome/free-soli
 import {ChatMessageComponent} from "./chat-message/chat-message.component";
 import {ChatDirectiveDirective} from "./chat_directive/chat-directive.directive";
 import {InputTextComponent} from "../form/input_text/input_text.component";
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ControlFormDirective} from "../form/control-form.directive";
 import {multiPatternValidator} from "../form/Validator/validator";
-import {ChatList} from "./chat-service.service";
+import {ChatList, Message} from "./chat-service.service";
 import {cloneDeep} from "lodash";
 import {StringUtilsService} from "../Utilitys/string-utils.service";
+import {TextAreaComponent} from "../form/textArea/text-area/text-area.component";
+
+
 declare let bootstrap: any;
 @Component({
   selector: 'app-chat',
@@ -24,7 +27,8 @@ declare let bootstrap: any;
     NgForOf,
     InputTextComponent,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TextAreaComponent
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
@@ -34,6 +38,7 @@ export class ChatComponent implements OnInit, OnDestroy{
   protected readonly faChevronLeft = faChevronLeft;
   protected readonly faChevronRight = faChevronRight;
   protected formGroup: FormGroup;
+  protected formGroup2: FormGroup;
   protected submit: boolean= false;
   private chat_temp : ChatList | undefined;
   private dropdownListener: any;
@@ -42,9 +47,10 @@ export class ChatComponent implements OnInit, OnDestroy{
   constructor(protected chat_directive: ChatDirectiveDirective,
               private fb: FormBuilder,
               protected formD: ControlFormDirective,
-              protected stringUtils: StringUtilsService
+              protected stringUtils: StringUtilsService,
   ) {
   this.formGroup = this.fb.group({});
+  this.formGroup2 = this.fb.group({});
   this.formD.form.splice(0, this.formD.form.length);
 
   }
@@ -84,8 +90,9 @@ export class ChatComponent implements OnInit, OnDestroy{
             }
          },
           insertEmoji: false
-        });
+        })
        this.formGroup = this.formD.setAllValidator(this.fb);
+       this.formGroup2.addControl("Messaggio", new FormControl());
   }
 
   toggleSidebar() {
@@ -197,6 +204,21 @@ export class ChatComponent implements OnInit, OnDestroy{
     }
   }
 
+  is_first_message(elem : any): boolean{
+    if (elem != undefined){
+      const number_message = this.chat_directive?.list_chat?.[this.index_select_chat]?.message?.length
+      const number_message_chat = this.chat_directive.list_chat[this.index_select_chat].number_all_message
+      const firt_message_list = this.chat_directive?.list_chat?.[this.index_select_chat]?.message?.[0]
+      return number_message ==number_message_chat && firt_message_list == elem
+    }
+    return false
+  }
+
   protected readonly faEllipsisH = faEllipsisH;
   protected readonly Number = Number;
+
+  invia() {
+    const chat= this.chat_directive.list_chat[this.index_select_chat];
+    this.chat_directive.insert_message(this.index_select_chat,"messaggio", this.formGroup2.get("Messaggio")?.value)
+  }
 }

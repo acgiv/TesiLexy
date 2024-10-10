@@ -16,13 +16,14 @@ class MessaggioRepository(BaseDao, ABC):
         self.database = db.session
         self.messaggio = Messaggio
 
-    def insert(self, messaggio: Union[Messaggio, List[Messaggio]]) -> None:
+    def insert(self, messaggio: Union[Messaggio, List[Messaggio]]) -> Messaggio:
         try:
             if isinstance(messaggio, Messaggio):
                 count = self.database.query(Messaggio).count()
                 messaggio.index_message = count + 1
                 self.database.add(messaggio)
                 self.database.commit()
+                return messaggio
                 if hasattr(current_app, 'web_logger'):
                     current_app.web_logger.info("Inserimento del messaggio è stato completato con successo.")
             elif isinstance(messaggio, list):

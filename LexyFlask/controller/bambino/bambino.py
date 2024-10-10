@@ -141,3 +141,23 @@ def update_message_versione_corrente(message_service: MessaggioService):
         set_error_message_response(response_copy, {"KeyError": f"Errore non è stata"
                                                                f" trovata questa chiave {str(key)} nel body"})
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+
+
+@bambino.route('/insert_message', methods=["POST"])
+def insert_message(chat_service: MessaggioService):
+    response_copy = response.copy()
+    try:
+        web_log_type(type_log='info', message="Chiamato il insert_message()")
+        result = chat_service.insert(messaggio=Messaggio(id_chat=request.json['id_chat'],
+                                                         id_bambino=request.json['id_bambino'],
+                                                         tipologia=request.json['tipologia'],
+                                                         testo=request.json['testo']))
+        if result:
+            response_copy['response'] = {"message": result.to_dict()}
+        web_log_type(type_log='info', message="terminata la chiamata del insert_message()")
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+    except KeyError as key:
+        web_log_type(type_log='error', message=f"Errore non è stata trovata questa chiave {str(key)} nel body")
+        set_error_message_response(response_copy, {"KeyError": f"Errore non è stata"
+                                                               f" trovata questa chiave {str(key)} nel body"})
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])

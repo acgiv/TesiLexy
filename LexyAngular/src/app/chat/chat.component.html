@@ -47,6 +47,7 @@
 </div>
 
 <div class="container-chat" [ngClass]="{'open': isOpen, 'closed': !isOpen}">
+  <form  [formGroup]="formGroup2" >
   <div class="container-fluid container-chat p-4">
     <div  class="chat-messages container mt-3">
       <div *ngFor="let elem of  this.chat_directive.list_chat[this.index_select_chat]?.message">
@@ -57,18 +58,17 @@
         [number_version]='Number(elem.versione_corrente)-1'
         [number_text]='Number(elem.testo.length)'
         [list_text]="elem.testo"
-         [is_first_message]=" (this.chat_directive?.list_chat?.[this.index_select_chat]?.message?.length ?? 0 )
-          == this.chat_directive.list_chat[this.index_select_chat].number_all_message
-          && (this.chat_directive?.list_chat?.[this.index_select_chat]?.message?.[0] ?? null) == elem"/>
+         [is_first_message]="this.is_first_message(elem)"/>
       </div>
     </div>
 
     <div class="chat-input bg-light mt-2">
       <div class="input-group">
-        <textarea style="resize:none" class="form-control" placeholder="Scrivi un messaggio..."></textarea>
-        <button class="btn btn-primary" type="button">Invia</button>
+         <textarea style="resize:none"  formControlName="Messaggio"  class="form-control" placeholder="Scrivi un messaggio..."></textarea>
+        <button class="btn btn-primary" type="button" (click)="invia()">Invia</button>
       </div>
     </div>
 
   </div>
+    </form>
 </div>

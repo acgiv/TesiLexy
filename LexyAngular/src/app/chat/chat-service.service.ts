@@ -42,6 +42,11 @@ export class ChatServiceService {
      return this.http.post<Riquest>(this.url+"bambino/update_message_versione_corrente", body, {headers});
   }
 
+  insert_message(body: any): Observable<any>{
+     const headers = new HttpHeaders({'Content-Type': 'application/json'});
+     return this.http.post<Riquest>(this.url+"bambino/insert_message", body, {headers});
+  }
+
 }
 
 

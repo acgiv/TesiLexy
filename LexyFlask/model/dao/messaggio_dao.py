@@ -12,8 +12,8 @@ class MessaggioDao(BaseDao, ABC):
     def __init__(self) -> None:
         self.__repository = MessaggioRepository()
 
-    def insert(self, messaggio: Union[Messaggio, List[Messaggio]]) -> None:
-        self.__repository.insert(messaggio)
+    def insert(self, messaggio: Union[Messaggio, List[Messaggio]]) -> Messaggio:
+        return self.__repository.insert(messaggio)
 
     def delete(self, messaggio: Union[Messaggio, List[Messaggio]]) -> None:
         self.__repository.delete(messaggio)

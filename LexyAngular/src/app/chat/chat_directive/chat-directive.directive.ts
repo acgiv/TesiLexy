@@ -1,7 +1,8 @@
 import {Directive} from '@angular/core';
 import {AccessService} from "../../access.service";
-import {ChatList, ChatServiceService} from "../chat-service.service";
+import {ChatList, ChatServiceService, Message} from "../chat-service.service";
 import {FormGroup} from "@angular/forms";
+
 @Directive({
   selector: '[appChatDirective]',
   standalone: true
@@ -84,6 +85,35 @@ export class ChatDirectiveDirective{
         this.body.id_message_back = id_message_back;
       this.chat_service.update_message_versione_corrente(this.body).subscribe(result =>{
         if(result.args.completed) {
+        }
+    });
+  }
+
+  insert_message(index_chat: number, tipologia: string, testo: string){
+
+      this.body = Object();
+      this.body.id_chat= this.list_chat[index_chat].idchat;
+      this.body.id_bambino = this.access_service.getId();
+      this.body.tipologia = tipologia;
+      this.body.testo= testo;
+      this.chat_service.insert_message(this.body).subscribe(result =>{
+        if(result.args.completed && this.list_chat[index_chat]) {
+           const message: Message= {
+            testo: [[this.body.id_bambino, testo]],
+            versione_corrente: result.args.response.message.versione_corrente,
+            id_messaggio:result.args.response.message.id_messaggio,
+            versione_messaggio:result.args.response.message.versione_messaggio,
+            data_creazione: result.args.response.message.data_creazione,
+            tipologia:result.args.response.message.tipologia,
+            index_message:result.args.response.message.index_message
+          }
+         const list = this.list_chat[index_chat];
+           if (list!= undefined ){
+             list.number_all_message = (list.number_all_message ?? 0) + 1;
+             list.message?.push(message)
+           }
+
+
         }
     });
   }
