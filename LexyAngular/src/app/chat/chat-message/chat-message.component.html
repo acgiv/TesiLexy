@@ -7,16 +7,16 @@
       {{ messageText }}
     </div>
     <div class="message-footer mt-1 d-flex justify-content-between align-items-center small text-muted">
-      <div class="icons d-flex align-items-baseline">
-        <div class="d-flex align-items-center">
-          <fa-icon class="me-1" [icon]="faChevronLeft"/>
-          <span>1/2</span>
-          <fa-icon class="ms-1 me-4" [icon]="faChevronRight"/>
+      <div *ngIf="!is_first_message && isFromPepper "  class="icons d-flex align-items-baseline">
+        <div  *ngIf="number_version != undefined && number_text != undefined && number_text!=1 " class="d-flex align-items-center">
+          <fa-icon class="me-1" (click)="back(number_version)" [icon]="faChevronLeft"  [ngClass]="{ 'disabled-icon': number_version +1 == 1 }"></fa-icon>
+          <span>{{number_version+1}}/{{number_text}}</span>
+          <fa-icon (click)="up(number_version, number_text)" class="ms-1 me-4" [icon]="faChevronRight" [ngClass]="{ 'disabled-icon': number_version +1 == number_text }"></fa-icon>
         </div>
         <div>
-          <img (click)="riproduzionePepper()" src="assets/robot_icon.png" alt="Riproduzione Pepper" class="me-2">
-          <img (click)="RigeneraMessaggio()" src="assets/reload-icon.png" alt="Rigenera messaggio" class="me-2">
-          <img src="assets/favorite_icon.png" alt="Messaggio Piaciuto" class="me-2">
+          <img onKeyDown="" (click)="riproduzionePepper()" src="assets/robot_icon.png" alt="Riproduzione Pepper" class="me-2">
+          <img onKeyDown="" (click)="RigeneraMessaggio()" src="assets/reload-icon.png" alt="Rigenera messaggio" class="me-2">
+          <img onKeyDown="" src="assets/favorite_icon.png" alt="Messaggio Piaciuto" class="me-2">
         </div>
       </div>
       <div class="timestamp text-end">

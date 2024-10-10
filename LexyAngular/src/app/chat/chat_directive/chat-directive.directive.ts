@@ -22,7 +22,6 @@ export class ChatDirectiveDirective{
     this.chat_service.find_all_Chat(this.body).subscribe(result =>{
       if(result.args.completed){
         this.list_chat= result.args.response.list_chat;
-        console.log(this.list_chat);
       }
     });
   }
@@ -38,8 +37,24 @@ export class ChatDirectiveDirective{
     });
   }
 
+  find_message_limit_chat(idchat: string){
+    this.body = Object();
+    this.body.id_bambino = this.access_service.getId();
+    this.body.id_chat = idchat;
+    this.body.limit = null;
+    this.chat_service.find_message_limit_chat(this.body).subscribe(result =>{
+      if(result.args.completed){
+         const index = this.list_chat.findIndex(chat => chat.idchat === idchat);
+          if (index !== -1) {
+            this.list_chat[index].message =result.args.response.message;
+            this.list_chat[index].number_all_message= result.args.response.number_all_message;
+            console.log(this.list_chat)
+          }
+      }
+    });
+  }
+
   destroy_chat_child(id_chat: string){
-      console.log(id_chat)
       this.body = Object();
       this.body.id_chat = id_chat;
       this.chat_service.destroy_chat(this.body).subscribe(result =>{
@@ -61,9 +76,17 @@ export class ChatDirectiveDirective{
           }
         }
     });
-
   }
 
+   update_message_versione_corrente(id_message_now: string, id_message_back: string){
+    this.body = Object();
+        this.body.id_message_now = id_message_now;
+        this.body.id_message_back = id_message_back;
+      this.chat_service.update_message_versione_corrente(this.body).subscribe(result =>{
+        if(result.args.completed) {
+        }
+    });
+  }
 
 
   closeDropdown() {

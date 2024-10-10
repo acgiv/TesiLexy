@@ -6,6 +6,7 @@ from model.Service.chat_service import ChatService
 from model.Service.messaggio_service import MessaggioService
 from model.entity.chat import Chat
 from model.entity.messaggio import Messaggio
+import pprint
 
 config = configparser.ConfigParser()
 config.read(".\\gobal_variable.ini")
@@ -101,11 +102,39 @@ def update_chat_child(chat_service: ChatService):
 def find_all_limit_message(chat_service: MessaggioService):
     response_copy = response.copy()
     try:
-        web_log_type(type_log='info', message="Chiamato il metodoupdate_chat_child()")
-        chat_service.find_all_by_id_chat_and_child(id_chat=request.json['id_chat'],
-                                                   id_child=request.json['id_bambino'],
-                                                   limit=int(request.json['limit']))
-        web_log_type(type_log='info', message="terminata la chiamata del update_chat_child()")
+        web_log_type(type_log='info', message="Chiamato il find_all_limit_message()")
+        result = chat_service.find_all_by_id_chat_and_child(id_chat=request.json['id_chat'],
+                                                            id_child=request.json['id_bambino'],
+                                                            limit=int(request.json.get('limit'))
+                                                            if request.json.get('limit') is not None else None)
+
+        if result:
+            response_copy['response'] = {"message": result[0], 'number_all_message': result[1]}
+
+        web_log_type(type_log='info', message="terminata la chiamata del find_all_limit_message()")
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+    except KeyError as key:
+        web_log_type(type_log='error', message=f"Errore non è stata trovata questa chiave {str(key)} nel body")
+        set_error_message_response(response_copy, {"KeyError": f"Errore non è stata"
+                                                               f" trovata questa chiave {str(key)} nel body"})
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+
+
+@bambino.route('/update_message_versione_corrente', methods=["POST"])
+def update_message_versione_corrente(message_service: MessaggioService):
+    response_copy = response.copy()
+    try:
+        web_log_type(type_log='info', message="terminata la chiamata del update_message_versione_corrente()")
+        message_back = message_service.find_all_by_id(id_messaggio=request.json.get('id_message_back'))
+        message_now = message_service.find_all_by_id(id_messaggio=request.json.get('id_message_now'))
+        pprint.pprint(request.json.get('id_message_back'))
+        pprint.pprint(request.json.get('id_message_now'))
+        if message_now and message_back:
+            message_now.versione_corrente = 1
+            message_back.versione_corrente = 0
+            message_service.update(messaggio=message_now)
+            message_service.update(messaggio=message_back)
+        web_log_type(type_log='info', message=" fine update_message()")
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:
         web_log_type(type_log='error', message=f"Errore non è stata trovata questa chiave {str(key)} nel body")

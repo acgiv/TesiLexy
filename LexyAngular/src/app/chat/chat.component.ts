@@ -37,6 +37,7 @@ export class ChatComponent implements OnInit, OnDestroy{
   protected submit: boolean= false;
   private chat_temp : ChatList | undefined;
   private dropdownListener: any;
+  protected index_select_chat =0;
   @ViewChild('modal_modifica') modal_modifica!: ElementRef;
   constructor(protected chat_directive: ChatDirectiveDirective,
               private fb: FormBuilder,
@@ -105,8 +106,12 @@ export class ChatComponent implements OnInit, OnDestroy{
   }
 
 
-  viewText(){
-    alert("Render Chat");
+  viewText(id_chat:string){
+    const index = this.chat_directive.list_chat.findIndex(elem => elem.idchat == id_chat);
+    if (this.chat_directive.list_chat[index].message == undefined){
+      this.chat_directive.find_message_limit_chat(id_chat);
+    }
+  this.index_select_chat = index;
   }
 
   deleteChat(id_chat: string){
@@ -193,4 +198,5 @@ export class ChatComponent implements OnInit, OnDestroy{
   }
 
   protected readonly faEllipsisH = faEllipsisH;
+  protected readonly Number = Number;
 }

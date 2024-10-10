@@ -39,7 +39,8 @@ class ChatSchema(ma.Schema):
 
 class MessaggioSchema(ma.Schema):
     class Meta:
-        fields = ('idmessaggio', 'idchat', 'idbambino', 'testo', 'datacreazione', 'versione_corrente', 'versione_messaggio')
+        fields = ('idmessaggio', 'indexmessage', 'idchat', 'idbambino',
+                  'testo', 'datacreazione', 'versione_corrente', 'versione_messaggio')
 
 
 class TipoloigiaTestoSchema(ma.Schema):
@@ -92,7 +93,7 @@ testo_assiciato_schemas = BambinoTestoSchema(many=True)
 
 
 def create_table(db):
-    if hasattr(current_app,'web_logger'):
+    if hasattr(current_app, 'web_logger'):
         current_app.web_logger.info("Database creato con successo")
     db.create_all()
 

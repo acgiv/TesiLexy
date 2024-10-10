@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List, Type, Union
+from typing import List, Type, Union, Tuple
 
 from injector import inject
 from model.repository.messaggio_repository import MessaggioRepository
@@ -24,9 +24,9 @@ class MessaggioDao(BaseDao, ABC):
     def find_all(self, limit: int | None = None) -> list[Type[Messaggio]]:
         return self.__repository.find_all(limit)
 
-    def find_all_by_id(self, id_messaggio: str, type_search: Union[str, None] = None) -> Union[List, None]:
-        return self.__repository.find_all_by_id(id_messaggio, type_search=type_search)
+    def find_all_by_id(self, id_messaggio: str) -> Union[Messaggio, None]:
+        return self.__repository.find_all_by_id(id_messaggio)
 
-    def find_all_by_id_chat_and_child(self, id_child: str,  id_chat: str, limit: Union[int, None] = None)\
-            -> Union[List[Messaggio], None]:
+    def find_all_by_id_chat_and_child(self, id_child: str,  id_chat: str, limit: Union[int, None] = None) \
+            -> Tuple[Union[List[Messaggio], None], Union[int, None]]:
         return self.__repository.find_all_by_id_chat_and_child(id_child, id_chat, limit)

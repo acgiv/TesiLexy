@@ -31,7 +31,7 @@
     <ul class="nav flex-column mb-auto">
       <li class="nav-item">
         <div  class="d-flex justify-content-between align-items-center nav-link active py-2 px-0" aria-current="page">
-          <span (click)="viewText()" >{{chat.titolo}}</span>
+          <span (click)="viewText(chat.idchat)" >{{chat.titolo}}</span>
           <div class="dropdown"  id="dropdownChatMenu">
             <fa-icon class="text-secondary  border border-1 rounded rounded-3  ps-2 pe-2"  [icon]="faEllipsisH"  (click)="toggleDropdown($event)"  (keydown)="onKeyDown($event)">></fa-icon>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
@@ -48,40 +48,19 @@
 
 <div class="container-chat" [ngClass]="{'open': isOpen, 'closed': !isOpen}">
   <div class="container-fluid container-chat p-4">
-
-    <div class="chat-messages container mt-3">
-      <app-chat-message
-        [isFromPepper]="true"
-        timestamp="14:30 | Mar 04"
-        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
-      <app-chat-message
-        [isFromPepper]="false"
-        timestamp="14:45 | Mar 04"
-        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
-       <app-chat-message
-        [isFromPepper]="true"
-        timestamp="14:30 | Mar 04"
-        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
-      <app-chat-message
-        [isFromPepper]="false"
-        timestamp="14:45 | Mar 04"
-        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
-       <app-chat-message
-        [isFromPepper]="true"
-        timestamp="14:30 | Mar 04"
-        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
-      <app-chat-message
-        [isFromPepper]="false"
-        timestamp="14:45 | Mar 04"
-        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
-       <app-chat-message
-        [isFromPepper]="true"
-        timestamp="14:30 | Mar 04"
-        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
-      <app-chat-message
-        [isFromPepper]="false"
-        timestamp="14:45 | Mar 04"
-        messageText="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."/>
+    <div  class="chat-messages container mt-3">
+      <div *ngFor="let elem of  this.chat_directive.list_chat[this.index_select_chat]?.message">
+        <app-chat-message
+        [isFromPepper]="elem.tipologia=='messaggio_pepper'"
+        timestamp="{{elem.data_creazione}}"
+        messageText='{{elem.testo[Number(elem.versione_corrente)-1][1]}}'
+        [number_version]='Number(elem.versione_corrente)-1'
+        [number_text]='Number(elem.testo.length)'
+        [list_text]="elem.testo"
+         [is_first_message]=" (this.chat_directive?.list_chat?.[this.index_select_chat]?.message?.length ?? 0 )
+          == this.chat_directive.list_chat[this.index_select_chat].number_all_message
+          && (this.chat_directive?.list_chat?.[this.index_select_chat]?.message?.[0] ?? null) == elem"/>
+      </div>
     </div>
 
     <div class="chat-input bg-light mt-2">

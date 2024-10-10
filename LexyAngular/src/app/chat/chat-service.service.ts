@@ -32,6 +32,16 @@ export class ChatServiceService {
      return this.http.post<Riquest>(this.url+"bambino/destroy_chat_child", body, {headers});
   }
 
+  find_message_limit_chat(body: any): Observable<any>{
+     const headers = new HttpHeaders({'Content-Type': 'application/json'});
+     return this.http.post<Riquest>(this.url+"bambino/find_all_limit_message", body, {headers});
+  }
+
+  update_message_versione_corrente(body: any): Observable<any>{
+     const headers = new HttpHeaders({'Content-Type': 'application/json'});
+     return this.http.post<Riquest>(this.url+"bambino/update_message_versione_corrente", body, {headers});
+  }
+
 }
 
 
@@ -39,4 +49,21 @@ export interface ChatList {
   idchat: string;
   titolo: string;
   idbambino: string;
+  message?: Message[];
+  number_all_message?: number;
 }
+
+
+
+
+export interface Message {
+  id_messaggio: string;
+  index_message:string;
+  data_creazione: string;
+  testo: [[string, string]];
+  tipologia:string;
+  versione_messaggio: string;
+  versione_corrente: number;
+}
+
+

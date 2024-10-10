@@ -3,8 +3,6 @@
 __init__.py,6\0\60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e
 F
 model/entity/utente.py,f\1\f18471a226928938979b565eaaa7f2244943fd1c
-R
-"model/entity/versione_messaggio.py,2\5\25d3f00418d4e93dc7f1d94ed4839fe90e5a794e
 G
 model/dao/utente_dao.py,d\0\d01126a1553523d2b540cc04f952e417f0dc71e2
 U
@@ -59,14 +57,10 @@ R
 "model/dao/Patologia_bambino_dao.py,7\6\7626651aad46e71c3ab2b4e55b8ce43612b6a1f8
 V
 &model/repository/bambino_repository.py,8\0\805be6ea7a0a03fbadb2e2a3013ebdaec7c78c0d
-[
-+model/Service/versione_messaggio_service.py,6\b\6b7561331883a2f974d5ab47c38a897e46e85671
 P
  model/Service/bambino_service.py,d\8\d803d7838cb7fcd48121769d2b5ef2725ea49176
 L
 model/repository/__init__.py,8\3\83ce789e9ec6d2fb089a77ddcb141548be9fdf83
-S
-#model/dao/versione_messaggio_dao.py,2\b\2b92db54133e7ec92280e6bc4516afe28e00a8e9
 Y
 )model/repository/patologia_reposistory.py,6\0\609eaf0dcec71b20a30f07aa8db3380f04be9ed9
 `
@@ -133,8 +127,6 @@ Q.idea/sonarlint/securityhotspotstore/6/0/609eaf0dcec71b20a30f07aa8db3380f04be9e
 Q.idea/sonarlint/securityhotspotstore/6/4/640e2efe222d77e80341431e02292401e6f15edb,c\3\c3a3b3a431d74cb937f14b76f9c5f8f8d959b30e
 Å
 Q.idea/sonarlint/securityhotspotstore/6/0/60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e,9\a\9a34fdccf2db2f6e077407ba271610c720959b71
-Å
-Q.idea/sonarlint/securityhotspotstore/6/b/6b7561331883a2f974d5ab47c38a897e46e85671,4\9\4943721836904926ba825720b71f5a64400b8d5e
 Å
 Q.idea/sonarlint/securityhotspotstore/6/5/65a89d184381184b0097c411a053455b015a3f2e,b\7\b79982970f6cba18aa7c0487315198a7e0ea7bd8
 Å
@@ -210,8 +202,6 @@ G.idea/sonarlint/issuestore/6/4/640e2efe222d77e80341431e02292401e6f15edb,4\e\4e
 w
 G.idea/sonarlint/issuestore/6/0/60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e,6\7\67feb38703f915fa0bc8df507eaf98f4378951d8
 w
-G.idea/sonarlint/issuestore/6/b/6b7561331883a2f974d5ab47c38a897e46e85671,4\6\4641ae0b080c9cba4c4ff76f877783b9430476f9
-w
 G.idea/sonarlint/issuestore/6/5/65a89d184381184b0097c411a053455b015a3f2e,5\e\5ebf937573f388c59d52d3f90c6bf5bbbc828785
 w
 G.idea/sonarlint/issuestore/7/e/7e61b17d35259d9986bb9b7e812c7dfe6dea419f,0\3\03ab324a67d67cd07c3fca318495ba524b186806
@@ -224,21 +214,13 @@ G.idea/sonarlint/issuestore/2/a/2af30d5c9cd01722a9540f025fc335ab8d30140a,8\c\8c
 w
 G.idea/sonarlint/issuestore/2/4/24fb5d7c75a694976d7daa95d1349710f40d9323,d\1\d1f0653acb6654f3192fe3e08b31d4690b9c5c23
 w
-G.idea/sonarlint/issuestore/2/b/2b92db54133e7ec92280e6bc4516afe28e00a8e9,0\6\0608d49b6e32d564db4dea5e2821b28b9e79b394
-w
 G.idea/sonarlint/issuestore/2/f/2fb2713370cce4725ee8ab831e61c3080e9b0d8d,7\6\76916f82199a7138af7b48ed1407eb652524e520
-w
-G.idea/sonarlint/issuestore/2/5/25d3f00418d4e93dc7f1d94ed4839fe90e5a794e,d\9\d9700f3bb6a046473fbe5424597b5a33ee8d476d
 Å
 Q.idea/sonarlint/securityhotspotstore/2/a/2af30d5c9cd01722a9540f025fc335ab8d30140a,3\d\3df0bd3798e22bae00f6ec37d00e51195d565068
 Å
 Q.idea/sonarlint/securityhotspotstore/2/4/24fb5d7c75a694976d7daa95d1349710f40d9323,6\b\6bb66c2294b8f4c45161777cb22cd27004c62775
 Å
-Q.idea/sonarlint/securityhotspotstore/2/b/2b92db54133e7ec92280e6bc4516afe28e00a8e9,7\3\7365ca5a146e58d61ce692f987997892433977a7
-Å
 Q.idea/sonarlint/securityhotspotstore/2/f/2fb2713370cce4725ee8ab831e61c3080e9b0d8d,2\d\2dea85eafc58efbdd6c05c5cd1501fb8e508b940
-Å
-Q.idea/sonarlint/securityhotspotstore/2/5/25d3f00418d4e93dc7f1d94ed4839fe90e5a794e,5\d\5dbadc8ba36e4ab91ad963452a3c15258767424c
 w
 G.idea/sonarlint/issuestore/2/7/27a3624a0c3854bb1be048ba85945d17a4c6d6c8,d\9\d939204809a6ff0b1a9bef676559f226f320d322
 Å
@@ -263,8 +245,6 @@ T
 $model/repository/label_repository.py,c\2\c29426b8d04c8b91740bfa877c1d814f0f22dea4
 X
 (model/repository/messaggio_repository.py,a\c\acf59c025b70a9297329ef5dce057fec39810fc9
-a
-1model/repository/versione_messaggio_repository.py,6\c\6c78a4487bd47c53a11980667e6f39e4e3965a5f
 F
 model/dao/label_dao.py,e\d\ed747ffa211ee08b392b5b62f6351c9858f3bc48
 J
@@ -301,3 +281,5 @@ N
 controller/bambino/__init__.py,4\c\4cbdf02f8e483131ba3c20fb792ce28024e30e42
 M
 controller/bambino/bambino.py,8\6\86e127f59ad303ab0331766c1918dccfa823ad6d
+7
+info.md,b\9\b9e6871889628c8f91df88102a249a1757ae7ed1
