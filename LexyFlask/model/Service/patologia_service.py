@@ -46,7 +46,7 @@ class PatologiaService(PatologiaServiceInterface, ABC):
     def get_find_all_patologia(self,  limit: Union[int, None]) -> Union[List[Patologia], None]:
         return self.__patologia_dao.find_all(limit)
 
-    def get_find_all_by_id_patologia(self, id_patologia: int) -> Union[List[Patologia], None]:
+    def get_find_all_by_id_patologia(self, id_patologia: int) -> Union[Patologia, None]:
         return self.__patologia_dao.find_all_by_id(id_patologia)
 
     def get_find_in_list(self, list_patologia: list[str]) -> Union[List[Patologia], None]:

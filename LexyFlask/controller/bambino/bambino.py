@@ -2,11 +2,18 @@ import configparser
 from flask import Blueprint, request, jsonify
 
 from controller.main.main import set_error_message_response, web_log_type
+from model.Service.bambino_service import BambinoService
+from model.Service.bambino_testo_service import BambinoTestoService
 from model.Service.chat_service import ChatService
 from model.Service.messaggio_service import MessaggioService
+from model.Service.patologia_bambino_service import PatologiaBambinoService
+from model.Service.patologia_service import PatologiaService
+from model.Service.testo_service import TestoOriginaleService
 from model.entity.chat import Chat
 from model.entity.messaggio import Messaggio
 import pprint
+from openai import OpenAI
+from configuration.config import TOKEN_CHAT_GPT
 
 config = configparser.ConfigParser()
 config.read(".\\gobal_variable.ini")
@@ -48,10 +55,13 @@ def create_chat_child(chat_service: ChatService, message_service: MessaggioServi
     try:
         web_log_type(type_log='info', message="Chiamato il metodo create_chat_child()")
         result = chat_service.insert(Chat(id_bambino=request.json['id_bambino'], id_chat=None, titolo='Nuova chat'))
+
         if result:
+            massimo_message = message_service.trova_max_index()
             message_service.insert(Messaggio(id_chat=result.id_chat, id_bambino=result.id_bambino,
                                              testo=config['ROBOT-MESSAGE']['description-new_chat'],
-                                             tipologia="messaggio_pepper"))
+                                             tipologia="messaggio_pepper", index_message=massimo_message
+                                             ))
             response_copy['response'] = result.to_dict()
             web_log_type(type_log='info', message="terminata la chiamata del create_chat_child()")
 
@@ -151,7 +161,8 @@ def insert_message(chat_service: MessaggioService):
         result = chat_service.insert(messaggio=Messaggio(id_chat=request.json['id_chat'],
                                                          id_bambino=request.json['id_bambino'],
                                                          tipologia=request.json['tipologia'],
-                                                         testo=request.json['testo']))
+                                                         testo=request.json['testo'],
+                                                         index_message=chat_service.trova_max_index()))
         if result:
             response_copy['response'] = {"message": result.to_dict()}
         web_log_type(type_log='info', message="terminata la chiamata del insert_message()")
@@ -161,3 +172,83 @@ def insert_message(chat_service: MessaggioService):
         set_error_message_response(response_copy, {"KeyError": f"Errore non è stata"
                                                                f" trovata questa chiave {str(key)} nel body"})
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+
+
+@bambino.route('/respost_chat_gpt', methods=["POST"])
+def respost_chat_gpt(bambino_testo: BambinoTestoService, testo_service: TestoOriginaleService,
+                     message_service: MessaggioService, bambino_service: BambinoService,
+                     patologia_service: PatologiaService, patologiabambino_service: PatologiaBambinoService):
+    response_copy = response.copy()
+    try:
+        from datetime import datetime
+        web_log_type(type_log='info', message="Chiamato il insert_message()")
+        bam = bambino_service.get_find_all_by_id_bambino(id_bambino=request.json['id_bambino'])
+        bambino_testi = bambino_testo.find_by_idbambino(bam.id_bambino)
+        patologie_bambino = trova_patologie(patologia_service, patologiabambino_service, bam.id_bambino)
+        lista_testi = list()
+        if bambino_testi:
+            for el in bambino_testi:
+                idtesto = bambino_testo.find_by_bambino_and_testo(bam.id_bambino, int(el.idtesto)).idtesto
+                testo_trovato = testo_service.find_by_id(id_testo=int(idtesto))
+                lista_testi.append((testo_service.find_by_id(testo_trovato.id_testo_spiegato).testo,
+                                    testo_trovato.testo))
+        client = OpenAI(api_key=TOKEN_CHAT_GPT)
+        eta = datetime.now().year - bam.data_nascita.year
+        completion = client.chat.completions.create(
+            model="gpt-4",
+            messages=set_message_chat_gpt(lista_testi, request.json['testo_da_spiegare'], eta, patologie_bambino),
+            temperature=0.3,
+        )
+        massimo_message = message_service.trova_max_index()
+        message = message_service.insert(
+            Messaggio(id_chat=request.json['id_chat'], id_bambino=request.json['id_bambino'],
+                      testo=completion.choices[0].message.content,
+                      tipologia="messaggio_pepper",
+                      index_message=massimo_message + 1
+                      ))
+
+        response_copy["response"] = {"message": message.to_dict(is_text_list=True)}
+        web_log_type(type_log='info', message="terminata la chiamata del insert_message()")
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+    except KeyError as key:
+        web_log_type(type_log='error', message=f"Errore non è stata trovata questa chiave {str(key)} nel body")
+        set_error_message_response(response_copy, {"KeyError": f"Errore non è stata"
+                                                               f" trovata questa chiave {str(key)} nel body"})
+        return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
+
+
+def trova_patologie(patologia_service: PatologiaService, patologiabambino_service: PatologiaBambinoService,
+                    id_bambino: str):
+    lista_patologie = patologiabambino_service.get_find_by_id_bambino(id_bambino=id_bambino, limit=None)
+    patologie = list()
+    if lista_patologie is not None:
+        for pat_bamb in lista_patologie:
+            pat = patologia_service.get_find_all_by_id_patologia(pat_bamb.idpatologia)
+            if pat:
+                patologie.append(pat.nome_patologia)
+    return patologie
+
+
+def set_message_chat_gpt(lista: list, testo_da_spiegare: str, eta: int, patologie_bambino: list):
+    message = list()
+    print(patologie_bambino, ' ', eta)
+    message.append(
+        {"role": "system",
+         "content": "Sei un terapista specializzato nell'aiutare i bambini con difficoltà di apprendimento a "
+                    f"comprendere i testi. Il bambino che stai aiutando ha {eta} anni ed è affetto \
+                     da: '{", ".join(patologie_bambino)}'. Il tuo compito è semplificare i testi per lui."
+                    f" Ecco come dovresti procedere:\
+                    1. Mantieni il significato originale del testo senza aggiungere nuove informazioni. \
+                    2. Semplifica le parole e le frasi per renderle più comprensibili, usando un linguaggio \
+                    adatto a un bambino di 10 anni. \
+                    3. Usa frasi brevi e chiare. \
+                    4. Se ci sono termini tecnici o complessi, spiegali con esempi semplici tra parentesi \
+                    5. Evita di usare frasi lunghe o parole complesse. \
+                    6. Ricorda che il bambino ha dislessia, quindi il testo deve essere facile da leggere e capire."
+         }
+    )
+    for el in lista:
+        message.append({"role": "user", "content": f"{el[0]}"})
+        message.append({"role": "assistant", "content": f"{el[1]}"})
+        message.append({"role": "user", "content": f"{testo_da_spiegare}"})
+    return message

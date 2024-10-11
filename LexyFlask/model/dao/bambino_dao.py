@@ -28,8 +28,8 @@ class BambinoDao(BaseDao, ABC):
     def delete(self, bambino: Union[Bambino, List[Bambino]]) -> None:
         self.__repository.delete(bambino)
 
-    def find_all_by_id(self, id_bambino: uuid, type_search: Union[str, None] = None) -> Union[List[Bambino], None]:
-        return self.__repository.find_all_by_id(id_bambino, type_search)
+    def find_all_by_id(self, id_bambino: uuid) -> Union[Bambino, None]:
+        return self.__repository.find_all_by_id(id_bambino)
 
     def find_by_username_and_password(self, username, password):
         return self.__repository.find_by_username_and_password(username, password)

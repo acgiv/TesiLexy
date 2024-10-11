@@ -92,7 +92,7 @@ class BambinoTestoRepository(ABC):
                 current_app.web_logger.error(f"Errore durante la ricerca per idtesto: {str(e)}")
             return None
 
-    def find_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: uuid.UUID) -> Union[BambinoTesto, None]:
+    def find_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: int) -> Union[BambinoTesto, None]:
         try:
             return self.bambino_testo.query.filter_by(_idbambino=idbambino, _idtesto=idtesto).first()
         except SQLAlchemyError as e:
@@ -100,11 +100,19 @@ class BambinoTestoRepository(ABC):
                 current_app.web_logger.error(f"Errore durante la ricerca per idbambino e idtesto: {str(e)}")
             return None
 
-    def delete_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: uuid.UUID) -> None:
+    def delete_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: int) -> None:
         try:
             bambino_testo = self.find_by_bambino_and_testo(idbambino, idtesto)
             if bambino_testo:
                 self.delete(bambino_testo)
+        except SQLAlchemyError as e:
+            self.database.rollback()
+            if hasattr(current_app, "web_logger"):
+                current_app.web_logger.error(f"Errore durante l'eliminazione per idbambino e idtesto: {str(e)}")
+
+    def count_test_assocati(self, idbambino: uuid.UUID) -> Union[int, None]:
+        try:
+            return self.bambino_testo.query.filter_by(_idbambino=idbambino).count()
         except SQLAlchemyError as e:
             self.database.rollback()
             if hasattr(current_app, "web_logger"):

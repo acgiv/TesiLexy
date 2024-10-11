@@ -1,6 +1,6 @@
-import pprint
 from abc import ABC
 from typing import List, Type, Union, Tuple
+
 from sqlalchemy.exc import SQLAlchemyError
 
 from extensions import db
@@ -19,13 +19,11 @@ class MessaggioRepository(BaseDao, ABC):
     def insert(self, messaggio: Union[Messaggio, List[Messaggio]]) -> Messaggio:
         try:
             if isinstance(messaggio, Messaggio):
-                count = self.database.query(Messaggio).count()
-                messaggio.index_message = count + 1
                 self.database.add(messaggio)
                 self.database.commit()
-                return messaggio
                 if hasattr(current_app, 'web_logger'):
                     current_app.web_logger.info("Inserimento del messaggio è stato completato con successo.")
+                return messaggio
             elif isinstance(messaggio, list):
                 count = self.database.query(Messaggio).count()
                 for m in messaggio:
@@ -104,8 +102,9 @@ class MessaggioRepository(BaseDao, ABC):
             -> Tuple[Union[List[Messaggio], None], Union[int, None]]:
         try:
             list_message = []
-            message2 = self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
-                                                      _versione_messaggio=None).limit(limit).all()
+            message2 = (self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
+                                                       _versione_messaggio=None).limit(limit)
+                        .order_by(self.messaggio._index_message).all())
             for message in message2:
                 mes = self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
                                                      _versione_messaggio=message.id_messaggio).all()
@@ -119,9 +118,16 @@ class MessaggioRepository(BaseDao, ABC):
                             list_message[-1]['versione_corrente'] = len(list_message[-1]['testo'])
             count = self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
                                                    _versione_corrente=1).count()
-
             return list_message, count
         except SQLAlchemyError as e:
             if hasattr(current_app, 'web_logger'):
                 current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None, None
+
+    def trova_max_index(self,) -> int | None:
+        try:
+            return self.database.query(Messaggio).count()
+        except SQLAlchemyError as e:
+            if hasattr(current_app, 'web_logger'):
+                current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
+            return None

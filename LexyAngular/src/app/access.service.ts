@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Login} from "./login/login";
 import { CookieService } from 'ngx-cookie-service';
-import {Register} from "./terapista/registrati/register";
 
 
 @Injectable({
@@ -16,6 +15,9 @@ export class AccessService {
     this.cookieService.set('email',"", { path: '/', expires: 7 });
     this.cookieService.set('ruolo', "", { path: '/', expires: 7 });
     this.cookieService.set('id','', { path: '/', expires: 7 });
+    this.cookieService.set('id','', { path: '/', expires: 7 });
+    this.cookieService.set('valuta','', { path: '/', expires: 7 });
+    this.cookieService.set('conta_testi_Associati','', { path: '/', expires: 7 });
   }
 
    insertAccess(response: Login, username: string, status: boolean){
@@ -24,6 +26,11 @@ export class AccessService {
     this.cookieService.set('email', response.response.email, { path: '/', expires: 7 });
     this.cookieService.set('ruolo', response.response.ruolo, { path: '/', expires: 7 });
     this.cookieService.set('id',response.response.id_utente, { path: '/', expires: 7 });
+    if (response.response.ruolo=='bambino'){
+      this.cookieService.set('valuta',response.response.valuta? response.response.valuta: 'true', { path: '/', expires: 7 });
+      this.cookieService.set('conta_testi_Associati',response.response.conta_testi_Associati?response.response.conta_testi_Associati :"0", { path: '/', expires: 7 });
+    }
+
 
   }
 
@@ -44,6 +51,15 @@ export class AccessService {
 
   getRuolo():string {
     return this.cookieService.check('ruolo') ? this.cookieService.get('ruolo')  : "";
+  }
+
+
+   getValuta():string {
+    return this.cookieService.check('valuta') ? this.cookieService.get('valuta')  : "";
+  }
+
+  getContaTestiAssociati():string {
+    return this.cookieService.check('conta_testi_Associati') ? this.cookieService.get('conta_testi_Associati')  : "";
   }
 
 }

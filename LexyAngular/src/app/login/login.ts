@@ -18,4 +18,6 @@ export interface ResponseLogin{
   email: string;
   eta?: number;
   ruolo: string;
+  valuta?:string;
+  conta_testi_Associati?: string;
 }

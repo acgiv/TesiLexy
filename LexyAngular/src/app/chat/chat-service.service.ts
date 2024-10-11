@@ -47,6 +47,11 @@ export class ChatServiceService {
      return this.http.post<Riquest>(this.url+"bambino/insert_message", body, {headers});
   }
 
+  result_chat_gpt(body: any): Observable<any>{
+     const headers = new HttpHeaders({'Content-Type': 'application/json'});
+     return this.http.post<Riquest>(this.url+"bambino/respost_chat_gpt", body, {headers});
+  }
+
 }
 
 

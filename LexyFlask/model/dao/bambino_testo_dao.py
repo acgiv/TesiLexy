@@ -29,8 +29,11 @@ class BambinoTestoDao(BaseDao):
     def find_by_idtesto(self, idtesto: uuid.UUID) -> Union[List[BambinoTesto], None]:
         return self.__repository.find_by_idtesto(idtesto)
 
-    def find_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: uuid.UUID) -> Union[BambinoTesto, None]:
+    def find_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: int) -> Union[BambinoTesto, None]:
         return self.__repository.find_by_bambino_and_testo(idbambino, idtesto)
 
     def delete_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: uuid.UUID) -> None:
         self.__repository.delete_by_bambino_and_testo(idbambino, idtesto)
+
+    def count_test_assocati(self, idbambino: uuid.UUID) -> Union[int, None]:
+        return self.__repository.count_test_assocati(idbambino)

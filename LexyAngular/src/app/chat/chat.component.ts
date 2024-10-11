@@ -8,7 +8,7 @@ import {InputTextComponent} from "../form/input_text/input_text.component";
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ControlFormDirective} from "../form/control-form.directive";
 import {multiPatternValidator} from "../form/Validator/validator";
-import {ChatList, Message} from "./chat-service.service";
+import {ChatList} from "./chat-service.service";
 import {cloneDeep} from "lodash";
 import {StringUtilsService} from "../Utilitys/string-utils.service";
 import {TextAreaComponent} from "../form/textArea/text-area/text-area.component";
@@ -49,6 +49,7 @@ export class ChatComponent implements OnInit, OnDestroy{
               protected formD: ControlFormDirective,
               protected stringUtils: StringUtilsService,
   ) {
+
   this.formGroup = this.fb.group({});
   this.formGroup2 = this.fb.group({});
   this.formD.form.splice(0, this.formD.form.length);
@@ -174,7 +175,6 @@ export class ChatComponent implements OnInit, OnDestroy{
   toggleDropdown(event: any) {
     const dropdown = event.target.closest('.dropdown');
     const menu = dropdown.querySelector('.dropdown-menu');
-
     if (menu.classList.contains('show')) {
       menu.classList.remove('show');
       document.removeEventListener('click', this.dropdownListener);
@@ -220,5 +220,8 @@ export class ChatComponent implements OnInit, OnDestroy{
   invia() {
     const chat= this.chat_directive.list_chat[this.index_select_chat];
     this.chat_directive.insert_message(this.index_select_chat,"messaggio", this.formGroup2.get("Messaggio")?.value)
+    this.chat_directive.result_chat_gpt(chat.idchat, this.formGroup2.get("Messaggio")?.value, this.index_select_chat )
+    this.formGroup2.get("Messaggio")?.setValue("");
+
   }
 }

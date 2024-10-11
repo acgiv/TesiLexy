@@ -5,6 +5,9 @@ from email.mime.text import MIMEText
 from smtplib import SMTP
 from configuration.config import SMTP_HOST, SMTP_PORT, EMAIL_ACCOUNT, PSW_ACCOUNT
 from flask import Blueprint, request, jsonify, current_app
+
+from model.Service.bambino_service import BambinoService
+from model.Service.bambino_testo_service import BambinoTestoService
 from model.Service.user_service import UtenteService
 import configparser
 
@@ -45,13 +48,12 @@ def user(utente_service: UtenteService):
 
 
 @main.route('/login', methods=["POST"])
-def login(utente_service: UtenteService):
+def login(utente_service: UtenteService, bambino_service: BambinoService, testo_bambino_service: BambinoTestoService):
     response_copy = response.copy()
     try:
         username = request.json["username"]
         password = request.json["password"]
         result = utente_service.find_by_username_and_password(username, password)
-        print(result)
         if result is not None:
             response_copy["response"] = {
                                          "id_utente": result.id_utente,
@@ -60,6 +62,14 @@ def login(utente_service: UtenteService):
                                          "ruolo": result.tipologia,
                                          "result_connection": True,
                                          }
+            if result.tipologia == 'bambino':
+                bambino = bambino_service.get_find_all_by_id_bambino(result.id_utente)
+                conta_testi = testo_bambino_service.count_test_assocati(idbambino=bambino.id_bambino)
+                respost = {"valuta": True, "conta_testi_Associati": 0}
+                if conta_testi and bambino:
+                    respost = {"valuta": bambino.controllo_terapista, "conta_testi_Associati": conta_testi}
+                response_copy["response"] = {**response_copy["response"], **respost}
+                print(response_copy["response"])
             return response_copy
         else:
             response_copy["response"] = {"result_connection": False}

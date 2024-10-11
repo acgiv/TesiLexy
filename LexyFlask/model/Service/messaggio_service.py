@@ -28,3 +28,5 @@ class MessaggioService:
             -> Tuple[Union[List[Messaggio], None], Union[int, None]]:
         return self.__messaggio_dao.find_all_by_id_chat_and_child(id_child, id_chat, limit)
 
+    def trova_max_index(self, ) -> int | None:
+        return self.__messaggio_dao.trova_max_index()

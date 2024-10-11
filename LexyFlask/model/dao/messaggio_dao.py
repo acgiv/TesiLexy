@@ -30,3 +30,6 @@ class MessaggioDao(BaseDao, ABC):
     def find_all_by_id_chat_and_child(self, id_child: str,  id_chat: str, limit: Union[int, None] = None) \
             -> Tuple[Union[List[Messaggio], None], Union[int, None]]:
         return self.__repository.find_all_by_id_chat_and_child(id_child, id_chat, limit)
+
+    def trova_max_index(self, ) -> int | None:
+        return self.__repository.trova_max_index()

@@ -1,6 +1,7 @@
 import uuid
 from uuid import UUID
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, CHAR, PrimaryKeyConstraint
+from sqlalchemy.dialects.mysql import LONGTEXT
 from extensions import db
 from datetime import datetime
 
@@ -13,7 +14,7 @@ class Messaggio(db.Model):
                       primary_key=True)
     _id_bambino = Column('idbambino', CHAR(36), ForeignKey('bambino.idbambino', ondelete='CASCADE'), nullable=False,
                          primary_key=True)
-    _testo = Column('testo', String(255), nullable=False)
+    _testo = Column('testo', LONGTEXT, nullable=False)
     _data_creazione = Column('datacreazione', DateTime, nullable=False, default=datetime.utcnow)
     _versione_corrente = Column('versione_corrente', Integer, default=1)
     _tipologia = Column('tipologia', String(20), default='messaggio')
@@ -35,12 +36,13 @@ class Messaggio(db.Model):
     }
 
     def __init__(self, id_chat: str, id_bambino: str, testo: str, numero_versioni_messaggio: int = 1,
-                 tipologia: str = None):
+                 tipologia: str = None, index_message: int = 0):
         self._id_messaggio = uuid.uuid4()
         self._id_chat = id_chat
         self._id_bambino = id_bambino
         self._testo = testo
         self._versione_corrente = numero_versioni_messaggio
+        self._index_message = index_message
         if tipologia:
             self._tipologia = tipologia
 

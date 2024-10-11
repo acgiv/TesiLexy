@@ -18,6 +18,7 @@ export class ChatDirectiveDirective{
 
   find_all_chat(){
     this.body = Object();
+    console.log(this.access_service.getId())
     this.body.id_bambino = this.access_service.getId();
     this.body.limit = 20;
     this.chat_service.find_all_Chat(this.body).subscribe(result =>{
@@ -83,10 +84,25 @@ export class ChatDirectiveDirective{
     this.body = Object();
         this.body.id_message_now = id_message_now;
         this.body.id_message_back = id_message_back;
-      this.chat_service.update_message_versione_corrente(this.body).subscribe(result =>{
-        if(result.args.completed) {
-        }
-    });
+      this.chat_service.update_message_versione_corrente(this.body).subscribe(_ =>{});
+  }
+
+   result_chat_gpt(id_chat: string, testo_da_spiegare: string, index_chat: number){
+    this.body = Object();
+        this.body.id_bambino = this.access_service.getId();
+        this.body.id_chat = id_chat;
+        this.body.testo_da_spiegare = testo_da_spiegare;
+        this.chat_service.result_chat_gpt(this.body).subscribe(result => {
+          console.log(result)
+        if (result.args.completed) {
+          let list = this.list_chat[index_chat].message;
+          if (list!= undefined){
+            list.push(result.args.response.message);
+            this.list_chat[index_chat].message = list;
+          }
+
+    }
+  });
   }
 
   insert_message(index_chat: number, tipologia: string, testo: string){

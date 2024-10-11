@@ -26,11 +26,12 @@ class BambinoTestoService:
     def find_by_idtesto(self, idtesto: uuid.UUID) -> Union[List[BambinoTesto], None]:
         return self.__bambino_testo_dao.find_by_idtesto(idtesto)
 
-    def find_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: uuid.UUID) -> Union[BambinoTesto, None]:
+    def find_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: int) -> Union[BambinoTesto, None]:
         return self.__bambino_testo_dao.find_by_bambino_and_testo(idbambino, idtesto)
 
     def delete_by_bambino_and_testo(self, idbambino: uuid.UUID, idtesto: uuid.UUID) -> None:
         self.__bambino_testo_dao.delete_by_bambino_and_testo(idbambino, idtesto)
 
-
+    def count_test_assocati(self, idbambino: uuid.UUID) -> Union[int, None]:
+        return self.__bambino_testo_dao.count_test_assocati(idbambino)
 
