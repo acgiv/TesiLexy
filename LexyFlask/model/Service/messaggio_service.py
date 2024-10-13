@@ -5,7 +5,6 @@ from model.entity.messaggio import Messaggio
 
 
 class MessaggioService:
-
     def __init__(self) -> None:
         self.__messaggio_dao = MessaggioDao()
 

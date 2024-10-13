@@ -26,3 +26,11 @@
   opacity: 0.5;
   pointer-events: none;
 }
+
+.icons{
+   color: var(--primary);
+}
+
+.heart-icon{
+  color: #a3a3a3 !important;
+}

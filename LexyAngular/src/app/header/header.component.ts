@@ -40,21 +40,22 @@ export class HeaderComponent implements OnInit {
     });
   }
  updateActiveLinks() {
-  this.isHomeActive = this.isActive('/') || this.isActive('/terapista');
-  this.isLoginActive = this.isActive('/login') ||
+    this.isHomeActive = this.isActive('/') || this.isActive('/terapista');
+    this.isLoginActive = this.isActive('/login') ||
     this.isActive('/terapista/login') ||
     this.isActive('/recuperoPassword') ||
     this.isActive('/terapista/recuperoPassword');
-  this.isSignUpActive = this.isActive('/signup') || this.isActive('/terapista/signup');
-  this.isChatActive = this.isActive('/chat') || this.isActive('/terapista/chat');
-  this.isDashboardActive = this.isActive('/terapista/dashboard') ||
+    this.isSignUpActive = this.isActive('/signup') || this.isActive('/terapista/signup');
+    this.isChatActive = this.isActive('/chat') || this.isActive('/terapista/chat');
+    this.isDashboardActive = this.isActive('/terapista/dashboard') ||
     this.isActive('/terapista/dashboard/inserisciPaziente') ||
     this.isActive('/terapista/dashboard/inserisciTesto') ||
     this.isActive('/terapista/dashboard/visualizzaPaziente') ||
     this.isActive('/terapista/dashboard/visualizzaTestoAdattato') ||
     this.isActive('/terapista/dashboard/inserisciTestoAdattato') ||
     this.isActive('/terapista/dashboard/visualizzaTesto');
-  this.isRegistrationActive = this.isActive('/terapista/registrati');
+    this.isRegistrationActive = this.isActive('/terapista/registrati');
+    this.clickable=false;
 }
 
 
@@ -79,7 +80,6 @@ export class HeaderComponent implements OnInit {
 
   toggleNavbar() {
     this.isNavbarOpen = !this.isNavbarOpen;
-    console.log(this.isNavbarOpen);
   }
 
   setState(url: string) {

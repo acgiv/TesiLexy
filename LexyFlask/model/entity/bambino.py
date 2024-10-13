@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Union
 from sqlalchemy import Column, String, ForeignKey, CHAR, DATE, BOOLEAN
 from sqlalchemy.orm import relationship
@@ -27,7 +28,7 @@ class Bambino(Utente):
     _messaggi = db.relationship("Messaggio", back_populates="_utente")
     _chat = db.relationship("Chat", back_populates="_utente")
 
-    def __init__(self, username: str, password: str, nome: str, cognome: str, data_nascita: str,
+    def __init__(self, username: str, password: str, nome: str, cognome: str, data_nascita: datetime,
                  descrizione: str, email: str, id_terapista: str, controllo_terapista: bool,
                  id_bambino: Union[uuid, None] = None, id_utente: Union[uuid, None] = None):
         super().__init__(id_utente, username, password, email, "bambino")
@@ -64,11 +65,11 @@ class Bambino(Utente):
         self._cognome = cognome
 
     @property
-    def data_nascita(self) -> str:
+    def data_nascita(self) -> datetime:
         return self._data_nascita
 
     @data_nascita.setter
-    def data_nascita(self, data_nascita: str) -> None:
+    def data_nascita(self, data_nascita: datetime) -> None:
         self._data_nascita = data_nascita
 
     @property

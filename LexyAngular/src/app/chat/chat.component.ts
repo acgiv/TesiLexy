@@ -1,4 +1,13 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faChevronLeft, faChevronRight, faEllipsisH} from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +21,7 @@ import {ChatList} from "./chat-service.service";
 import {cloneDeep} from "lodash";
 import {StringUtilsService} from "../Utilitys/string-utils.service";
 import {TextAreaComponent} from "../form/textArea/text-area/text-area.component";
+import {AccessService} from "../access.service";
 
 
 declare let bootstrap: any;
@@ -33,7 +43,7 @@ declare let bootstrap: any;
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements OnInit, OnDestroy{
+export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
   isOpen = true;
   protected readonly faChevronLeft = faChevronLeft;
   protected readonly faChevronRight = faChevronRight;
@@ -42,18 +52,20 @@ export class ChatComponent implements OnInit, OnDestroy{
   protected submit: boolean= false;
   private chat_temp : ChatList | undefined;
   private dropdownListener: any;
-  protected index_select_chat =0;
+  protected errore_testi_associati: boolean;
+
   @ViewChild('modal_modifica') modal_modifica!: ElementRef;
   constructor(protected chat_directive: ChatDirectiveDirective,
               private fb: FormBuilder,
               protected formD: ControlFormDirective,
               protected stringUtils: StringUtilsService,
+              private access_service:  AccessService,
+              private cdr: ChangeDetectorRef
   ) {
-
   this.formGroup = this.fb.group({});
   this.formGroup2 = this.fb.group({});
   this.formD.form.splice(0, this.formD.form.length);
-
+  this.errore_testi_associati = Number(this.access_service.getContaTestiAssociati()) == 0
   }
 
   ngOnInit() {
@@ -100,6 +112,12 @@ export class ChatComponent implements OnInit, OnDestroy{
     this.isOpen = !this.isOpen;
   }
 
+  ngAfterViewInit(): void {
+    if(this.errore_testi_associati){
+      this.set_view_modal("show")
+    }
+  }
+
   ngOnDestroy() {
     window.removeEventListener('resize', this.checkWindowSize.bind(this));
   }
@@ -119,7 +137,7 @@ export class ChatComponent implements OnInit, OnDestroy{
     if (this.chat_directive.list_chat[index].message == undefined){
       this.chat_directive.find_message_limit_chat(id_chat);
     }
-  this.index_select_chat = index;
+  this.chat_directive.index_select_chat = index;
   }
 
   deleteChat(id_chat: string){
@@ -206,9 +224,9 @@ export class ChatComponent implements OnInit, OnDestroy{
 
   is_first_message(elem : any): boolean{
     if (elem != undefined){
-      const number_message = this.chat_directive?.list_chat?.[this.index_select_chat]?.message?.length
-      const number_message_chat = this.chat_directive.list_chat[this.index_select_chat].number_all_message
-      const firt_message_list = this.chat_directive?.list_chat?.[this.index_select_chat]?.message?.[0]
+      const number_message = this.chat_directive?.list_chat?.[this.chat_directive.index_select_chat]?.message?.length
+      const number_message_chat = this.chat_directive.list_chat[this.chat_directive.index_select_chat].number_all_message
+      const firt_message_list = this.chat_directive?.list_chat?.[this.chat_directive.index_select_chat]?.message?.[0]
       return number_message ==number_message_chat && firt_message_list == elem
     }
     return false
@@ -218,10 +236,9 @@ export class ChatComponent implements OnInit, OnDestroy{
   protected readonly Number = Number;
 
   invia() {
-    const chat= this.chat_directive.list_chat[this.index_select_chat];
-    this.chat_directive.insert_message(this.index_select_chat,"messaggio", this.formGroup2.get("Messaggio")?.value)
-    this.chat_directive.result_chat_gpt(chat.idchat, this.formGroup2.get("Messaggio")?.value, this.index_select_chat )
+    const chat= this.chat_directive.list_chat[this.chat_directive.index_select_chat];
+    this.chat_directive.insert_message(this.chat_directive.index_select_chat,"messaggio", this.formGroup2.get("Messaggio")?.value, true)
+    this.chat_directive.result_chat_gpt(chat.idchat, this.formGroup2.get("Messaggio")?.value, this.chat_directive.index_select_chat)
     this.formGroup2.get("Messaggio")?.setValue("");
-
   }
 }

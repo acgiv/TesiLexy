@@ -8,6 +8,7 @@ from flask import current_app
 
 from model.dao.base_dao import BaseDao
 from model.entity.messaggio import Messaggio
+import pprint
 
 
 class MessaggioRepository(BaseDao, ABC):
@@ -105,17 +106,20 @@ class MessaggioRepository(BaseDao, ABC):
             message2 = (self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
                                                        _versione_messaggio=None).limit(limit)
                         .order_by(self.messaggio._index_message).all())
+
             for message in message2:
                 mes = self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
-                                                     _versione_messaggio=message.id_messaggio).all()
+                                                     _versione_messaggio=message.id_messaggio).order_by(self.messaggio._index_message).all()
                 elem = message.to_dict(is_text_list=True)
                 list_message.append(elem)
                 if elem.__len__() > 0:
+
                     for m in mes:
                         list_message[-1]['testo'].append((m.id_messaggio, m.testo))
-
                         if message.versione_corrente == 0 and m.versione_corrente == 1:
+                            list_message[-1]['like'] = m.like
                             list_message[-1]['versione_corrente'] = len(list_message[-1]['testo'])
+
             count = self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
                                                    _versione_corrente=1).count()
             return list_message, count

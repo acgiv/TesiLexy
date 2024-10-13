@@ -15,6 +15,7 @@ class Messaggio(db.Model):
     _id_bambino = Column('idbambino', CHAR(36), ForeignKey('bambino.idbambino', ondelete='CASCADE'), nullable=False,
                          primary_key=True)
     _testo = Column('testo', LONGTEXT, nullable=False)
+    _like = Column('like', Integer, nullable=False)
     _data_creazione = Column('datacreazione', DateTime, nullable=False, default=datetime.utcnow)
     _versione_corrente = Column('versione_corrente', Integer, default=1)
     _tipologia = Column('tipologia', String(20), default='messaggio')
@@ -36,15 +37,18 @@ class Messaggio(db.Model):
     }
 
     def __init__(self, id_chat: str, id_bambino: str, testo: str, numero_versioni_messaggio: int = 1,
-                 tipologia: str = None, index_message: int = 0):
+                 tipologia: str = None, index_message: int = 0, like: int = 0, versione_messaggio: str = None):
         self._id_messaggio = uuid.uuid4()
         self._id_chat = id_chat
         self._id_bambino = id_bambino
         self._testo = testo
+        self.like = like
         self._versione_corrente = numero_versioni_messaggio
         self._index_message = index_message
         if tipologia:
             self._tipologia = tipologia
+        if versione_messaggio is not None:
+            self._versione_messaggio = versione_messaggio
 
     def to_dict(self, is_text_list: bool = False):
         return {
@@ -56,7 +60,8 @@ class Messaggio(db.Model):
             'data_creazione': self._data_creazione.isoformat() if self._data_creazione else None,
             'versione_corrente': self._versione_corrente,
             'tipologia': self._tipologia,
-            'versione_messaggio': str(self._versione_messaggio) if self._versione_messaggio else None
+            'versione_messaggio': str(self._versione_messaggio) if self._versione_messaggio else None,
+            "like": self._like
         }
 
     @property
@@ -66,6 +71,14 @@ class Messaggio(db.Model):
     @id_messaggio.setter
     def id_messaggio(self, id_messaggio: str) -> None:
         self._id_messaggio = id_messaggio
+
+    @property
+    def like(self) -> int:
+        return self._like
+
+    @like.setter
+    def like(self, like: int) -> None:
+        self._like = like
 
     @property
     def id_chat(self) -> str:
@@ -127,14 +140,15 @@ class Messaggio(db.Model):
     def __str__(self):
         return (f"id_messaggio: {self._id_messaggio}, id_chat: {self._id_chat}, id_bambino: {self._id_bambino}, "
                 f"testo: {self._testo}, data_creazione: {self._data_creazione}, versione_corrente:"
-                f" {self._versione_corrente}, tipologia: {self._tipologia}, "
+                f" {self._versione_corrente}, tipologia: {self._tipologia}, like:{self._like}, "
                 f"versione_messaggio: {self._versione_messaggio}")
 
     # Stringa di rappresentazione per debug e log (dettagliata)
     def __repr__(self):
         return (
             f"<Messaggio(id_messaggio={self._id_messaggio}, id_chat={self._id_chat}, id_bambino={self._id_bambino}, "
-            f"testo={self._testo}, data_creazione={self._data_creazione}, versione_corrente={self._versione_corrente}, "
+            f"testo={self._testo}, like={self._like} ,data_creazione={self._data_creazione},"
+            f" versione_corrente={self._versione_corrente},"
             f"tipologia={self._tipologia}, versione_messaggio={self._versione_messaggio})>")
 
     # Deleters

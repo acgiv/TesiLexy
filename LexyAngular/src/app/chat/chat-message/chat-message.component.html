@@ -1,30 +1,32 @@
 <div class="chat-message d-flex mb-4" [ngClass]="{'justify-content-end': !isFromPepper}">
   <div class="avatar me-3" *ngIf="isFromPepper">
-    <img src="assets/pepper_avatar.png" alt="Pepper Avatar" class="rounded-circle">
+    <img ngSrc="assets/pepper_avatar.png" alt="Pepper Avatar" class="rounded-circle" width="64" height="67" loading="lazy">
   </div>
   <div class="w-100 w-md-50">
     <div class="message-content p-3 rounded" [ngClass]="{'bg-light border border-1': isFromPepper, 'message-user': !isFromPepper}">
-      {{ messageText }}
+      {{ this.message.testo[this.number_version][1]}}
     </div>
     <div class="message-footer mt-1 d-flex justify-content-between align-items-center small text-muted">
       <div *ngIf="!is_first_message && isFromPepper "  class="icons d-flex align-items-baseline">
         <div  *ngIf="number_version != undefined && number_text != undefined && number_text!=1 " class="d-flex align-items-center">
-          <fa-icon class="me-1" (click)="back(number_version)" [icon]="faChevronLeft"  [ngClass]="{ 'disabled-icon': number_version +1 == 1 }"></fa-icon>
+          <fa-icon onKeyDown="" class="me-1" (click)="back(number_version)" [icon]="faChevronLeft"  [ngClass]="{ 'disabled-icon': number_version +1 == 1 }"></fa-icon>
           <span>{{number_version+1}}/{{number_text}}</span>
-          <fa-icon (click)="up(number_version, number_text)" class="ms-1 me-4" [icon]="faChevronRight" [ngClass]="{ 'disabled-icon': number_version +1 == number_text }"></fa-icon>
+          <fa-icon onKeyDown="" (click)="up(number_version, number_text)" class="ms-1 me-4" [icon]="faChevronRight" [ngClass]="{ 'disabled-icon': number_version +1 == number_text }"></fa-icon>
         </div>
-        <div>
-          <img onKeyDown="" (click)="riproduzionePepper()" src="assets/robot_icon.png" alt="Riproduzione Pepper" class="me-2">
-          <img onKeyDown="" (click)="RigeneraMessaggio()" src="assets/reload-icon.png" alt="Rigenera messaggio" class="me-2">
-          <img onKeyDown="" src="assets/favorite_icon.png" alt="Messaggio Piaciuto" class="me-2">
+        <div class="ms-2">
+         <fa-icon onKeyDown="" [icon]="faRobot" class="robot icons fa-lg me-3 mt-2" (click)="this.riproduzionePepper()" ></fa-icon>
+          <fa-icon onKeyDown="" [icon]="faSyncAlt" class="ricarica-icon me-3 icons fa-lg mt-2" (click)="this.RigeneraMessaggio()"></fa-icon>
+          <fa-icon  onKeyDown="" [icon]="faHeart" [ngClass]=" this.message.like? 'me-3 fa-lg mt-2': 'heart-icon me-3 fa-lg mt-2'"  (click)="this.like_message(number_version)"></fa-icon>
+
+
         </div>
       </div>
       <div class="timestamp text-end">
-        {{ timestamp }}
+        {{ this.message.data_creazione}}
       </div>
     </div>
   </div>
   <div class="avatar ms-3" *ngIf="!isFromPepper">
-    <img src="assets/user_avatar.png" alt="User Avatar" class="rounded-circle">
+    <img ngSrc="assets/user_avatar.png" alt="User Avatar" class="rounded-circle" width="64" height="64" loading="lazy">
   </div>
 </div>

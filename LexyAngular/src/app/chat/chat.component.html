@@ -3,25 +3,28 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title "> Modifica il Titolo della Chat</h5>
+            <h5 [ngClass]="!this.errore_testi_associati? 'modal-title':' modal-title text-danger' " >{{this.errore_testi_associati?"Errore non ci sono testi a te associati":"Modifica il Titolo della Chat"}} </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <form [formGroup]="formGroup"  >
+          <div  *ngIf="this.errore_testi_associati" class="modal-body m-3">
+              <h5> Non sono stati associati i testi per avere delle spiegazioni personalizzate! Contatta i terapisiti a te associati!</h5>
+          </div>
+          <form *ngIf="!this.errore_testi_associati"  [formGroup]="formGroup" >
             <div class="col-12 d-flex justify-content-center"  *ngFor="let elem of formD.form">
               <div class="w-75 mt- mb-5 mt-2">
                 <app-input_text [elem]="elem" [formGroup]="formGroup"  [submit]="submit"></app-input_text>
               </div>
             </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary " data-bs-dismiss="modal" (click)="modificaModal()">Modifica</button>
-            <button type="button" class="btn btn_annulla " (click)="annullaModal()">Annulla</button>
+            <button  type="button" class="btn btn-primary " data-bs-dismiss="modal" (click)="modificaModal()">Modifica</button>
+            <button  type="button" class="btn btn_annulla " (click)="annullaModal()">Annulla</button>
           </div>
           </form>
         </div>
       </div>
   </div>
 
-<div class="sidebar-toggle" (click)="toggleSidebar()" [ngClass]="{'hide-tab': !isOpen}">
+<div onKeyDown="" class="sidebar-toggle" (click)="toggleSidebar()" [ngClass]="{'hide-tab': !isOpen}">
   <fa-icon [icon]="isOpen ? faChevronLeft : faChevronRight" [ngStyle]="{'color': 'white'}"></fa-icon>
 </div>
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" [ngClass]="{'hide-bar': !isOpen}">
@@ -31,7 +34,7 @@
     <ul class="nav flex-column mb-auto">
       <li class="nav-item">
         <div  class="d-flex justify-content-between align-items-center nav-link active py-2 px-0" aria-current="page">
-          <span (click)="viewText(chat.idchat)" >{{chat.titolo}}</span>
+          <span onKeyDown="" (click)="viewText(chat.idchat)" >{{chat.titolo}}</span>
           <div class="dropdown"  id="dropdownChatMenu">
             <fa-icon class="text-secondary  border border-1 rounded rounded-3  ps-2 pe-2"  [icon]="faEllipsisH"  (click)="toggleDropdown($event)"  (keydown)="onKeyDown($event)">></fa-icon>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
@@ -50,15 +53,10 @@
   <form  [formGroup]="formGroup2" >
   <div class="container-fluid container-chat p-4">
     <div  class="chat-messages container mt-3">
-      <div *ngFor="let elem of  this.chat_directive.list_chat[this.index_select_chat]?.message">
+      <div *ngFor="let elem of  this.chat_directive.list_chat[this.chat_directive.index_select_chat]?.message">
         <app-chat-message
-        [isFromPepper]="elem.tipologia=='messaggio_pepper'"
-        timestamp="{{elem.data_creazione}}"
-        messageText='{{elem.testo[Number(elem.versione_corrente)-1][1]}}'
-        [number_version]='Number(elem.versione_corrente)-1'
-        [number_text]='Number(elem.testo.length)'
-        [list_text]="elem.testo"
-         [is_first_message]="this.is_first_message(elem)"/>
+        [message]= elem
+        [is_first_message]="this.is_first_message(elem)"/>
       </div>
     </div>
 

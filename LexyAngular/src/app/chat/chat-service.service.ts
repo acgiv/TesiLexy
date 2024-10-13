@@ -52,6 +52,15 @@ export class ChatServiceService {
      return this.http.post<Riquest>(this.url+"bambino/respost_chat_gpt", body, {headers});
   }
 
+  update_message(body: any): Observable<any>{
+     const headers = new HttpHeaders({'Content-Type': 'application/json'});
+     return this.http.post<Riquest>(this.url+"bambino/update_message", body, {headers});
+  }
+
+    reload_message(body: any): Observable<any>{
+     const headers = new HttpHeaders({'Content-Type': 'application/json'});
+     return this.http.post<Riquest>(this.url+"bambino/reload_message", body, {headers});
+  }
 }
 
 
@@ -74,6 +83,7 @@ export interface Message {
   tipologia:string;
   versione_messaggio: string;
   versione_corrente: number;
+  like: number;
 }
 
 

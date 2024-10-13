@@ -42,7 +42,7 @@
           <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" (click)="closeOption()">
             {{ this.accessService.getUsername() }}
           </button>
-          <ul class="dropdown-menu" [ngClass]="{'show': this.clickable}" >
+          <ul class="dropdown-menu cursor_link" [ngClass]="{'show': this.clickable}" >
             <li><a class="dropdown-item" (click)="exit()" >Esci</a></li>
           </ul>
         </div>
