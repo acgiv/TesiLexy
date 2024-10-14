@@ -8,7 +8,6 @@ from flask import current_app
 
 from model.dao.base_dao import BaseDao
 from model.entity.messaggio import Messaggio
-import pprint
 
 
 class MessaggioRepository(BaseDao, ABC):

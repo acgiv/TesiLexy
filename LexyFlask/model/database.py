@@ -40,7 +40,7 @@ class ChatSchema(ma.Schema):
 class MessaggioSchema(ma.Schema):
     class Meta:
         fields = ('idmessaggio', 'indexmessage', 'idchat', 'idbambino',
-                  'testo', 'datacreazione', 'versione_corrente', 'versione_messaggio')
+                  'testo', 'datacreazione', 'versione_corrente', 'versione_messaggio', 'id_terapista', 'stato')
 
 
 class TipoloigiaTestoSchema(ma.Schema):

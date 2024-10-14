@@ -20,13 +20,16 @@ class Messaggio(db.Model):
     _versione_corrente = Column('versione_corrente', Integer, default=1)
     _tipologia = Column('tipologia', String(20), default='messaggio')
     _versione_messaggio = Column('versione_messaggio', CHAR(36), ForeignKey('messaggio.idmessaggio'))
+    _id_terapista = Column('idterapista', CHAR(36), ForeignKey('utente.idutente'))
+    _stato = Column('stato', Integer, nullable=False)
 
     __table_args__ = (
         PrimaryKeyConstraint('idmessaggio', 'idchat', 'idbambino'),
     )
 
-    _utente = db.relationship("Bambino", back_populates="_messaggi")
+    _utente = db.relationship("Bambino", back_populates="_messaggi", foreign_keys=[_id_bambino])
     _chat = db.relationship("Chat", back_populates="_messaggi")
+    _terapista = db.relationship('Terapista', back_populates="_messaggi", foreign_keys=[_id_terapista])
 
     # Relazione per gestire i figli del messaggio
     children = db.relationship('Messaggio', backref=db.backref('parent', remote_side=[_id_messaggio]))
@@ -37,7 +40,9 @@ class Messaggio(db.Model):
     }
 
     def __init__(self, id_chat: str, id_bambino: str, testo: str, numero_versioni_messaggio: int = 1,
-                 tipologia: str = None, index_message: int = 0, like: int = 0, versione_messaggio: str = None):
+                 tipologia: str = None, index_message: int = 0, like: int = 0,
+                 versione_messaggio: str = None, id_terapista: str = None,
+                 stato: bool = None):
         self._id_messaggio = uuid.uuid4()
         self._id_chat = id_chat
         self._id_bambino = id_bambino
@@ -49,6 +54,12 @@ class Messaggio(db.Model):
             self._tipologia = tipologia
         if versione_messaggio is not None:
             self._versione_messaggio = versione_messaggio
+        if id_terapista is not None:
+            self._id_terapista = id_terapista
+        if stato is not None:
+            self._stato = stato
+        else:
+            self._stato = 1
 
     def to_dict(self, is_text_list: bool = False):
         return {
@@ -61,7 +72,9 @@ class Messaggio(db.Model):
             'versione_corrente': self._versione_corrente,
             'tipologia': self._tipologia,
             'versione_messaggio': str(self._versione_messaggio) if self._versione_messaggio else None,
-            "like": self._like
+            "like": self._like,
+            "id_terapista": self._id_terapista,
+            "stato": self._stato
         }
 
     @property
@@ -89,8 +102,28 @@ class Messaggio(db.Model):
         self._id_chat = id_chat
 
     @property
+    def id_terapista(self) -> str:
+        return self._id_terapista
+
+    @id_terapista.setter
+    def id_terapista(self, id_terapista: str) -> None:
+        self._id_terapista = id_terapista
+
+    @property
     def id_bambino(self) -> uuid:
         return self._id_bambino
+
+    @id_bambino.setter
+    def id_bambino(self, id_bambino: uuid) -> None:
+        self._id_bambino = id_bambino
+
+    @property
+    def stato(self) -> int:
+        return self._stato
+
+    @stato.setter
+    def stato(self, stato: int) -> None:
+        self._stato = stato
 
     @property
     def index_message(self) -> int:
@@ -99,10 +132,6 @@ class Messaggio(db.Model):
     @index_message.setter
     def index_message(self, index_message) -> None:
         self._index_message = index_message
-
-    @id_bambino.setter
-    def id_bambino(self, id_bambino: uuid) -> None:
-        self._id_bambino = id_bambino
 
     @property
     def testo(self) -> str:
@@ -141,7 +170,7 @@ class Messaggio(db.Model):
         return (f"id_messaggio: {self._id_messaggio}, id_chat: {self._id_chat}, id_bambino: {self._id_bambino}, "
                 f"testo: {self._testo}, data_creazione: {self._data_creazione}, versione_corrente:"
                 f" {self._versione_corrente}, tipologia: {self._tipologia}, like:{self._like}, "
-                f"versione_messaggio: {self._versione_messaggio}")
+                f"versione_messaggio: {self._versione_messaggio}, id_terapista: {self.id_terapista}")
 
     # Stringa di rappresentazione per debug e log (dettagliata)
     def __repr__(self):
@@ -149,7 +178,8 @@ class Messaggio(db.Model):
             f"<Messaggio(id_messaggio={self._id_messaggio}, id_chat={self._id_chat}, id_bambino={self._id_bambino}, "
             f"testo={self._testo}, like={self._like} ,data_creazione={self._data_creazione},"
             f" versione_corrente={self._versione_corrente},"
-            f"tipologia={self._tipologia}, versione_messaggio={self._versione_messaggio})>")
+            f"tipologia={self._tipologia}, versione_messaggio={self._versione_messaggio}, "
+            f"id_terapista: {self.id_terapista})>")
 
     # Deleters
     @id_messaggio.deleter
@@ -168,6 +198,10 @@ class Messaggio(db.Model):
     def testo(self) -> None:
         del self._testo
 
+    @id_terapista.deleter
+    def id_terapista(self) -> None:
+        del self._id_terapista
+
     @data_creazione.deleter
     def data_creazione(self) -> None:
         del self._data_creazione
@@ -175,6 +209,10 @@ class Messaggio(db.Model):
     @versione_messaggio.deleter
     def versione_messaggio(self) -> None:
         del self._versione_messaggio
+
+    @stato.deleter
+    def stato(self) -> None:
+        del self._stato
 
 
 class MessaggioPepper(Messaggio):

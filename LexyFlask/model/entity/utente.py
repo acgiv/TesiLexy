@@ -85,3 +85,5 @@ class Terapista(Utente):
     __mapper_args__ = {
         'polymorphic_identity': 'terapista',
     }
+
+    _messaggi = db.relationship("Messaggio", back_populates="_terapista")

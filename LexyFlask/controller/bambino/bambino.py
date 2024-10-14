@@ -8,13 +8,16 @@ from model.Service.chat_service import ChatService
 from model.Service.messaggio_service import MessaggioService
 from model.Service.patologia_bambino_service import PatologiaBambinoService
 from model.Service.patologia_service import PatologiaService
+from model.Service.terapista_associato_service import TerapistaAssociatoService
 from model.Service.testo_service import TestoOriginaleService
+from model.Service.user_service import UtenteService
 from model.entity.chat import Chat
 from model.entity.messaggio import Messaggio
-import pprint
 from openai import OpenAI
 from configuration.config import TOKEN_CHAT_GPT
 from datetime import datetime
+
+from model.entity.terapista_associato import TerapistaAssociato
 
 config = configparser.ConfigParser()
 config.read(".\\gobal_variable.ini")
@@ -177,23 +180,32 @@ def insert_message(chat_service: MessaggioService):
 @bambino.route('/respost_chat_gpt', methods=["POST"])
 def respost_chat_gpt(bambino_testo: BambinoTestoService, testo_service: TestoOriginaleService,
                      message_service: MessaggioService, bambino_service: BambinoService,
-                     patologia_service: PatologiaService, patologiabambino_service: PatologiaBambinoService):
+                     patologia_service: PatologiaService, patologiabambino_service: PatologiaBambinoService,
+                     bambino_terapisti: TerapistaAssociatoService, utente_service: UtenteService):
     response_copy = response.copy()
     try:
         web_log_type(type_log='info', message="Chiamato il respost_chat_gpt()")
         massimo_message = message_service.trova_max_index()
-        testo = genera_testo_with_chat_gpt(bambino_testo, testo_service,
-                                           patologia_service, patologiabambino_service,
-                                           bambino_service,
-                                           request.json['testo_da_spiegare'])
+        testo, stato_message, error_message = genera_testo_with_chat_gpt(bambino_testo, testo_service,
+                                                                         patologia_service,
+                                                                         patologiabambino_service,
+                                                                         bambino_service,
+                                                                         request.json['testo_da_spiegare'],
+                                                                         bambino_terapisti,
+                                                                         utente_service)
         message = message_service.insert(
             Messaggio(id_chat=request.json['id_chat'], id_bambino=request.json['id_bambino'],
                       testo=testo,
                       tipologia="messaggio_pepper",
-                      index_message=massimo_message + 1
+                      index_message=massimo_message + 1,
+                      stato=stato_message
                       ))
-
-        response_copy["response"] = {"message": message.to_dict(is_text_list=True)}
+        message_response = message.to_dict(is_text_list=True)
+        if not stato_message:
+            testo_list = list(message_response["testo"][0])
+            testo_list[1] = error_message
+            message_response["testo"][0] = tuple(testo_list)
+        response_copy["response"] = {"message": message_response}
         web_log_type(type_log='info', message="terminata la chiamata del respost_chat_gpt()")
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:
@@ -205,8 +217,9 @@ def respost_chat_gpt(bambino_testo: BambinoTestoService, testo_service: TestoOri
 
 def genera_testo_with_chat_gpt(bambino_testo: BambinoTestoService, testo_service: TestoOriginaleService,
                                patologia_service: PatologiaService, patologiabambino_service: PatologiaBambinoService,
-                               bambino_service: BambinoService, testo: str
-                               ):
+                               bambino_service: BambinoService, testo: str,
+                               bambino_terapisti: TerapistaAssociatoService,
+                               utente_service: UtenteService):
     bam = bambino_service.get_find_all_by_id_bambino(id_bambino=request.json['id_bambino'])
     bambino_testi = bambino_testo.find_by_idbambino(bam.id_bambino)
     patologie_bambino = trova_patologie(patologia_service, patologiabambino_service, bam.id_bambino)
@@ -224,7 +237,18 @@ def genera_testo_with_chat_gpt(bambino_testo: BambinoTestoService, testo_service
         messages=set_message_chat_gpt(lista_testi, testo, eta, patologie_bambino),
         temperature=0.4,
     )
-    return completion.choices[0].message.content
+    if bam.controllo_terapista:
+        terapisti = bambino_terapisti.find_all_by_id(bam.id_bambino)
+        user = list()
+        for ti in terapisti:
+            if isinstance(ti, TerapistaAssociato):
+                user.append(utente_service.get_find_all_by_id_utente(ti.idterapista).username)
+        return (
+            completion.choices[0].message.content,
+            False, f"I terapisti {', '.join(user)} devono validare la spiegazione che ha generato la AI. Rimani in "
+                   f"attesa ",)
+    else:
+        return completion.choices[0].message.content, True, None
 
 
 def trova_patologie(patologia_service: PatologiaService, patologiabambino_service: PatologiaBambinoService,
@@ -294,23 +318,32 @@ def update_message(message_service: MessaggioService):
 def reload_message(message_service: MessaggioService, bambino_testo: BambinoTestoService,
                    testo_service: TestoOriginaleService,
                    patologia_service: PatologiaService, patologiabambino_service: PatologiaBambinoService,
-                   bambino_service: BambinoService):
+                   bambino_service: BambinoService, bambino_terapisti: TerapistaAssociatoService,
+                   utente_service: UtenteService):
     response_copy = response.copy()
     try:
         web_log_type(type_log='info', message="Avviata la chiamata del update_message()")
         message = message_service.find_all_by_id(id_messaggio=request.json.get('id_messaggio_active'))
-        testo = genera_testo_with_chat_gpt(bambino_testo, testo_service,
-                                           patologia_service, patologiabambino_service,
-                                           bambino_service, request.json.get('testo_user')
-                                           )
+        testo, stato, error_message = genera_testo_with_chat_gpt(bambino_testo, testo_service,
+                                                                 patologia_service, patologiabambino_service,
+                                                                 bambino_service, request.json.get('testo_user'),
+                                                                 bambino_terapisti,
+                                                                 utente_service
+                                                                 )
         message.versione_corrente = 0
         message_service.update(message)
         massimo_message = message_service.trova_max_index()
         message_new = Messaggio(id_chat=message.id_chat, id_bambino=message.id_bambino, testo=testo,
                                 index_message=massimo_message, tipologia="messaggio_pepper",
-                                numero_versioni_messaggio=1, versione_messaggio=request.json.get('id_message_reload'))
+                                numero_versioni_messaggio=1, versione_messaggio=request.json.get('id_message_reload'),
+                                stato=stato)
         message_service.insert(message_new)
-        response_copy['response'] = {"message": message_new.to_dict(is_text_list=True)}
+        message_response = message_new.to_dict(is_text_list=True)
+        if not stato:
+            testo_list = list(message_response["testo"][0])
+            testo_list[1] = error_message
+            message_response["testo"][0] = tuple(testo_list)
+        response_copy['response'] = {"message": message_response}
         web_log_type(type_log='info', message=" termiaata la chiamata update_message()")
         return jsonify(args=response_copy, status=200, mimetype=config["REQUEST"]["content_type"])
     except KeyError as key:

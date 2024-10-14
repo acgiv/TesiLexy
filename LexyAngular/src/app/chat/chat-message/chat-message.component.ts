@@ -108,6 +108,5 @@ ngOnInit() {
     }
     return ''
   }
-
   protected readonly Number = Number;
 }
