@@ -20,6 +20,7 @@ from model.Service.terapista_associato_service import TerapistaAssociatoService
 from model.Service.testo_service import TestoOriginaleService
 from model.Service.tipologiatesto_service import TipologiaTestoService
 from model.Service.user_service import UtenteService
+from model.Service.frase_service import FraseService
 from model.dao.label_dao import LabelDao
 from controller.main.main import main
 from controller.api.api import api
@@ -42,6 +43,7 @@ def configure(binder):
     binder.bind(TipologiaTestoService)
     binder.bind(TestoOriginaleService)
     binder.bind(BambinoTestoService)
+    binder.bind(FraseService)
 
 
 def create_app():

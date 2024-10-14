@@ -283,3 +283,15 @@ M
 controller/bambino/bambino.py,8\6\86e127f59ad303ab0331766c1918dccfa823ad6d
 7
 info.md,b\9\b9e6871889628c8f91df88102a249a1757ae7ed1
+E
+model/entity/frasu.py,d\e\de7b90f8fc35881c3ab03ec2ed85390922dd7002
+T
+$model/repository/frasi_repository.py,b\2\b21bb2278408deb638ae605ce135e93ce4059fe1
+F
+model/dao/frase_dao.py,7\d\7d5193eb00b02ebe9711c60d971797b9036be154
+K
+model/Service/frase_service,c\4\c41b922f422099ee660c1cf4d7d7f939155acacc
+N
+model/Service/frase_service.py,4\9\49ddc912ed299b2cb2ae99625c1076d0a9b19b0a
+E
+model/entity/frase.py,7\d\7dc330bb08177e2963735db4578d9154043549ea

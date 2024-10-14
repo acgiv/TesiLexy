@@ -58,6 +58,11 @@ class BambinoTestoSchema(ma.Schema):
         fields = ('idbambino', 'idtesto')
 
 
+class FraseSchema(ma.Schema):
+    class Meta:
+        fields = ('idpfrase', 'testo', "immagine", "soggetto", "contesto")
+
+
 utente_schema = UtenteSchema()
 utenti_schema = UtenteSchema(many=True)
 
@@ -90,6 +95,9 @@ testoschemas = TestoOriginaleSchema(many=True)
 
 testo_assiciato_schema = BambinoTestoSchema()
 testo_assiciato_schemas = BambinoTestoSchema(many=True)
+
+frase_schema = FraseSchema()
+frase_schemas = FraseSchema(many=True)
 
 
 def create_table(db):

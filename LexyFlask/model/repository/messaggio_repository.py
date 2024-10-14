@@ -8,6 +8,9 @@ from flask import current_app
 
 from model.dao.base_dao import BaseDao
 from model.entity.messaggio import Messaggio
+from model.entity.terapista_associato import TerapistaAssociato
+from model.Service.user_service import UtenteService
+from model.Service.terapista_associato_service import TerapistaAssociatoService
 
 
 class MessaggioRepository(BaseDao, ABC):
@@ -107,18 +110,18 @@ class MessaggioRepository(BaseDao, ABC):
                         .order_by(self.messaggio._index_message).all())
 
             for message in message2:
-                mes = self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
-                                                     _versione_messaggio=message.id_messaggio).order_by(self.messaggio._index_message).all()
+                mes = (self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
+                                                      _versione_messaggio=message.id_messaggio)
+                       .order_by(self.messaggio._index_message).all())
                 elem = message.to_dict(is_text_list=True)
+                controllo = controlla_stato(messaggio=message)
+                if not controllo[0]:
+                    testo_list = list(elem["testo"][0])
+                    testo_list[1] = controllo[1]
+                    elem["testo"][0] = tuple(testo_list)
                 list_message.append(elem)
                 if elem.__len__() > 0:
-
-                    for m in mes:
-                        list_message[-1]['testo'].append((m.id_messaggio, m.testo))
-                        if message.versione_corrente == 0 and m.versione_corrente == 1:
-                            list_message[-1]['like'] = m.like
-                            list_message[-1]['versione_corrente'] = len(list_message[-1]['testo'])
-
+                    set_message_update(list_message, mes, message)
             count = self.messaggio.query.filter_by(_id_chat=id_chat, _id_bambino=id_child,
                                                    _versione_corrente=1).count()
             return list_message, count
@@ -127,10 +130,35 @@ class MessaggioRepository(BaseDao, ABC):
                 current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None, None
 
-    def trova_max_index(self,) -> int | None:
+    def trova_max_index(self, ) -> int | None:
         try:
             return self.database.query(Messaggio).count()
         except SQLAlchemyError as e:
             if hasattr(current_app, 'web_logger'):
                 current_app.web_logger.error(f"Errore durante la ricerca per ID: {str(e)}")
             return None
+
+
+def set_message_update(list_message, mes: List[Messaggio], message: Messaggio):
+    for m in mes:
+        controllo = controlla_stato(messaggio=m)
+        if not controllo[0]:
+            m.testo = controllo[1]
+        list_message[-1]['testo'].append((m.id_messaggio, m.testo))
+        if message.versione_corrente == 0 and m.versione_corrente == 1:
+            list_message[-1]['like'] = m.like
+            list_message[-1]['versione_corrente'] = len(list_message[-1]['testo'])
+
+
+def controlla_stato(messaggio: Messaggio):
+    utente_service = UtenteService()
+    bambino_terapisti = TerapistaAssociatoService()
+    if messaggio.stato == 0:
+        terapisti = bambino_terapisti.find_all_by_id(messaggio.id_bambino)
+        user = list()
+        for ti in terapisti:
+            if isinstance(ti, TerapistaAssociato):
+                user.append(utente_service.get_find_all_by_id_utente(ti.idterapista).username)
+        return (False, f"I terapisti {', '.join(user)} devono validare la spiegazione che ha generato la AI. "
+                       f"Rimani in attesa ")
+    return True, None
